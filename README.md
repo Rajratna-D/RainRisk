@@ -272,9 +272,7 @@ RainRisk/
 │   └── report_assets/        # Feature importance and permutation rankings CSVs
 │
 ├── scripts/
-│   ├── fetch_teleconnections.py # Automated scraper for NOAA & JAMSTEC ocean indices
-│   ├── generate_report_pdf.py   # Publication-grade 22-page PDF generator
-│   └── update_report_markdown.py# Report synchronization script
+│   └── fetch_teleconnections.py # Automated scraper for NOAA & JAMSTEC ocean indices
 │
 ├── docs/                     # Comprehensive Scientific Documentation
 │   ├── 01_architecture.md                       # Decoupled system architecture
