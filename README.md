@@ -23,6 +23,25 @@ Standard macro-economic forecasts rely on national rainfall aggregates that mask
 
 ---
 
+## Problem Statement
+
+### The Practical and Scientific Challenge
+The Indian Summer Monsoon exhibits profound spatial heterogeneity: national aggregates frequently obscure acute localized failures where one subdivision suffers severe drought while an adjacent region experiences excess flooding. Furthermore, agricultural planning for the Kharif season requires operational decisions (seed procurement, crop selection, reservoir allocation, and credit disbursement) to be finalized **before June 1st**, prior to monsoon onset.
+
+Traditional forecasting systems and standard machine learning approaches encounter three critical failure modes:
+
+1. **Symmetric Loss Failure:** Standard multi-class classifiers treat all misclassifications identically under nominal loss functions (cross-entropy or Gini impurity). In drought risk management, predicting "Normal" when the truth is "Deficient" (a 1-step error) is treated with the same penalty as predicting "Large Excess" when the truth is "Large Deficient" (a 4-step catastrophic error). Confusing drought with flood leads to disastrous agronomic recommendations, such as advising farmers to sow water-intensive crops during a severe drought year.
+2. **Extreme Empirical Class Imbalance:** In the 117-year historical IMD record across India's 36 subdivisions, "Normal" rainfall accounts for **63.3%** of all observations, while extreme categories like "Large Deficient" (<0.6%) and "Large Excess" (<2.8%) occupy the sparse tails. Naive classifiers collapse into trivial majority-class predictors, achieving illusory raw accuracy while failing to detect the very drought emergencies they were built to foresee.
+3. **Temporal Leakage and High-Dimensional Teleconnection Coupling:** Autoregressive climate models easily suffer from subtle data leakage (e.g., using post-onset June rainfall, rolling windows that bridge across missing calendar years, or unconstrained spatial oversampling). Concurrently, local rainfall history alone explains less than 35% of inter-annual monsoon variance without accounting for global coupled ocean-atmosphere dynamics.
+
+### Formal Mathematical Problem Formulation
+> **Given a 23-dimensional spatiotemporal feature vector $x_{i,t} \in \mathbb{R}^{23}$ for meteorological subdivision $i \in \{1, \dots, 36\}$ and year $t$, constructed strictly from information available prior to June 1st ($t-1$ and antecedent pre-monsoon winter/spring signals), predict the official IMD operational rainfall category $y_{i,t} \in \{C_0, C_1, C_2, C_3, C_4, C_5\}$ such that:**
+> 1. **Ordinal Class Hierarchy is Preserved:** Prediction errors minimize the expected ordinal step distance $\text{MOD} = \frac{1}{N}\sum_{i=1}^N |\text{rank}(\hat{y}_i) - \text{rank}(y_i)|$, heavily penalizing distant errors over adjacent ones.
+> 2. **Minority Severity Detection is Maximized:** Balanced accuracy across all active drought and surplus categories is optimized despite severe class skewness.
+> 3. **Zero Future-Data Leakage:** All engineered features adhere to strict temporal causality without retrospective data bridging.
+
+---
+
 ## Key Quantitative Performance
 
 Evaluated on an untouched, chronologically held-out test window (**2011 to 2017, N=243 regional subdivision-years** across all 36 subdivisions):
