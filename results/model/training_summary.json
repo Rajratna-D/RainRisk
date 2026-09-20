@@ -1,0 +1,58 @@
+{
+  "dataset": {
+    "source": "Sub_Division_IMD_2017.csv + NOAA/PSL Teleconnections",
+    "total_rows": 3913,
+    "feature_count": 24,
+    "train_val_rows": 3670,
+    "test_rows": 243,
+    "train_years": "1901-2010",
+    "test_years": "2011-2017"
+  },
+  "production_model": {
+    "architecture": "RandomForest (n_estimators=200, min_samples_leaf=2, max_depth=12)",
+    "pipeline": [
+      "SMOTENC (train-fold only)",
+      "StandardScaler + OneHotEncoder",
+      "RandomForestClassifier"
+    ],
+    "exact_accuracy": 0.5596707818930041,
+    "balanced_accuracy": 0.43159332188009336,
+    "macro_f1": 0.2611709332685953,
+    "off_by_one_accuracy": 0.9300411522633745,
+    "mean_ordinal_distance": 0.522633744855967
+  },
+  "candidate_benchmark": [
+    {
+      "model": "LogisticRegression_FINAL_TEST",
+      "accuracy": 0.35390946502057613,
+      "balanced_accuracy": 0.35577287344169856,
+      "macro_f1": 0.1987697431075067,
+      "off_by_one_accuracy": 0.831275720164609,
+      "mean_ordinal_distance": 0.8395061728395061
+    },
+    {
+      "model": "RandomForest_FINAL_TEST",
+      "accuracy": 0.5596707818930041,
+      "balanced_accuracy": 0.43159332188009336,
+      "macro_f1": 0.2611709332685953,
+      "off_by_one_accuracy": 0.9300411522633745,
+      "mean_ordinal_distance": 0.522633744855967
+    },
+    {
+      "model": "HistGradientBoosting_FINAL_TEST",
+      "accuracy": 0.4567901234567901,
+      "balanced_accuracy": 0.3976476807189111,
+      "macro_f1": 0.22135257777048825,
+      "off_by_one_accuracy": 0.9259259259259259,
+      "mean_ordinal_distance": 0.6213991769547325
+    },
+    {
+      "model": "OrdinalRandomForest_FINAL_TEST",
+      "accuracy": 0.5020576131687243,
+      "balanced_accuracy": 0.4100612307827849,
+      "macro_f1": 0.24773698630136987,
+      "off_by_one_accuracy": 0.9218106995884774,
+      "mean_ordinal_distance": 0.588477366255144
+    }
+  ]
+}

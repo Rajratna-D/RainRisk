@@ -1,0 +1,143 @@
+{
+  "old_features": [
+    {
+      "model": "LogisticRegression_old",
+      "accuracy": 0.33064516129032256,
+      "balanced_accuracy": 0.2565492321589882,
+      "macro_f1": 0.16526213751745666,
+      "off_by_one_accuracy": 0.75,
+      "mean_ordinal_distance": 0.9758064516129032,
+      "train_time_seconds": 0.38
+    },
+    {
+      "model": "RandomForest_old",
+      "accuracy": 0.4838709677419355,
+      "balanced_accuracy": 0.3436088527551942,
+      "macro_f1": 0.21476652516676778,
+      "off_by_one_accuracy": 0.875,
+      "mean_ordinal_distance": 0.6733870967741935,
+      "train_time_seconds": 0.88
+    },
+    {
+      "model": "SVM_old",
+      "accuracy": 0.3870967741935484,
+      "balanced_accuracy": 0.3095641373080398,
+      "macro_f1": 0.19705673646194094,
+      "off_by_one_accuracy": 0.782258064516129,
+      "mean_ordinal_distance": 0.8870967741935484,
+      "train_time_seconds": 2.57
+    },
+    {
+      "model": "GradientBoosting_old",
+      "accuracy": 0.45564516129032256,
+      "balanced_accuracy": 0.32446928635953026,
+      "macro_f1": 0.2017983913271551,
+      "off_by_one_accuracy": 0.8669354838709677,
+      "mean_ordinal_distance": 0.7056451612903226,
+      "train_time_seconds": 55.96
+    },
+    {
+      "model": "HistGradientBoosting_old",
+      "accuracy": 0.4274193548387097,
+      "balanced_accuracy": 0.31978319783197834,
+      "macro_f1": 0.19731869994869394,
+      "off_by_one_accuracy": 0.8669354838709677,
+      "mean_ordinal_distance": 0.7298387096774194,
+      "train_time_seconds": 3.65
+    }
+  ],
+  "enhanced_features": [
+    {
+      "model": "LogisticRegression_enhanced",
+      "accuracy": 0.34156378600823045,
+      "balanced_accuracy": 0.289300030835646,
+      "macro_f1": 0.1816362522509143,
+      "off_by_one_accuracy": 0.7654320987654321,
+      "mean_ordinal_distance": 0.9423868312757202,
+      "train_time_seconds": 0.8
+    },
+    {
+      "model": "RandomForest_enhanced",
+      "accuracy": 0.5267489711934157,
+      "balanced_accuracy": 0.3474736795735871,
+      "macro_f1": 0.21326819597847635,
+      "off_by_one_accuracy": 0.9135802469135802,
+      "mean_ordinal_distance": 0.5843621399176955,
+      "train_time_seconds": 1.31
+    },
+    {
+      "model": "SVM_enhanced",
+      "accuracy": 0.35390946502057613,
+      "balanced_accuracy": 0.2906479890753711,
+      "macro_f1": 0.1786,
+      "off_by_one_accuracy": 0.7777777777777778,
+      "mean_ordinal_distance": 0.9012345679012346,
+      "train_time_seconds": 2.41
+    },
+    {
+      "model": "GradientBoosting_enhanced",
+      "accuracy": 0.46502057613168724,
+      "balanced_accuracy": 0.3363464164574248,
+      "macro_f1": 0.20459657301762565,
+      "off_by_one_accuracy": 0.9135802469135802,
+      "mean_ordinal_distance": 0.6419753086419753,
+      "train_time_seconds": 166.4
+    },
+    {
+      "model": "HistGradientBoosting_enhanced",
+      "accuracy": 0.5102880658436214,
+      "balanced_accuracy": 0.3741861592000353,
+      "macro_f1": 0.22509237289136003,
+      "off_by_one_accuracy": 0.897119341563786,
+      "mean_ordinal_distance": 0.6049382716049383,
+      "train_time_seconds": 2.83
+    }
+  ],
+  "teleconnection_features": [
+    {
+      "model": "LogisticRegression_tele",
+      "accuracy": 0.3374485596707819,
+      "balanced_accuracy": 0.3398793004713449,
+      "macro_f1": 0.1938738949105924,
+      "off_by_one_accuracy": 0.831275720164609,
+      "mean_ordinal_distance": 0.8559670781893004,
+      "train_time_seconds": 0.74
+    },
+    {
+      "model": "RandomForest_tele",
+      "accuracy": 0.5596707818930041,
+      "balanced_accuracy": 0.43159332188009336,
+      "macro_f1": 0.2611709332685953,
+      "off_by_one_accuracy": 0.9300411522633745,
+      "mean_ordinal_distance": 0.522633744855967,
+      "train_time_seconds": 1.68
+    },
+    {
+      "model": "SVM_tele",
+      "accuracy": 0.43621399176954734,
+      "balanced_accuracy": 0.3872957138452051,
+      "macro_f1": 0.21826249222475638,
+      "off_by_one_accuracy": 0.8847736625514403,
+      "mean_ordinal_distance": 0.6954732510288066,
+      "train_time_seconds": 2.5
+    },
+    {
+      "model": "GradientBoosting_tele",
+      "accuracy": 0.4732510288065844,
+      "balanced_accuracy": 0.39572706048191714,
+      "macro_f1": 0.2298678514467988,
+      "off_by_one_accuracy": 0.9053497942386831,
+      "mean_ordinal_distance": 0.6296296296296297,
+      "train_time_seconds": 203.03
+    },
+    {
+      "model": "HistGradientBoosting_tele",
+      "accuracy": 0.41975308641975306,
+      "balanced_accuracy": 0.38889916743755776,
+      "macro_f1": 0.21410458077124744,
+      "off_by_one_accuracy": 0.9053497942386831,
+      "mean_ordinal_distance": 0.6872427983539094,
+      "train_time_seconds": 3.36
+    }
+  ]
+}

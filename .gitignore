@@ -1,0 +1,95 @@
+# =============================================================================
+# RainRisk: Official .gitignore
+# =============================================================================
+
+# Virtual Environments (CRITICAL)
+.venv/
+*/.venv/
+venv/
+*/venv/
+env/
+*/env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables, Secrets & Credentials (CRITICAL)
+.env
+.env.*
+*.env
+*.env.local
+secrets.json
+credentials.json
+*.pem
+*.key
+*.token
+*.cert
+*.pfx
+id_rsa*
+.aws/
+
+# Python Bytecode, Caches & Artifacts
+__pycache__/
+*/__pycache__/
+**/*.py[cod]
+*.class
+*.so
+*.egg
+*.egg-info/
+/dist/
+build/
+
+# Testing & Linting Caches
+.pytest_cache/
+*/.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.ruff_cache/
+.mypy_cache/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Node / Frontend Dependencies (dist is kept for standalone execution)
+node_modules/
+*/node_modules/
+frontend/node_modules/
+.npm/
+.yarn/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & Editor Files
+.vscode/
+*/.vscode/
+.idea/
+*/.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Operating System Metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Large Model Binaries (>50MB, exceeds GitHub limits)
+# Regenerate anytime with: python src/save_model.py
+results/model/*.joblib
+
+# Temporary / Scratch Files
+scratch/
+*.tmp
+*.bak

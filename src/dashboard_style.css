@@ -1,0 +1,329 @@
+/*
+ * RainRisk: Obsidian Atmospheric Design System
+ * Glassmorphism & High-Contrast Precision theme for Streamlit
+ *
+ * Loaded by app.py via st.markdown() injection.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* --- Base & Typography --- */
+html, body, [class*="css"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #cbd5e1;
+    background-color: #070a13;
+}
+h1, h2, h3, h4, .font-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    letter-spacing: -0.02em;
+}
+code, pre, .mono, .tabular-nums {
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* --- Atmospheric Canvas & Glow Mesh --- */
+.stApp {
+    background-color: #070a13;
+    background-image: 
+        radial-gradient(at 15% 15%, rgba(6, 182, 212, 0.08) 0px, transparent 45%),
+        radial-gradient(at 85% 10%, rgba(56, 189, 248, 0.07) 0px, transparent 40%),
+        radial-gradient(at 50% 90%, rgba(16, 185, 129, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 0%, rgba(15, 23, 42, 0.7) 0px, transparent 65%);
+    background-attachment: fixed;
+}
+
+.main .block-container {
+    padding: 1.2rem 2.2rem 3.5rem;
+    max-width: 1480px;
+}
+
+/* --- Scrollbars --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #070a13; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* --- Executive Hero Header --- */
+.executive-header {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.4rem 1.8rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+.executive-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #06b6d4 0%, #38bdf8 35%, #10b981 70%, #f59e0b 100%);
+}
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+.live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 9999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #34d399;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.pulse-beacon {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: beacon 2s infinite;
+}
+@keyframes beacon {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.executive-header h1 {
+    font-size: 1.65rem;
+    font-weight: 800;
+    margin: 0.1rem 0 0.35rem;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.executive-header p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0 0 0.85rem;
+    line-height: 1.55;
+    max-width: 960px;
+}
+.capsule-group {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+.capsule {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: #94a3b8;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.22rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+.capsule-accent {
+    background: rgba(6, 182, 212, 0.12);
+    border-color: rgba(6, 182, 212, 0.3);
+    color: #38bdf8;
+}
+.capsule-emerald {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+/* --- Section Headings --- */
+.sec-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 1.3rem 0 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.sec-title-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    background: rgba(6, 182, 212, 0.15);
+    color: #38bdf8;
+    font-size: 0.75rem;
+}
+
+/* --- Glassmorphic Cards & KPI Tiles --- */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.1rem;
+    margin-bottom: 0.95rem;
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.5);
+}
+
+.kpi-tile {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 3px solid #38bdf8;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    position: relative;
+    box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.kpi-tile:hover {
+    transform: translateY(-2px);
+    border-top-color: #06b6d4;
+}
+.kpi-label {
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    margin-bottom: 0.3rem;
+}
+.kpi-num {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #f8fafc;
+    line-height: 1.1;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+.kpi-sub {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    margin-top: 0.3rem;
+    font-weight: 400;
+}
+
+/* --- Informational Findings Banner --- */
+.insight-banner {
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.6) 100%);
+    border-left: 3px solid #06b6d4;
+    border-radius: 0 10px 10px 0;
+    padding: 0.75rem 1.1rem;
+    margin: 0.75rem 0 1rem;
+    font-size: 0.83rem;
+    color: #94a3b8;
+    line-height: 1.55;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+.insight-banner strong {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+/* --- Legend Table --- */
+.legend-table { width: 100%; border-collapse: collapse; }
+.legend-table td {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.78rem;
+}
+.legend-table tr:last-child td { border-bottom: none; }
+.jewel-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+
+/* --- Segmented Streamlit Tabs Styling --- */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 1.1rem;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #94a3b8;
+    border: none !important;
+    transition: all 0.2s ease;
+}
+.stTabs [data-baseweb="tab"]:hover {
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.04);
+}
+.stTabs [aria-selected="true"] {
+    background: rgba(30, 41, 59, 0.9) !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    box-shadow: 0 4px 12px -2px rgba(6, 182, 212, 0.2) !important;
+}
+
+/* --- Sidebar Refinements --- */
+[data-testid="stSidebar"] {
+    background: #080c14 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
+[data-testid="stSidebar"] .stSelectbox label,
+[data-testid="stSidebar"] .stSlider label {
+    color: #94a3b8 !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* --- Advisory & Action Cards --- */
+.advisory-box {
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1.15rem;
+    margin-top: 0.85rem;
+}
+.advisory-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.advisory-body {
+    font-size: 0.81rem;
+    line-height: 1.6;
+    color: #94a3b8;
+}
+.advisory-body strong { color: #f8fafc; }
+
+/* --- Dataframe Clean Framing --- */
+.stDataFrame {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
