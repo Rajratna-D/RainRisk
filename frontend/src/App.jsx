@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import ExecutivePulse from './components/ExecutivePulse';
 import GeospatialRadar from './components/GeospatialRadar';
@@ -13,12 +13,33 @@ export default function App() {
   const [overviewData, setOverviewData] = useState(null);
   const [activeYear, setActiveYear] = useState(2015);
   const [activeSubdivision, setActiveSubdivision] = useState('Kerala');
+  const [theme, setTheme] = useState(() => localStorage.getItem('rainrisk-theme') || 'dark');
+  const pageRef = useRef(null);
 
+  /* Apply theme to DOM */
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('rainrisk-theme', theme);
+  }, [theme]);
+
+  /* Fetch overview data on mount */
   useEffect(() => {
     fetchOverview()
       .then(setOverviewData)
       .catch((err) => console.error('Failed fetching overview:', err));
   }, []);
+
+  /* Trigger page-enter animation on tab change */
+  useEffect(() => {
+    const el = pageRef.current;
+    if (!el) return;
+    el.classList.remove('page-enter');
+    // Force reflow to restart animation
+    void el.offsetWidth;
+    el.classList.add('page-enter');
+  }, [activeTab]);
+
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   const handleSelectYear = (yr) => {
     setActiveYear(yr);
@@ -32,11 +53,14 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Luxury Navbar */}
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Navbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
 
-      {/* Main Tab Panels */}
-      <main>
+      <main ref={pageRef} className="page-enter">
         {activeTab === 'pulse' && (
           <ExecutivePulse overviewData={overviewData} onSelectYear={handleSelectYear} />
         )}
@@ -57,13 +81,9 @@ export default function App() {
         )}
       </main>
 
-      {/* Executive Footer */}
-      <footer style={{ marginTop: '3.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+      <footer className="app-footer">
         <div>
-          <span style={{ color: '#f8fafc', fontWeight: 600 }}>RainRisk</span> · Production Climate Risk Intelligence Platform
-        </div>
-        <div className="mono">
-          IMD SUBDIVISION SERIES 1901-2017 · ZERO LOOKAHEAD LEAKAGE · FASTAPI + REACT
+          <span className="app-footer-brand">RainRisk</span> &middot; Production Climate Risk Intelligence Platform
         </div>
       </footer>
     </div>

@@ -25,7 +25,7 @@ if SRC_DIR not in sys.path:
 from labeling import compute_lpa, compute_pct_departure, classify, CATEGORY_ORDER
 from features import build_lag_rolling_features
 from train import ALL_FEATURES
-from constants import CATEGORY_COLORS, COORDS, MACRO_REGIONS
+from constants import CATEGORY_COLORS, COORDS, MACRO_REGIONS, DISPLAY_NAME_MAP, CANONICAL_DATASET_NAMES
 from advisory import get_advisory_api
 
 
@@ -92,8 +92,10 @@ def initialize_data():
                 m_region = r_name
                 break
 
-        sub_stats[sub_name] = {
-            "name": sub_name,
+        disp_name = DISPLAY_NAME_MAP.get(sub_name, sub_name)
+        entry = {
+            "name": disp_name,
+            "raw_name": sub_name,
             "lpa": round(sub_lpa, 1),
             "mean_jjas": round(sub_mean, 1),
             "cv": round(sub_cv, 1),
@@ -102,6 +104,9 @@ def initialize_data():
             "lon": lon,
             "macro_region": m_region,
         }
+        sub_stats[disp_name] = entry
+        if disp_name != sub_name:
+            sub_stats[sub_name] = entry
 
     # All-India mean annual JJAS series
     national = raw.groupby("YEAR")["JJAS"].mean().reset_index()
@@ -179,18 +184,23 @@ def get_overview():
 
 @app.get("/api/subdivisions")
 def get_subdivisions():
-    """Returns list of all 36 subdivisions with their metadata, LPA, CV%, and coords."""
-    return list(state["sub_stats"].values())
+    """Returns list of all 36 subdivisions with their clean display names, LPA, CV%, and coords."""
+    unique_subs = {}
+    for s in state["sub_stats"].values():
+        unique_subs[s["name"]] = s
+    return sorted(unique_subs.values(), key=lambda x: x["name"])
 
 @app.get("/api/subdivision/{name}")
 def get_subdivision_detail(name: str):
-    """Returns detailed climatology for a single subdivision."""
+    """Returns detailed climatology for a single subdivision, resolving legacy typos to modern names."""
     raw = state["raw"]
-    sub_data = raw[raw["SUBDIVISION"] == name].sort_values("YEAR")
+    db_name = CANONICAL_DATASET_NAMES.get(name, name)
+    disp_name = DISPLAY_NAME_MAP.get(db_name, db_name)
+    sub_data = raw[raw["SUBDIVISION"] == db_name].sort_values("YEAR")
     if sub_data.empty:
         raise HTTPException(status_code=404, detail=f"Subdivision '{name}' not found")
 
-    stats = state["sub_stats"].get(name, {})
+    stats = state["sub_stats"].get(disp_name, state["sub_stats"].get(db_name, {}))
     lpa_val = stats.get("lpa", 0.0)
 
     # Historical timeline
@@ -278,7 +288,7 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
         jjas = float(row["JJAS"]) if pd.notna(row["JJAS"]) else 0.0
 
         records.append({
-            "subdivision": sub_name,
+            "subdivision": DISPLAY_NAME_MAP.get(sub_name, sub_name),
             "lat": lat,
             "lon": lon,
             "jjas": round(jjas, 1),
@@ -293,10 +303,18 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
     n_def = sum(1 for r in records if r["category"] in ["Deficient", "Large Deficient", "No Rainfall"])
     pct_def = (n_def / n_total * 100) if n_total > 0 else 0.0
 
-    # Extremes
+    # Extremes: strictly filter by category to prevent Normal subdivisions from appearing in Deficient/Excess lists
     sorted_by_dep = sorted(records, key=lambda x: x["departure"])
-    top_deficient = sorted_by_dep[:5]
-    top_excess = sorted(records, key=lambda x: x["departure"], reverse=True)[:5]
+    top_deficient = [
+        r for r in sorted_by_dep
+        if r["category"] in ["Deficient", "Large Deficient", "No Rainfall"]
+    ][:5]
+
+    sorted_by_dep_desc = sorted(records, key=lambda x: x["departure"], reverse=True)
+    top_excess = [
+        r for r in sorted_by_dep_desc
+        if "Excess" in r["category"]
+    ][:5]
 
     return {
         "year": year,
@@ -450,6 +468,9 @@ def predict_scenario(req: PredictionRequest):
     enso_tend = req.enso_mam - req.enso_djf
     enso_iod_inter = req.enso_mam * req.iod_mam
 
+    db_sub = CANONICAL_DATASET_NAMES.get(req.subdivision, req.subdivision)
+    disp_sub = DISPLAY_NAME_MAP.get(db_sub, db_sub)
+
     row = {
         "prev_year_jjas": req.prev_jjas,
         "prev_annual_change": req.prev_change,
@@ -474,7 +495,7 @@ def predict_scenario(req: PredictionRequest):
         "enso_tendency": enso_tend,
         "iod_mam_lag": req.iod_mam,
         "enso_iod_interaction": enso_iod_inter,
-        "SUBDIVISION": req.subdivision,
+        "SUBDIVISION": db_sub,
     }
 
     inp = pd.DataFrame([row])[ALL_FEATURES]
@@ -498,6 +519,7 @@ def predict_scenario(req: PredictionRequest):
     advisory = get_advisory_api(pred)
 
     return {
+        "subdivision": disp_sub,
         "predicted_category": pred,
         "color": CATEGORY_COLORS.get(pred, "#38bdf8"),
         "composite_drought_risk": round(drought_prob * 100, 1),
@@ -517,7 +539,7 @@ if os.path.exists(FRONTEND_DIST):
         file_path = os.path.join(FRONTEND_DIST, full_path)
         if os.path.exists(file_path) and os.path.isfile(file_path):
             return FileResponse(file_path)
-        return FileResponse(os.path.join(FRONTEND_DIST, "index.html"))
+        return FileResponse(os.path.join(FRONTEND_DIST, "index.html"), headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"})
 
 if __name__ == "__main__":
     import uvicorn

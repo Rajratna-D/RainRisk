@@ -1,6 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { fetchSubdivisions, fetchSubdivisionDetail } from '../api/client';
 import { GitCompare, Calendar, BarChart2 } from 'lucide-react';
+
+/* ── Inline Sparkline Component ── */
+function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
+  if (!data || data.length === 0) return null;
+
+  const values = data.map((d) => d.jjas);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+
+  const points = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * width;
+    const y = height - 2 - ((v - min) / range) * (height - 4);
+    return `${x},${y}`;
+  }).join(' ');
+
+  // Area fill path
+  const areaPath = `M 0,${height} ` +
+    values.map((v, i) => {
+      const x = (i / (values.length - 1)) * width;
+      const y = height - 2 - ((v - min) / range) * (height - 4);
+      return `L ${x},${y}`;
+    }).join(' ') +
+    ` L ${width},${height} Z`;
+
+  return (
+    <div className="sparkline-wrapper">
+      <svg className="sparkline-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+        <defs>
+          <linearGradient id={`spark-fill-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
+        <path d={areaPath} fill={`url(#spark-fill-${color.replace('#','')})`} />
+        <polyline
+          fill="none"
+          stroke={color}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          points={points}
+        />
+      </svg>
+    </div>
+  );
+}
 
 export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
   const [subdivisions, setSubdivisions] = useState([]);
@@ -11,9 +58,7 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchSubdivisions().then((list) => {
-      setSubdivisions(list);
-    });
+    fetchSubdivisions().then(setSubdivisions);
   }, []);
 
   useEffect(() => {
@@ -33,13 +78,24 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
       });
   }, [focusSub, twinSub]);
 
+  /* Pre-compute max values for charts to avoid computing inside render loops */
+  const focusMaxJJAS = useMemo(() => {
+    if (!focusData?.timeline) return 1;
+    return Math.max(...focusData.timeline.map((x) => x.jjas), 1);
+  }, [focusData]);
+
+  const focusMaxMonthly = useMemo(() => {
+    if (!focusData?.monthly) return 1;
+    return Math.max(...focusData.monthly.map((x) => x.rainfall), 1);
+  }, [focusData]);
+
   return (
     <div>
       {/* Top Selectors Bar */}
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.2rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           <div>
-            <label style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block' }}>
+            <label className="metric-label" style={{ marginBottom: '0.35rem', display: 'block' }}>
               Primary Target Subdivision
             </label>
             <select
@@ -54,7 +110,7 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
           </div>
 
           <div>
-            <label style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.35rem', display: 'block' }}>
+            <label className="metric-label" style={{ marginBottom: '0.35rem', display: 'block' }}>
               Comparative Climate Twin
             </label>
             <select
@@ -70,113 +126,50 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
         </div>
       </div>
 
-      {/* Climate Twins Benchmark Cards */}
+      {/* Climate Twins Benchmark Cards with Sparklines */}
       <div className="grid-2">
         {focusData && (
-          <div className="bento-card" style={{ borderTop: '3px solid #38bdf8' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.15rem' }}>{focusData.metadata.name}</h3>
-              <span className="preset-chip active">{focusData.metadata.macro_region}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', textAlign: 'center' }}>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>LPA Baseline</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
-                  {focusData.metadata.lpa} mm
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Mean JJAS</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
-                  {focusData.metadata.mean_jjas} mm
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Volatility</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>
-                  {focusData.metadata.cv}%
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Drought Rate</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f43f5e', fontFamily: 'var(--font-mono)' }}>
-                  {focusData.metadata.drought_frequency}%
-                </div>
-              </div>
-            </div>
-          </div>
+          <SubdivisionCard
+            data={focusData}
+            accentColor="#38bdf8"
+            chipActive
+          />
         )}
-
         {twinData && (
-          <div className="bento-card" style={{ borderTop: '3px solid #f59e0b' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.15rem' }}>{twinData.metadata.name}</h3>
-              <span className="preset-chip">{twinData.metadata.macro_region}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', textAlign: 'center' }}>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>LPA Baseline</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
-                  {twinData.metadata.lpa} mm
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Mean JJAS</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
-                  {twinData.metadata.mean_jjas} mm
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Volatility</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>
-                  {twinData.metadata.cv}%
-                </div>
-              </div>
-              <div style={{ background: 'rgba(8,12,20,0.6)', padding: '0.65rem', borderRadius: '8px' }}>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Drought Rate</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#f43f5e', fontFamily: 'var(--font-mono)' }}>
-                  {twinData.metadata.drought_frequency}%
-                </div>
-              </div>
-            </div>
-          </div>
+          <SubdivisionCard
+            data={twinData}
+            accentColor="#f59e0b"
+          />
         )}
       </div>
 
       {/* Historical Annual Timeline Bar Chart */}
       {focusData && (
         <div className="bento-card" style={{ marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div className="section-header">
             <div>
-              <h3 style={{ fontSize: '1.05rem' }}>{focusData.metadata.name} Historical Monsoon Series (1901-2017)</h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              <h3 className="section-title">{focusData.metadata.name} Historical Monsoon Series (1901-2017)</h3>
+              <p className="section-subtitle">
                 Annual JJAS rainfall records colored by IMD drought severity tier relative to LPA ({focusData.metadata.lpa} mm).
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
-              <span style={{ color: '#f43f5e' }}>■ Large Deficit</span>
-              <span style={{ color: '#f59e0b' }}>■ Deficit</span>
-              <span style={{ color: '#10b981' }}>■ Normal</span>
-              <span style={{ color: '#06b6d4' }}>■ Surplus</span>
+            <div className="chart-legend">
+              <span style={{ color: 'var(--accent-red)' }}>■ Large Deficit</span>
+              <span style={{ color: 'var(--accent-amber)' }}>■ Deficit</span>
+              <span style={{ color: 'var(--accent-emerald)' }}>■ Normal</span>
+              <span style={{ color: 'var(--accent-cyan)' }}>■ Surplus</span>
             </div>
           </div>
 
-          <div style={{ height: '180px', display: 'flex', alignItems: 'flex-end', gap: '2px', paddingBottom: '10px' }}>
+          <div className="bar-chart-container">
             {focusData.timeline.map((d) => {
-              const maxVal = Math.max(...focusData.timeline.map((x) => x.jjas), 1);
-              const heightPct = Math.max(8, (d.jjas / maxVal) * 100);
+              const heightPct = Math.max(8, (d.jjas / focusMaxJJAS) * 100);
               return (
                 <div
                   key={d.year}
+                  className="bar-item"
                   title={`${d.year}: ${d.jjas} mm (${d.category}, ${d.departure}%)`}
-                  style={{
-                    flex: 1,
-                    height: `${heightPct}%`,
-                    background: d.color,
-                    borderRadius: '2px 2px 0 0',
-                    transition: 'opacity 0.2s',
-                    cursor: 'pointer',
-                  }}
+                  style={{ height: `${heightPct}%`, background: d.color }}
                 />
               );
             })}
@@ -184,35 +177,38 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
         </div>
       )}
 
-      {/* Monthly Progression & Decadal Regimes Grid */}
+      {/* Monthly Progression and Decadal Regimes Grid */}
       {focusData && (
         <div className="grid-split">
           {/* Monthly Climatology */}
           <div className="bento-card">
             <h4 style={{ fontSize: '0.95rem', marginBottom: '0.75rem' }}>12-Month Mean Precipitation Distribution</h4>
-            <div style={{ display: 'flex', alignItems: 'flex-end', height: '140px', gap: '6px' }}>
+            <div className="monthly-chart">
               {focusData.monthly.map((m) => {
-                const maxM = Math.max(...focusData.monthly.map((x) => x.rainfall), 1);
-                const barH = Math.max(4, (m.rainfall / maxM) * 120);
+                const barH = Math.max(4, (m.rainfall / focusMaxMonthly) * 120);
                 const isMonsoon = ['JUN', 'JUL', 'AUG', 'SEP'].includes(m.month);
                 return (
-                  <div key={m.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%' }}>
-                    <span style={{ fontSize: '0.6rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', marginBottom: '3px' }}>
+                  <div key={m.month} className="monthly-bar-col">
+                    <span className="monthly-bar-value">
                       {m.rainfall > 0 ? Math.round(m.rainfall) : ''}
                     </span>
                     <div
+                      className="monthly-bar"
                       style={{
-                        width: '100%',
                         height: `${barH}px`,
                         background: isMonsoon
                           ? 'linear-gradient(to top, #2dd4a8, #60a5fa)'
-                          : 'rgba(255,255,255,0.08)',
-                        borderRadius: '3px 3px 0 0',
-                        transition: 'height 0.3s ease',
+                          : 'var(--bar-inactive)',
                       }}
                       title={`${m.month}: ${m.rainfall} mm`}
                     />
-                    <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)', marginTop: '4px', color: isMonsoon ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: isMonsoon ? 600 : 400 }}>
+                    <span
+                      className="monthly-bar-label"
+                      style={{
+                        color: isMonsoon ? 'var(--text-primary)' : 'var(--text-muted)',
+                        fontWeight: isMonsoon ? 600 : 400,
+                      }}
+                    >
                       {m.month}
                     </span>
                   </div>
@@ -226,21 +222,11 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
             <h4 style={{ fontSize: '0.95rem', marginBottom: '0.75rem' }}>Decadal Regime Shift Matrix</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
               {focusData.epochs.map((ep) => (
-                <div
-                  key={ep.epoch}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    background: 'var(--bg-inner)',
-                    padding: '0.5rem 0.85rem',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#f8fafc' }}>{ep.epoch}</span>
-                  <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }}>
-                    <span>Mean: <strong style={{ color: '#cbd5e1' }}>{ep.mean} mm</strong></span>
-                    <span>CV: <strong style={{ color: '#38bdf8' }}>{ep.cv}%</strong></span>
+                <div key={ep.epoch} className="epoch-row">
+                  <span className="epoch-label">{ep.epoch}</span>
+                  <div className="epoch-stats">
+                    <span>Mean: <strong style={{ color: 'var(--text-bright)' }}>{ep.mean} mm</strong></span>
+                    <span>CV: <strong style={{ color: 'var(--accent-sky)' }}>{ep.cv}%</strong></span>
                   </div>
                 </div>
               ))}
@@ -248,6 +234,48 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── Subdivision Summary Card with Sparkline ── */
+function SubdivisionCard({ data, accentColor, chipActive = false }) {
+  const stats = [
+    { label: 'LPA Baseline', value: `${data.metadata.lpa} mm` },
+    { label: 'Mean JJAS', value: `${data.metadata.mean_jjas} mm` },
+    { label: 'Volatility', value: `${data.metadata.cv}%`, color: accentColor },
+    { label: 'Drought Rate', value: `${data.metadata.drought_frequency}%`, color: 'var(--accent-red)' },
+  ];
+
+  return (
+    <div className="bento-card" style={{ borderTop: `3px solid ${accentColor}` }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+        <h3 style={{ fontSize: '1.15rem' }}>{data.metadata.name}</h3>
+        <span className={`preset-chip ${chipActive ? 'active' : ''}`}>{data.metadata.macro_region}</span>
+      </div>
+
+      {/* Sparkline: 117-year trend at a glance */}
+      {data.timeline && (
+        <div style={{ marginBottom: '0.75rem' }}>
+          <Sparkline data={data.timeline} color={accentColor} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', padding: '0 0.15rem' }}>
+            <span>1901</span>
+            <span style={{ fontSize: '0.58rem', color: 'var(--text-muted)' }}>117-yr JJAS trend</span>
+            <span>2017</span>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', textAlign: 'center' }}>
+        {stats.map((s) => (
+          <div key={s.label} className="stat-cell">
+            <div className="stat-cell-label">{s.label}</div>
+            <div className="stat-cell-value" style={s.color ? { color: s.color } : undefined}>
+              {s.value}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

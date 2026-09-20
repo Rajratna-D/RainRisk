@@ -46,14 +46,18 @@ COORDS = {
     "Lakshadweep": (10.6, 72.6),
     "Madhya Maharashtra": (18.5, 74.8),
     "Marathwada": (19.9, 75.3),
+    "Matathwada": (19.9, 75.3),
     "Naga Mani Mizo Tripura": (24.7, 93.9),
     "North Interior Karnataka": (15.3, 75.7),
     "Odisha": (20.9, 85.1),
+    "Orissa": (20.9, 85.1),
     "Punjab": (31.1, 75.3),
+    "Rayalaseema": (14.7, 78.6),
     "Rayalseema": (14.7, 78.6),
     "Saurashtra & Kutch": (22.3, 70.8),
     "South Interior Karnataka": (12.9, 76.5),
     "Sub Himalayan West Bengal": (26.7, 88.4),
+    "Sub Himalayan West Bengal & Sikkim": (26.7, 88.4),
     "Tamil Nadu": (11.1, 78.7),
     "Telangana": (17.4, 78.5),
     "Uttarakhand": (30.1, 79.0),
@@ -72,17 +76,38 @@ MACRO_REGIONS = {
         "Punjab", "Himachal Pradesh", "Jammu & Kashmir", "West Rajasthan", "East Rajasthan",
     ],
     "Central India": [
-        "Odisha", "West Madhya Pradesh", "East Madhya Pradesh", "Gujarat Region",
-        "Saurashtra & Kutch", "Konkan & Goa", "Madhya Maharashtra", "Marathwada",
+        "Odisha", "Orissa", "West Madhya Pradesh", "East Madhya Pradesh", "Gujarat Region",
+        "Saurashtra & Kutch", "Konkan & Goa", "Madhya Maharashtra", "Marathwada", "Matathwada",
         "Vidarbha", "Chhattisgarh",
     ],
     "South Peninsula": [
-        "Andaman & Nicobar Islands", "Coastal Andhra Pradesh", "Telangana", "Rayalseema",
+        "Andaman & Nicobar Islands", "Coastal Andhra Pradesh", "Telangana", "Rayalaseema", "Rayalseema",
         "Tamil Nadu", "Coastal Karnataka", "North Interior Karnataka", "South Interior Karnataka",
         "Kerala", "Lakshadweep",
     ],
     "East & Northeast India": [
-        "Arunachal Pradesh", "Assam & Meghalaya", "Naga Mani Mizo Tripura", "Sub Himalayan West Bengal",
+        "Arunachal Pradesh", "Assam & Meghalaya", "Naga Mani Mizo Tripura",
+        "Sub Himalayan West Bengal", "Sub Himalayan West Bengal & Sikkim",
         "Gangetic West Bengal", "Jharkhand", "Bihar",
     ],
+}
+
+# ---------------------------------------------------------------------------
+# Human-Readable Display Names (Correcting legacy colonial/data entry typos)
+# ---------------------------------------------------------------------------
+DISPLAY_NAME_MAP = {
+    "Matathwada": "Marathwada",
+    "Orissa": "Odisha",
+    "Rayalseema": "Rayalaseema",
+}
+
+CANONICAL_DATASET_NAMES = {
+    "Marathwada": "Matathwada",
+    "Matathwada": "Matathwada",
+    "Odisha": "Orissa",
+    "Orissa": "Orissa",
+    "Rayalaseema": "Rayalseema",
+    "Rayalseema": "Rayalseema",
+    "Sub Himalayan West Bengal": "Sub Himalayan West Bengal & Sikkim",
+    "Sub Himalayan West Bengal & Sikkim": "Sub Himalayan West Bengal & Sikkim",
 }

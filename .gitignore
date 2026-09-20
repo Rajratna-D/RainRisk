@@ -93,3 +93,15 @@ results/model/*.joblib
 scratch/
 *.tmp
 *.bak
+
+# Excluded documents, presentations, and notes per user request
+*.docx
+*.doc
+*.pptx
+*.ppt
+*learnings*
+*learnings.txt
+*RainRisk_Notes*
+*rainrisk notes*
+*RainRisk_poster*
+*rainrisk poster*

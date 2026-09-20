@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchMethodology } from '../api/client';
-import { BookOpen, Shield, Layers, Search } from 'lucide-react';
+import { Shield, Layers, Search } from 'lucide-react';
 
 export default function Methodology() {
   const [data, setData] = useState(null);

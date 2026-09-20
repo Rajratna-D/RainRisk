@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchLeaderboard } from '../api/client';
-import { Award, ShieldCheck, Check, Zap } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export default function ModelLeaderboard() {
   const [data, setData] = useState(null);
