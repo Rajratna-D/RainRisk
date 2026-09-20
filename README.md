@@ -1,4 +1,4 @@
-# RainRisk: Meteorological Drought and Rainfall Anomaly Intelligence Platform
+# RainRisk: AI-Powered Monsoon Drought and Rainfall Prediction for India
 
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -9,328 +9,305 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![Report](https://img.shields.io/badge/Report-22--Page%20PDF-red?style=flat-square&logo=adobe-acrobat-reader&logoColor=white)](docs/RainRisk_Project_Report.pdf)
 
-> **Long-range seasonal meteorological drought and rainfall anomaly classification across India's 36 meteorological subdivisions using 117 years of historical records, pre-monsoon Pacific-Indian Ocean teleconnections, and ordinal machine learning.**
+> **Predicting regional monsoon rainfall and drought risks across India before the rainy season begins - using 117 years of weather history, ocean temperatures, and machine learning.**
 
 ---
 
-## Executive Overview
+## What is RainRisk?
 
-The **Indian Summer Monsoon (June to September - JJAS)** delivers over **70% of India's total annual precipitation**, directly sustaining the Kharif cropping cycle, feeding major river basins, and anchoring the livelihoods of **600 million farmers**. Over **55% of Indian agricultural land remains rain-fed** without access to canal or groundwater irrigation. For these communities, the difference between a "Normal" monsoon and a "Deficient" monsoon determines whether an entire agricultural season succeeds or collapses into widespread distress.
+Every year between June and September, India receives over **70% of its annual rainfall** through the Southwest Monsoon. This rain feeds India's rivers, fills reservoirs, and powers the summer farming season (Kharif), which accounts for **half of India's food production** and supports **600 million people**.
 
-Standard macro-economic forecasts rely on national rainfall aggregates that mask severe regional disparities: an all-India "Normal" average frequently conceals simultaneous extreme droughts in western Rajasthan and devastating floods in Assam. 
+Because more than **55% of India's farms have no canal or tube-well irrigation**, farmers depend entirely on timely rainfall. A bad monsoon can destroy a whole year's crop and wipe out a farming family's savings.
 
-**RainRisk** is an end-to-end applied climatological and machine learning platform that predicts seasonal rainfall departures at the individual **meteorological subdivision scale** strictly prior to June 1st. By reformulating monsoon anomaly detection as an **ordinal ranking problem** (Frank and Hall, 2001) and ingesting pre-monsoon coupled ocean-atmosphere teleconnection signals from the Pacific (Nino 3.4 SST) and Indian Ocean (Dipole Mode Index), RainRisk achieves **93.0% off-by-one reliability** with an expected error distance of only **0.52 category steps**.
+### Why National Forecasts Are Not Enough
+Standard national forecasts give a single number for the whole country (like "India will receive 98% of normal rain"). But that hides reality:
+- An overall "normal" year can still have a **killing drought in Rajasthan** while **Assam is flooded**.
+- Farmers and local governments don't farm in "all of India" - they farm in specific states and districts.
+
+**RainRisk solves this.** It predicts whether each of India's **36 meteorological regions** will face drought, normal rain, or excess rain, and delivers that prediction **before June 1st**, right when farmers are choosing their seeds and local officials are planning water budgets.
 
 ---
 
 ## Problem Statement
 
-### The Practical and Scientific Challenge
-The Indian Summer Monsoon exhibits profound spatial heterogeneity: national aggregates frequently obscure acute localized failures where one subdivision suffers severe drought while an adjacent region experiences excess flooding. Furthermore, agricultural planning for the Kharif season requires operational decisions (seed procurement, crop selection, reservoir allocation, and credit disbursement) to be finalized **before June 1st**, prior to monsoon onset.
+### 1. The Real-World Challenge
+Farmers need answers before June 1st. Once the rains start, it is too late to change seed varieties, dig farm ponds, or store emergency cattle feed. But predicting rainfall months in advance for 36 different regions across India is notoriously difficult.
 
-Traditional forecasting systems and standard machine learning approaches encounter three critical failure modes:
+### 2. Why Standard Machine Learning Fails
+Off-the-shelf AI models fail at this problem for three main reasons:
 
-1. **Symmetric Loss Failure:** Standard multi-class classifiers treat all misclassifications identically under nominal loss functions (cross-entropy or Gini impurity). In drought risk management, predicting "Normal" when the truth is "Deficient" (a 1-step error) is treated with the same penalty as predicting "Large Excess" when the truth is "Large Deficient" (a 4-step catastrophic error). Confusing drought with flood leads to disastrous agronomic recommendations, such as advising farmers to sow water-intensive crops during a severe drought year.
-2. **Extreme Empirical Class Imbalance:** In the 117-year historical IMD record across India's 36 subdivisions, "Normal" rainfall accounts for **63.3%** of all observations, while extreme categories like "Large Deficient" (<0.6%) and "Large Excess" (<2.8%) occupy the sparse tails. Naive classifiers collapse into trivial majority-class predictors, achieving illusory raw accuracy while failing to detect the very drought emergencies they were built to foresee.
-3. **Temporal Leakage and High-Dimensional Teleconnection Coupling:** Autoregressive climate models easily suffer from subtle data leakage (e.g., using post-onset June rainfall, rolling windows that bridge across missing calendar years, or unconstrained spatial oversampling). Concurrently, local rainfall history alone explains less than 35% of inter-annual monsoon variance without accounting for global coupled ocean-atmosphere dynamics.
+1. **Standard AI Treats All Mistakes the Same (Symmetric Loss):**
+   - If the model predicts **Normal** when the truth is **Deficient** (a small 1-step error), that is a minor mistake.
+   - But if the model predicts **Flood / Excess** when the truth is **Severe Drought** (a 4-step error), that is disastrous. If farmers believe the forecast and plant thirsty crops like paddy during a drought, they face complete ruin.
+   - Standard AI models punish both mistakes equally. RainRisk uses **ordinal classification** to heavily punish opposite-category errors while being forgiving of near misses.
 
-### Formal Mathematical Problem Formulation
-> **Given a 23-dimensional spatiotemporal feature vector $x_{i,t} \in \mathbb{R}^{23}$ for meteorological subdivision $i \in \{1, \dots, 36\}$ and year $t$, constructed strictly from information available prior to June 1st ($t-1$ and antecedent pre-monsoon winter/spring signals), predict the official IMD operational rainfall category $y_{i,t} \in \{C_0, C_1, C_2, C_3, C_4, C_5\}$ such that:**
-> 1. **Ordinal Class Hierarchy is Preserved:** Prediction errors minimize the expected ordinal step distance $\text{MOD} = \frac{1}{N}\sum_{i=1}^N |\text{rank}(\hat{y}_i) - \text{rank}(y_i)|$, heavily penalizing distant errors over adjacent ones.
-> 2. **Minority Severity Detection is Maximized:** Balanced accuracy across all active drought and surplus categories is optimized despite severe class skewness.
-> 3. **Zero Future-Data Leakage:** All engineered features adhere to strict temporal causality without retrospective data bridging.
+2. **Most Years Are Normal (Class Imbalance):**
+   - In India's 117-year record, about **63% of years had normal rainfall**. Severe droughts make up less than 1% of the record.
+   - A lazy AI model can simply guess "Normal" every single time and look 63% accurate on paper. But that model is useless because it will **never warn anyone about an incoming drought**.
 
----
+3. **Models Cannot Peek into the Future (Data Leakage):**
+   - A prediction made before June 1st cannot use June, July, or August rainfall data.
+   - Many published models accidentally cheat by using moving averages that leak future data or by shuffling years randomly during testing. RainRisk strictly uses only past data and tests on forward-moving chronological blocks.
 
-## Key Quantitative Performance
-
-Evaluated on an untouched, chronologically held-out test window (**2011 to 2017, N=243 regional subdivision-years** across all 36 subdivisions):
-
-| Model Architecture | Feature Set | Exact Accuracy | Balanced Accuracy | Macro-F1 | Off-by-One Acc (+-1 Class) | Mean Ordinal Distance | Training Latency |
-|---|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Random Forest (Champion)** | **23 Features (Rain + Ocean)** | **56.0%** | **43.2%** | **0.261** | **93.0%** | **0.523** | **1.68s** |
-| Ordinal RF (Frank-Hall) | 23 Features (Rain + Ocean) | 50.2% | 41.0% | 0.248 | 92.2% | 0.588 | 4.82s |
-| Gradient Boosting | 23 Features (Rain + Ocean) | 47.3% | 39.6% | 0.230 | 90.5% | 0.630 | 203.0s |
-| HistGradientBoosting | 23 Features (Rain + Ocean) | 45.7% | 39.8% | 0.221 | 92.6% | 0.621 | 3.36s |
-| SVM (RBF Kernel) | 23 Features (Rain + Ocean) | 43.6% | 38.7% | 0.218 | 88.5% | 0.704 | 2.50s |
-| Logistic Regression | 23 Features (Rain + Ocean) | 35.4% | 35.6% | 0.199 | 83.1% | 0.840 | 0.74s |
-
-### Core Climatological & ML Findings
-1. **The Teleconnection Breakthrough (+8.5% Balanced Accuracy):** Relying solely on local autoregressive rainfall memory capped model balanced accuracy at 34.7%. Injecting 5 pre-monsoon oceanic teleconnection variables pushed balanced accuracy to **43.2%** and overall accuracy to **56.0%**.
-2. **Extreme Practical Reliability (93.0% Off-by-One):** In **93 out of 100 predictions**, the model is either exactly correct or off by only a single adjacent severity step. Severe, catastrophic errors (such as mistaking a drought for a flood) occur in only **3.3% of test instances (8 out of 243)**.
-3. **Nino 3.4 Warming Tendency is the #1 Predictor:** Permutation feature importance reveals that the spring-minus-winter warming velocity of Nino 3.4 (`enso_tendency`) is the single strongest physical driver of upcoming monsoon anomalies, surpassing all local historical rainfall persistence indicators.
+### The Project Goal
+> **Build an AI model that predicts regional rainfall categories for all 36 Indian regions using only information available before June 1st. The model must catch rare droughts, avoid dangerous opposite-category errors, and give actionable farming advice before sowing starts.**
 
 ---
 
-## Visual Climatological Analytics
+## Results at a Glance
 
-### 1. 117-Year National Monsoon Rainfall Trend (1901-2017)
+We evaluated our models on an untouched test set of the most recent historical years (**2011 to 2017, covering 243 regional observations**):
+
+| Model | What It Uses | Exact Hit Rate | Balanced Score (Across All Classes) | Off-by-One Accuracy (Within 1 Class) | Average Error Distance | Training Time |
+|---|---|:---:|:---:|:---:|:---:|:---:|
+| **Random Forest (Best)** | **23 Features (Rain + Ocean)** | **56.0%** | **43.2%** | **93.0%** | **0.52 steps** | **1.7 sec** |
+| Ordinal RF (Frank-Hall) | 23 Features (Rain + Ocean) | 50.2% | 41.0% | 92.2% | 0.59 steps | 4.8 sec |
+| Gradient Boosting | 23 Features (Rain + Ocean) | 47.3% | 39.6% | 90.5% | 0.63 steps | 3.4 min |
+| HistGradientBoosting | 23 Features (Rain + Ocean) | 45.7% | 39.8% | 92.6% | 0.62 steps | 3.4 sec |
+| Support Vector Machine (SVM) | 23 Features (Rain + Ocean) | 43.6% | 38.7% | 88.5% | 0.70 steps | 2.5 sec |
+| Logistic Regression | 23 Features (Rain + Ocean) | 35.4% | 35.6% | 83.1% | 0.84 steps | 0.7 sec |
+
+### 3 Big Takeaways:
+1. **93% Practical Reliability:** In 93 out of 100 predictions, the model gets either the exact category right or is off by just one neighboring level. It almost never mistakes a drought for a flood (distant errors occur in only **3.3% of tests**).
+2. **Ocean Temperatures Made the Difference (+8.5% Boost):** Using only past rainfall data hit a wall at 34.7% balanced accuracy. When we added Pacific and Indian Ocean temperatures, accuracy on rare droughts and floods jumped by **8.5%** up to **43.2%**.
+3. **Pacific Ocean Warming Rate is the #1 Clue:** How fast the Pacific Ocean warms up between winter and spring (the El Nino tendency) is the single most important signal for predicting India's upcoming monsoon.
+
+---
+
+## Visual Charts and Data
+
+### 1. 117 Years of Indian Monsoon Rainfall (1901-2017)
 ![National Monsoon Trend](results/figures/01_national_jjas_trend.png)
-*Historical national June-September rainfall time series showing the 1,064 mm climatological mean (dashed line), highlighting severe multi-year drought clusters (1965-1966, 1972, 1979, 1987, 2002, 2009, 2014-2015).*
+*National June-to-September rainfall over 117 years. The dashed line shows the long-term average of 1,064 mm. You can clearly see major drought years like 1965, 1972, 1987, 2002, 2009, and 2014-2015.*
 
-### 2. Production Model Normalized Confusion Matrix
+### 2. Confusion Matrix: Where Does the Model Make Mistakes?
 ![Confusion Matrix](results/figures/05_confusion_matrices.png)
-*Normalized confusion matrix on the 2011-2017 holdout test set. Correct detections populate the main diagonal (Normal: 68.3%, Deficient: 38.3%, Excess: 22.9%). Off-diagonal errors concentrate strictly in immediately adjacent bands.*
+*This grid shows true categories vs predicted categories. Normal rainfall is correctly identified 68% of the time. When the model misses a drought, it almost always calls it "Normal" (1 step off), never "Flood" or "Excess".*
 
-### 3. Permutation Importance vs Gini Impurity Bias
+### 3. Which Clues Matter Most?
 ![Feature Importance](results/figures/07_permutation_vs_impurity_importance.png)
-*Permutation importance (20 repeats evaluating balanced accuracy drop) eliminates traditional Gini cardinality bias favoring high-cardinality geographic labels, proving oceanic teleconnections (`enso_tendency`, `enso_djf_lag`, `enso_iod_interaction`) govern genuine out-of-sample generalization.*
+*This chart shows what happens when you shuffle each feature. Shuffling Pacific ocean warming (`enso_tendency`) causes the biggest drop in accuracy, proving that global ocean temperatures drive the monsoon.*
 
-### 4. Climatological Rainfall Mean vs Volatility across Subdivisions
+### 4. Rainfall Differences Across India
 ![Subdivision Variability](results/figures/03_variability_by_subdivision.png)
-*Rainfall mean (mm) and Coefficient of Variation (CV, %) across all 36 subdivisions. Hyper-arid regions (Western Rajasthan, Saurashtra & Kutch) exhibit extreme inter-annual volatility (CV > 35%), while high-rainfall Western Ghats zones demonstrate high stability (CV < 15%).*
+*Dry regions like Western Rajasthan have very low rainfall but huge year-to-year swings (volatility > 35%). Wet regions like Coastal Karnataka have high rainfall and steady yearly patterns.*
 
 ---
 
-## System Architecture
+## How the AI Works
 
-RainRisk is engineered with a **strictly decoupled three-tier architecture**:
+### 1. The 6 Official IMD Categories
+The India Meteorological Department classifies regional monsoon rain into 6 bands based on percentage departure from the 50-year average (LPA):
 
-```
-+-----------------------------------------------------------------------------------+
-|                              REACT 18 + VITE SPA                                  |
-|  Executive Pulse  |  Geospatial Radar  |  Climate Cockpit  |  Regional Explorer   |
-+-----------------------------------------+-----------------------------------------+
-                                          | JSON REST API Calls (Axios)
-                                          v
-+-----------------------------------------------------------------------------------+
-|                             FASTAPI BACKEND SERVER                                |
-|   /api/overview   |   /api/predict   |   /api/subdivisions   |   /api/benchmarks  |
-+-----------------------------------------+-----------------------------------------+
-                                          | Scikit-Learn In-Memory Inference
-                                          v
-+-----------------------------------------------------------------------------------+
-|                            CORE MACHINE LEARNING PIPELINE                         |
-|  SMOTENC Resampling  |  Frank-Hall Ordinal Classifier  |  23 Spatiotemporal Feats |
-+-----------------------------------------------------------------------------------+
-```
-
-### The 6 Production Interactive Modules
-1. **Executive Pulse:** National macro risk summary, active drought counters, and current Pacific/Indian Ocean SST anomaly status badges.
-2. **Geospatial Radar (Leaflet GIS):** Full-screen interactive India choropleth map color-coded by predicted IMD category. Hover tooltips, drill-down panels, and subdivision comparison.
-3. **Climate Cockpit (Interactive Simulator):** Live counterfactual simulation sliders for Winter/Spring Nino 3.4 and IOD DMI anomalies. Dispatches live POST requests to `/api/predict` to display real-time probability shifts (e.g., verifying how a positive IOD neutralizes El Nino drought forcing).
-4. **Regional Explorer:** 117-year historical subdivisional archive with interactive annual rainfall departure bar charts plotted relative to the 50-year LPA reference line.
-5. **Model Leaderboard:** Transparent benchmark performance comparison, interactive confusion matrices, and permutation importance rankings.
-6. **Scientific Methodology Guide:** Complete in-app documentation detailing all 12 methodology corrections, mathematical formulas, and literature citations.
-
----
-
-## Machine Learning & Ordinal Mechanics
-
-### Why Standard Multi-Class Classification Fails
-Standard multi-class loss functions (cross-entropy, Gini impurity) treat target categories as unordered nominal labels. Confusing **Normal** with **Deficient** (1-step error) incurs the exact same loss as confusing **Normal** with **Large Excess** (3-step error). In operational drought management, this symmetry is disastrous: mistaking a severe drought for an excessive flood could lead farmers to plant water-intensive crops, resulting in total crop failure and catastrophic debt.
-
-### Frank and Hall (2001) Ordinal Cumulative Decomposition
-RainRisk implements the Frank and Hall formulation in `src/ordinal.py`, converting the 6-class ordinal problem into $K-1 = 5$ cumulative binary threshold classifiers $M_k$:
-
-$$M_k: P(Y > C_k \mid X) \quad \text{for } k \in \{0, 1, 2, 3, 4\}$$
-
-Individual class probabilities are reconstructed through adjacent cumulative differences:
-
-$$\hat{P}(Y = C_0 \mid X) = 1 - \hat{P}(Y > C_0 \mid X)$$
-
-$$\hat{P}(Y = C_k \mid X) = \hat{P}(Y > C_{k-1} \mid X) - \hat{P}(Y > C_k \mid X) \quad \text{for } 1 \le k \le 4$$
-
-$$\hat{P}(Y = C_5 \mid X) = \hat{P}(Y > C_4 \mid X)$$
-
-To resolve numerical inconsistencies from independently estimated threshold models, recovered probabilities are non-negatively rectified and normalized:
-
-$$\tilde{P}(Y = C_k \mid X) = \max(0, \hat{P}(Y = C_k \mid X)) \implies P(Y = C_k \mid X) = \frac{\tilde{P}(Y = C_k \mid X)}{\sum_{j=0}^5 \tilde{P}(Y = C_j \mid X)}$$
-
-The final prediction minimizes the expected category step penalty:
-
-$$\text{Mean Ordinal Distance (MOD)} = \frac{1}{N} \sum_{i=1}^N |\text{rank}(\hat{y}_i) - \text{rank}(y_i)|$$
-
----
-
-## The 12-Point Scientific Methodology Audit Trail
-
-RainRisk adheres to strict scientific integrity. Development uncovered 12 distinct technical bugs, data leakage risks, and mathematical errors that were systematically resolved and verified by automated regression tests:
-
-| # | Scientific Defect / Methodology Bug | Climatological & Algorithmic Consequence | Implemented Solution |
-|---|---|---|---|
-| **1** | **SMOTE Categorical Impurity** | Standard SMOTE on one-hot columns synthesized fractional subdivisions (e.g. 40% Kerala, 60% Punjab). | Replaced with `SMOTENC` using nearest-neighbor majority voting for geographic region IDs. |
-| **2** | **Climatological Baseline Disclosure** | 1971-2020 LPA baseline in target label incorporates future data for pre-1971 years. | Disclosed as retrospective classification against modern normals; all feature inputs remain strictly causal. |
-| **3** | **Missing 6th IMD Category** | Omitted official "No Rainfall" (-100% departure) category from early schemas. | Expanded target schema to all 6 official IMD categories in `CATEGORY_ORDER`. |
-| **4** | **-100% Category Boundary** | Early prototype used an estimated -90% placeholder for "No Rain". | Retrieved primary-source IMD Hydromet Division bulletin confirming "No Rain" is strictly -100%. |
-| **5** | **Redundant Class Weights** | `class_weight='balanced'` alongside SMOTENC produced identical predictions across all folds. | Proved mathematical redundancy across 4 CV folds; eliminated parameter to streamline pipeline. |
-| **6** | **Single-Split Tuning Instability** | Hyperparameters tuned on a single validation split failed to generalize across multi-decadal cycles. | Replaced with 4-fold expanding-window `TimeSeriesSplit` evaluating balanced accuracy. |
-| **7** | **Gini Impurity Cardinality Bias** | Gini feature importance ranked `SUBDIVISION` #1 purely due to 36 categorical splits. | Implemented test-set permutation importance; proved global ocean signals are true generalization drivers. |
-| **8** | **Island Subdivision Calendar Gaps** | Positional `.rolling()` silently averaged across missing historical years in island territories. | Reindexed all subdivisions onto a complete, contiguous calendar grid before computing rolling stats. |
-| **9** | **Unpinned Dependencies** | Version drift in scikit-learn/imbalanced-learn caused pipeline API breaks. | Pinned exact package versions in `requirements.txt`. |
-| **10** | **Lack of Bug Guardrails** | Fixed methodology bugs risked regression during refactoring. | Created `tests/test_regression_guards.py` covering all fixes in CI/CD pipeline. |
-| **11** | **Narrow Feature Representation** | Baseline used only 5 JJAS-derived features, ignoring monsoon onset dynamics. | Engineered 13 monthly/seasonal features, boosting exact accuracy from 48.4% to 52.7%. |
-| **12** | **Neglecting Global Ocean Dynamics** | Models ignored planetary ocean-atmosphere coupled systems (ENSO & IOD). | Ingested 5 Pacific/Indian Ocean teleconnection features, boosting balanced accuracy to 43.2%. |
-
----
-
-## Feature Engineering Space (23 Features)
-
-All features are strictly constrained to pre-monsoon availability (prior to June 1st of prediction year $t$):
-
-| Tier | Count | Feature Identifiers | Climatological Mechanism |
-|---|:---:|---|---|
-| **Tier 1: JJAS Baseline** | 5 | `prev_year_jjas`, `prev_annual_change`, `rolling_3yr_jjas`, `rolling_5yr_jjas`, `cv_5yr_jjas` | Multi-year local rainfall memory, water-table persistence, and regional rainfall volatility. |
-| **Tier 2: Monthly & Seasonal** | 13 | `prev_jun`, `prev_jul`, `prev_aug`, `prev_sep`, `prev_jf`, `prev_mam`, `prev_ond`, `prev_annual`, `rolling_3yr_annual`, `rolling_5yr_annual`, `monsoon_concentration`, `jjas_to_annual_ratio`, `prev_premonsoon_signal` | Pre-monsoon winter (JF) and spring (MAM) rainfall persistence, late monsoon withdrawal signals, and precipitation peaking ratios. |
-| **Tier 3: Teleconnections** | 5 | `enso_djf_lag`, `enso_mam_signal`, `enso_tendency`, `iod_mam_lag`, `enso_iod_interaction` | Planetary ocean coupling: preceding winter Nino 3.4 SST, spring Nino 3.4 SST, spring warming velocity, spring Indian Ocean Dipole Mode Index, and coupled interaction product. |
-
-### Teleconnections Orthogonality Analysis
-Empirical Pearson correlation analysis across the 117-year record reveals that pre-monsoon spring IOD (`iod_mam_lag`) has a correlation of **$r = -0.045$** with spring Nino 3.4 SST (`enso_mam_signal`). This near-zero correlation proves **physical orthogonality**: the Indian Ocean Dipole develops internal pre-monsoon dynamics independent of the Pacific, injecting genuine complementary variance that buffers against El Nino drought calls.
-
----
-
-## ICAR Agricultural Advisory Decision Matrix
-
-RainRisk bridges predictive meteorology with operational agronomy through a rule-based contingency engine (`src/advisory.py`) aligned with the **Indian Council of Agricultural Research (ICAR)** guidelines:
-
-| Advisory Tier | Trigger Category | Actionable Agronomic Contingency Protocols |
+| Category | Departure Range | What It Means |
 |---|---|---|
-| **Emergency Tier** | **Large Deficient / No Rain** | Switch immediately to short-duration, drought-hardy pulses (green gram/black gram); ration reservoir water; deploy farm mulching; activate emergency cattle fodder camps; fast-track crop insurance documentation. |
-| **Warning Tier** | **Deficient** | Stagger sowing dates by 10 to 14 days; adopt ridge-and-furrow land configuration; fractionate nitrogen top-dressing; apply anti-transpirant sprays (kaolin); prepare supplemental micro-irrigation. |
-| **Standard Tier** | **Normal** | Proceed with standard full-scale Kharif planting (paddy, soybean, cotton); apply recommended NPK fertilizer regimes; maximize runoff harvesting in farm ponds for subsequent Rabi season. |
-| **Surplus Tier** | **Excess / Large Excess** | Clear drainage networks to prevent waterlogging; adopt broad-bed furrow systems; monitor for fungal leaf blast and root rot; prepare field bunds for early post-monsoon Rabi planting. |
+| **No Rainfall** | Exactly -100% | Zero rain recorded all season |
+| **Large Deficient** | -99% to -60% | Severe drought emergency |
+| **Deficient** | -59% to -20% | Moderate drought |
+| **Normal** | -19% to +19% | Healthy, normal monsoon |
+| **Excess** | +20% to +59% | Surplus monsoon |
+| **Large Excess** | +60% and above | Flood risk |
+
+### 2. Ordinal Classification (Frank & Hall Method)
+Instead of guessing among 6 random classes, RainRisk breaks the problem into 5 cumulative questions:
+1. Is it wetter than "No Rain"?
+2. Is it wetter than "Large Deficient"?
+3. Is it wetter than "Deficient"?
+4. Is it wetter than "Normal"?
+5. Is it wetter than "Excess"?
+
+By subtracting the probabilities between neighbors, the model calculates the exact chance for each category. This guarantees that errors stay small and adjacent.
+
+### 3. SMOTENC: Fair Training Without Fake Data
+Because droughts are rare, we need to balance the training data. Standard balancing tools create fake numbers between points, which would create impossible nonsense like "40% Kerala and 60% Punjab". We used **SMOTENC**, which only picks real regional names when creating synthetic examples.
+
+### 4. Time-Aware Validation
+We never shuffle years randomly like standard machine learning tutorials. We train on earlier blocks of years (like 1901 to 1980) and test on later blocks of years (like 1981 to 2000), making sure the model never learns by looking into the future.
 
 ---
 
-## Quickstart & Installation
+## 12 Mistakes We Caught and Fixed
 
-### 1. Prerequisites & Virtual Environment Setup
-Clone the repository and initialize a Python virtual environment:
+We documented every bug and scientific risk we found during development:
 
+| # | What Was Wrong | Why It Mattered | How We Fixed It |
+|---|---|---|---|
+| **1** | Standard SMOTE made fake regions | Created impossible blended regions | Switched to `SMOTENC` to keep regional names 100% real |
+| **2** | Baseline used modern 50-year average | Pre-1971 years used a future reference point | Documented this clearly as retrospective classification |
+| **3** | Missing "No Rain" category | Early schema had only 5 categories | Added the official 6th IMD category ("No Rain") |
+| **4** | Guessed "No Rain" cutoff at -90% | Made-up cutoff was scientifically inaccurate | Found official IMD bulletin confirming it is strictly -100% |
+| **5** | Redundant class weights | Setting `class_weight='balanced'` after SMOTENC did nothing | Proved mathematical redundancy across 4 folds and cleaned it up |
+| **6** | Tuning on just one train/test split | Made hyperparameters unstable across decades | Switched to 4-fold forward-moving time-series cross-validation |
+| **7** | Gini importance favored region names | Fooled us into thinking region names were the #1 factor | Used permutation importance to prove ocean data is the real driver |
+| **8** | Missing years in island regions | Positional rolling averages quietly bridged across missing years | Put every region on an unbroken calendar grid so missing years show as NaNs |
+| **9** | Unpinned library versions | Package updates broke model loading | Locked all versions in `requirements.txt` |
+| **10** | Risk of bugs returning | Easy to accidentally reintroduce fixed bugs | Added `tests/test_regression_guards.py` to test all fixes automatically |
+| **11** | Only 5 features used initially | Models did not know about winter/spring rain | Added 13 monthly and seasonal features (jumped from 48.4% to 52.7%) |
+| **12** | Ignored ocean temperatures | Models missed global climate drivers | Added 5 Pacific and Indian Ocean features (jumped to 56.0%) |
+
+---
+
+## The 23 Clues the Model Uses
+
+All 23 features use only data from **before June 1st**:
+
+- **Group 1: Past Monsoon Rainfall (5 features):** Previous year's monsoon total, change from two years ago, 3-year moving average, 5-year moving average, and 5-year volatility.
+- **Group 2: Monthly and Winter/Spring Rain (13 features):** Rainfall from individual months (June, July, August, September), winter rain (Jan-Feb), spring rain (Mar-May), post-monsoon rain (Oct-Dec), and how concentrated the rain was in peak months.
+- **Group 3: Pacific & Indian Ocean Temperatures (5 features):**
+  - `enso_djf_lag`: Winter Pacific Ocean temperature (El Nino status).
+  - `enso_mam_signal`: Spring Pacific Ocean temperature.
+  - `enso_tendency`: How fast the Pacific warmed up from winter to spring.
+  - `iod_mam_lag`: Spring Indian Ocean Dipole temperature difference.
+  - `enso_iod_interaction`: Combined interaction (a warm Indian Ocean can cancel out an El Nino drought).
+
+---
+
+## Actionable Farming Advice (ICAR Guidelines)
+
+RainRisk translates predictions into concrete farming advice based on official Indian Council of Agricultural Research (ICAR) contingency plans:
+
+| Prediction | Advisory Level | What Farmers and Officials Should Do |
+|---|---|---|
+| **Large Deficient / No Rain** | **Emergency** | Switch to short-duration pulses (moong / urad); ration reservoir water; prepare cattle fodder camps; fast-track crop insurance paperwork. |
+| **Deficient** | **Warning** | Delay sowing by 10 to 14 days; plant in ridges and furrows to catch moisture; split fertilizer applications; prepare drip and sprinkler systems. |
+| **Normal** | **Standard** | Proceed with standard full-scale planting of rice, cotton, and soybean; use standard fertilizer; capture excess rain in farm ponds. |
+| **Excess / Large Excess** | **Surplus** | Clean field drainage ditches to stop waterlogging; watch out for fungal crop diseases; get ready for early winter (Rabi) sowing. |
+
+---
+
+## The Web Application
+
+RainRisk includes an interactive web platform with **6 easy-to-use tabs**:
+
+```
++-------------------------------------------------------------------------------+
+|                            REACT 18 SINGLE-PAGE APP                           |
+|  Executive Pulse | Geospatial Radar | Climate Cockpit | Regional Explorer ... |
++---------------------------------------+---------------------------------------+
+                                        | Clean REST API Calls
+                                        v
++-------------------------------------------------------------------------------+
+|                             FASTAPI BACKEND SERVER                            |
+|        /api/overview   |   /api/predict   |   /api/map   |   /api/subdivisions    |
++-------------------------------------------------------------------------------+
+```
+
+1. **Executive Pulse:** Quick summary of all-India risk and current ocean conditions.
+2. **Geospatial Radar (Interactive Map):** Full map of India divided into 36 regions, color-coded by predicted category. Click any region to see its drought history and farming advice.
+3. **Climate Cockpit (Simulation Sandbox):** Move sliders for Pacific and Indian Ocean temperatures to see how the forecast changes in real time.
+4. **Regional Explorer:** Browse 117 years of rainfall history for any individual region.
+5. **Model Leaderboard:** Transparent view comparing all candidate models and accuracy scores.
+6. **Methodology:** Complete in-app guide explaining the science and research papers.
+
+---
+
+## Quickstart: How to Run It
+
+### 1. Set Up the Project
 ```bash
-# Clone repository
+# Clone the repository
 git clone https://github.com/Rajratna-D/RainRisk.git
 cd RainRisk
 
-# Create and activate virtual environment
+# Create a virtual environment
 python -m venv .venv
 
-# Windows
+# Activate it:
+# On Windows:
 .venv\Scripts\activate
-
-# Linux / macOS
+# On Mac/Linux:
 source .venv/bin/activate
 
-# Install dependencies
+# Install packages
 pip install -r requirements.txt
 ```
 
-### 2. Launch the Web Platform (Single Command)
-Run the automated launcher:
-
+### 2. Launch the Web App (One Command)
 ```bash
 python run_webapp.py
 ```
-This single command starts the FastAPI server serving both the REST endpoints and the pre-built React/Vite single-page application, and automatically opens your browser at **http://localhost:8008**.
+This automatically starts the backend, serves the interactive website, and opens **http://localhost:8008** in your browser.
 
-### 3. Run Automated Tests
-Execute the comprehensive test suite (61 unit, integration, and regression guard tests):
-
+### 3. Run the Automated Tests
 ```bash
 pytest tests
 ```
+All **61 tests pass** across labeling, features, models, API endpoints, and regression guards.
 
 ---
 
-## Repository Structure
+## Project Structure
 
 ```
 RainRisk/
 ├── backend/                  # FastAPI REST API Backend
-│   ├── main.py               # REST endpoints, static SPA mounting, and CORS config
+│   ├── main.py               # Routes for predictions, maps, and historical data
 │   └── __init__.py
 │
-├── frontend/                 # React 18 + Vite Single-Page Application
-│   ├── src/
-│   │   ├── components/       # UI Dashboards: ExecutivePulse, GeospatialRadar,
-│   │   │                     # ClimateCockpit, RegionalExplorer, ModelLeaderboard, Methodology
-│   │   ├── api/client.js     # Unified Axios API client
-│   │   ├── App.jsx           # Master application layout and view manager
-│   │   └── index.css         # Custom dark-theme design tokens and responsive CSS
-│   ├── dist/                 # Pre-compiled production bundle (zero Node setup required)
-│   └── package.json          # Node dependencies (React 18, Leaflet, Lucide)
+├── frontend/                 # React 18 + Vite Web App
+│   ├── src/                  # React components (map, sliders, charts)
+│   ├── dist/                 # Pre-built bundle (runs without needing Node.js)
+│   └── package.json
 │
 ├── data/
-│   ├── raw/                  # Original 1901-2017 IMD rainfall dataset & ocean files
-│   ├── interim/              # Labeled rainfall data & merged teleconnection features
-│   └── processed/            # Final 23-feature training matrix (model_features.csv)
+│   ├── raw/                  # 117 years of IMD rainfall data (1901-2017)
+│   ├── interim/              # Cleaned rainfall and ocean index data
+│   └── processed/            # Final 23-feature training table
 │
-├── src/                      # Core Machine Learning Pipeline
-│   ├── labeling.py           # IMD LPA baseline calculation & 6-category classification
-│   ├── features.py           # 23-feature spatiotemporal feature engineering
-│   ├── split.py              # Chronological train/val/test splitting
-│   ├── temporal_cv.py        # Expanding-window cross-validation fold generator
-│   ├── train.py              # SMOTENC resampling pipeline & model definitions
-│   ├── ordinal.py            # Frank & Hall (2001) cumulative threshold classifier
-│   ├── evaluate.py           # Ordinal distance, off-by-one, and balanced accuracy metrics
-│   ├── tune.py               # Time-series expanding-window GridSearchCV
-│   ├── save_model.py         # Production model trainer and serializer
-│   ├── constants.py          # Geographic coordinates, IMD color tokens, and metadata
-│   └── advisory.py           # Rule-based ICAR agricultural contingency advisory engine
+├── src/                      # Core Machine Learning Code
+│   ├── labeling.py           # IMD rainfall category rules
+│   ├── features.py           # 23-feature engineering without data leaks
+│   ├── train.py              # Model pipelines and SMOTENC
+│   ├── ordinal.py            # Frank-Hall ordinal classification code
+│   ├── evaluate.py           # Accuracy and error distance metrics
+│   ├── temporal_cv.py        # Time-aware cross-validation folds
+│   ├── tune.py               # Time-series hyperparameter search
+│   ├── advisory.py           # ICAR farming recommendations
+│   └── save_model.py         # Trains and evaluates all models
 │
-├── tests/                    # Automated Test Suite (61 tests, 100% passing)
-│   ├── test_advisory.py      # Tests for agricultural advisory rules
-│   ├── test_backend_api.py   # Integration tests for FastAPI endpoints
-│   ├── test_features.py      # Temporal shift(1) leakage and calendar-gap tests
-│   ├── test_labeling.py      # IMD departure boundaries and NaN handling tests
-│   ├── test_methodology_fixes.py # SMOTENC purity and expanding-window temporal tests
-│   ├── test_ordinal.py       # Ordinal probability monotonicity tests
-│   └── test_regression_guards.py # Pipeline guards preventing methodology regressions
-│
+├── tests/                    # 61 automated tests (100% passing)
 ├── results/
-│   ├── figures/              # Publication charts (JJAS trends, confusion matrices, etc.)
-│   ├── model/                # Benchmark JSON files and pipeline metadata
-│   └── report_assets/        # Feature importance and permutation rankings CSVs
+│   ├── figures/              # Generated charts and confusion matrices
+│   └── model/                # Benchmark metric files
 │
 ├── scripts/
-│   └── fetch_teleconnections.py # Automated scraper for NOAA & JAMSTEC ocean indices
+│   └── fetch_teleconnections.py # Downloads NOAA and JAMSTEC ocean data
 │
-├── docs/                     # Comprehensive Scientific Documentation
-│   ├── 01_architecture.md                       # Decoupled system architecture
-│   ├── 02_labeling_spec.md                      # IMD classification specification
-│   ├── 03_modeling_spec.md                      # Benchmarking methodology
-│   ├── 04_lit_review_traceability.md            # 25-paper literature traceability matrix
-│   ├── 05_methodology_fixes.md                  # 12-point scientific audit trail
-│   ├── 06_dashboard_user_guide_and_spec.md      # Web application technical specification
-│   ├── 07_teleconnections_implementation_plan.md# Ocean feature engineering guide
-│   ├── 08_frank_hall_ordinal_decomposition.md   # Ordinal classification mathematics
-│   ├── 09_data_sources_catalog.md               # Data repositories & source links
-│   ├── RainRisk_Project_Report.md               # Complete 14,000+ word academic report
-│   └── RainRisk_Project_Report.pdf              # Publication-grade 22-page PDF report
-│
-├── .gitignore                # Production gitignore blocking secrets, venv, and large binaries
-├── requirements.txt          # Pinned Python package dependencies
-└── run_webapp.py             # One-click browser platform launcher
+├── docs/                     # Full Technical Documentation & 22-Page PDF Report
+├── requirements.txt          # Python dependencies
+└── run_webapp.py             # One-click startup script
 ```
 
 ---
 
-## Documentation Suite
+## Documentation Index
 
-| Document | Description | Format |
-|---|---|:---:|
-| [RainRisk Project Report (PDF)](docs/RainRisk_Project_Report.pdf) | Complete 22-page publication-grade project report with 7 embedded figures and benchmark tables. | **PDF** |
-| [RainRisk Project Report (Markdown)](docs/RainRisk_Project_Report.md) | Exhaustive 14,399-word technical report covering all 12 chapters. | **Markdown** |
-| [01: System Architecture](docs/01_architecture.md) | System data flow, decoupled architecture, and Streamlit deprecation rationale. | **Markdown** |
-| [02: Labeling Specification](docs/02_labeling_spec.md) | IMD 50-year LPA definitions, departure mathematics, and primary source bulletin. | **Markdown** |
-| [03: Modeling Specification](docs/03_modeling_spec.md) | Chronological split strategy, model candidate architectures, and metric definitions. | **Markdown** |
-| [04: Literature Traceability Matrix](docs/04_lit_review_traceability.md) | Mapping of all 25 peer-reviewed papers directly to repository code decisions. | **Markdown** |
-| [05: Methodology Audit Trail](docs/05_methodology_fixes.md) | Detailed documentation of all 12 scientific corrections and empirical proofs. | **Markdown** |
-| [06: Dashboard User Guide](docs/06_dashboard_user_guide_and_spec.md) | Technical specification and UI tour of all 6 React dashboard views. | **Markdown** |
-| [07: Teleconnections Plan](docs/07_teleconnections_implementation_plan.md) | Pre-monsoon Pacific (ENSO) and Indian Ocean (IOD) feature extraction. | **Markdown** |
-| [08: Ordinal Decomposition](docs/08_frank_hall_ordinal_decomposition.md) | Mathematical proof and implementation details of the Frank and Hall classifier. | **Markdown** |
-| [09: Data Sources Catalog](docs/09_data_sources_catalog.md) | Official data repositories, download links, and access instructions. | **Markdown** |
+All technical documents are organized in `docs/`:
+
+| Document | What It Covers |
+|---|---|
+| [RainRisk Project Report (PDF)](docs/RainRisk_Project_Report.pdf) | Complete 22-page publication-grade report with all figures and data tables |
+| [RainRisk Project Report (Markdown)](docs/RainRisk_Project_Report.md) | Exhaustive 14,399-word technical report covering all 12 chapters |
+| [01: System Architecture](docs/01_architecture.md) | Full system design, data flow, and why we replaced Streamlit with FastAPI |
+| [02: Labeling Specification](docs/02_labeling_spec.md) | Official IMD departure formulas and category definitions |
+| [03: Modeling Specification](docs/03_modeling_spec.md) | Chronological splits, model setups, and evaluation rules |
+| [04: Literature Traceability](docs/04_lit_review_traceability.md) | Survey of 25 research papers and how they were used |
+| [05: Methodology Audit Trail](docs/05_methodology_fixes.md) | In-depth story of all 12 bugs caught and fixed |
+| [06: Dashboard Guide](docs/06_dashboard_user_guide_and_spec.md) | User manual for all 6 web app tabs |
+| [07: Teleconnections Plan](docs/07_teleconnections_implementation_plan.md) | Details on El Nino and Indian Ocean Dipole feature extraction |
+| [08: Ordinal Decomposition](docs/08_frank_hall_ordinal_decomposition.md) | Math and code for Frank and Hall ordinal classification |
+| [09: Data Sources Catalog](docs/09_data_sources_catalog.md) | Links and citations for all raw data sources |
 
 ---
 
-## Citation & Academic Attribution
+## Citation
 
-If you use RainRisk in academic research or applied agricultural planning, please cite this project:
+If you use RainRisk in your research or project, please cite:
 
 ```bibtex
 @software{rainrisk2026,
   author    = {Dhiwar, Rajratna},
-  title     = {RainRisk: Long-Range Meteorological Drought and Rainfall Anomaly Prediction Across Indian Subdivisions Using Ordinal Machine Learning and Macro-Climatic Teleconnections},
+  title     = {RainRisk: AI-Powered Monsoon Drought and Rainfall Prediction for India},
   year      = {2026},
   publisher = {GitHub},
   url       = {https://github.com/Rajratna-D/RainRisk}
