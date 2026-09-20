@@ -1,39 +1,33 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { fetchMethodology } from '../api/client';
-import { Shield, Layers, Search } from 'lucide-react';
+import { BookOpen, Shield, Layers, Search, Cpu } from 'lucide-react';
 
 export default function Methodology() {
-  const [data, setData] = useState(null);
-  const [filterGroup, setFilterGroup] = useState('All');
+  const [methodData, setMethodData] = useState(null);
+  const [filterGroup, setFilterGroup] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchMethodology().then(setData).catch(console.error);
+    fetchMethodology().then(setMethodData).catch(console.error);
   }, []);
 
-  if (!data) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <div className="skeleton" style={{ height: '160px' }} />
-        <div className="skeleton" style={{ height: '240px' }} />
-      </div>
-    );
+  if (!methodData) {
+    return <div className="skeleton" style={{ height: '400px' }} />;
   }
 
-  const { features = [] } = data;
-  const groups = ['All', ...new Set(features.map((f) => f.group))];
+  const { features = [], gini_importance = [], permutation_importance = [] } = methodData;
+
+  const groups = ['ALL', ...new Set(features.map((f) => f.group))];
 
   const filteredFeatures = features.filter((f) => {
-    const matchesGroup = filterGroup === 'All' || f.group === filterGroup;
-    const matchesSearch =
-      f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      f.desc.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesGroup && matchesSearch;
+    const matchGroup = filterGroup === 'ALL' || f.group === filterGroup;
+    const matchSearch = f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        f.desc.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchGroup && matchSearch;
   });
 
   return (
     <div>
-      {/* IMD Operational Classification Standard */}
       <div className="bento-card" style={{ marginBottom: '1.5rem' }}>
         <h3 style={{ fontSize: '1.05rem', marginBottom: '0.85rem' }}>IMD Operational Classification Standard</h3>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.1rem' }}>
@@ -73,7 +67,6 @@ export default function Methodology() {
         </div>
       </div>
 
-      {/* Methodological Guardrails Grid */}
       <div className="grid-2">
         <div className="bento-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.75rem' }}>
@@ -115,7 +108,6 @@ export default function Methodology() {
         </div>
       </div>
 
-      {/* Feature Dictionary */}
       <div className="bento-card" style={{ marginTop: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <div>

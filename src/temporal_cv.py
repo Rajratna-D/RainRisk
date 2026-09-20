@@ -1,19 +1,8 @@
-"""
-RainRisk: time-aware cross-validation.
+﻿"""
+RainRisk: Time-aware cross-validation.
 
-Standard k-fold CV shuffles rows randomly, which would leak future years
-into training folds (rolling/lag features from a "test" fold row could
-depend on a year sitting in a "train" fold). This module instead builds
-EXPANDING-WINDOW folds: each fold's train set is always strictly earlier in
-time than its test set. This is the time-series-safe analogue of k-fold CV,
-letting every fold serve as an independent estimate of generalization
-performance instead of relying on one single, possibly-unrepresentative
-train/test split.
-
-Only the TRAINING/VALIDATION period (years <= FINAL_TEST_START) is ever
-divided into folds here. The final held-out test set is never touched by
-this module: it must remain untouched until the very last evaluation
-step, per the project's model-selection discipline (see docs).
+Constructs expanding-window cross-validation folds. Chronological forward chaining
+prevents lookahead data leakage by ensuring training periods strictly precede validation windows.
 """
 import numpy as np
 import pandas as pd
@@ -22,17 +11,7 @@ import pandas as pd
 def expanding_window_folds(df, year_col="YEAR", n_folds=4,
                              min_train_years=40, fold_test_years=15):
     """
-    Builds n_folds expanding-window (train, test) DataFrame pairs from df,
-    ordered chronologically. Each fold's test window is disjoint from the
-    others where possible; train always precedes test within a fold.
-
-    Example with min_train_years=40, fold_test_years=15, starting at the
-    dataset's minimum year Y0:
-        Fold 1: train [Y0, Y0+40)   test [Y0+40, Y0+55)
-        Fold 2: train [Y0, Y0+55)   test [Y0+55, Y0+70)
-        Fold 3: train [Y0, Y0+70)   test [Y0+70, Y0+85)
-        ...
-
+    Builds n_folds expanding-window (train, test) DataFrame pairs ordered chronologically.
     Returns a list of (fold_index, train_df, test_df) tuples.
     """
     years = sorted(df[year_col].unique())
@@ -52,8 +31,7 @@ def expanding_window_folds(df, year_col="YEAR", n_folds=4,
 
 def verify_no_temporal_overlap(folds, year_col="YEAR"):
     """
-    Explicit check: for every fold, confirm max(train year) < min(test year).
-    Returns a list of violation messages (empty list = all clear).
+    Validates that max(train year) < min(test year) across all folds to verify temporal separation.
     """
     violations = []
     for fold_idx, train_df, test_df in folds:

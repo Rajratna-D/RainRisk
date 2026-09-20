@@ -1,6 +1,4 @@
-
-
-import os
+﻿import os
 import sys
 import json
 from contextlib import asynccontextmanager
@@ -15,7 +13,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-# Path Configuration
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(BACKEND_DIR)
 SRC_DIR = os.path.join(PROJECT_DIR, "src")
@@ -28,13 +25,10 @@ from train import ALL_FEATURES
 from constants import CATEGORY_COLORS, COORDS, MACRO_REGIONS, DISPLAY_NAME_MAP, CANONICAL_DATASET_NAMES
 from advisory import get_advisory_api
 
-
-# Global State & Cache
-
 state: Dict[str, Any] = {}
 
 def initialize_data():
-    """Load and preprocess datasets and model pipelines in memory."""
+    """Load datasets and model artifacts into application memory cache."""
     print("Loading datasets and model artifacts...")
     csv_path = os.path.join(PROJECT_DIR, "data", "raw", "Sub_Division_IMD_2017.csv")
     raw = pd.read_csv(csv_path)
@@ -44,7 +38,6 @@ def initialize_data():
     raw["drought_category"] = raw["pct_departure"].apply(classify)
     feat = build_lag_rolling_features(raw, enhanced=True)
 
-    # Load models and results
     pipe_path = os.path.join(PROJECT_DIR, "results", "model", "best_pipeline.joblib")
     meta_path = os.path.join(PROJECT_DIR, "results", "model", "best_pipeline_metadata.json")
     comp_path = os.path.join(PROJECT_DIR, "results", "model", "enhanced_comparison.json")
@@ -61,13 +54,12 @@ def initialize_data():
         with open(comp_path) as f:
             comp = json.load(f)
 
-    # Feature importances
     imp_p = os.path.join(PROJECT_DIR, "results", "report_assets", "feature_importance.csv")
     perm_p = os.path.join(PROJECT_DIR, "results", "report_assets", "permutation_importance.csv")
     imp_df = pd.read_csv(imp_p) if os.path.exists(imp_p) else None
     perm_df = pd.read_csv(perm_p) if os.path.exists(perm_p) else None
 
-    # Precalculate subdivision stats
+    # Pre-calculating summary statistics avoids repeated aggregation on request handling
     sub_stats = {}
     cv_series = (raw.groupby("SUBDIVISION")["JJAS"]
                  .agg(["mean", "std"])
@@ -85,7 +77,6 @@ def initialize_data():
         sub_dfreq = float(drought_freq.get(sub_name, 0.0))
         lat, lon = COORDS.get(sub_name, (22.0, 80.0))
 
-        # Find macro region
         m_region = "Other"
         for r_name, subs in MACRO_REGIONS.items():
             if sub_name in subs:
@@ -104,11 +95,11 @@ def initialize_data():
             "lon": lon,
             "macro_region": m_region,
         }
+        # Caching under both display and raw names resolves queries regardless of client nomenclature
         sub_stats[disp_name] = entry
         if disp_name != sub_name:
             sub_stats[sub_name] = entry
 
-    # All-India mean annual JJAS series
     national = raw.groupby("YEAR")["JJAS"].mean().reset_index()
     national["smooth"] = national["JJAS"].rolling(10, min_periods=1).mean()
     national_trend = [
@@ -129,10 +120,9 @@ def initialize_data():
     state["national_median_cv"] = national_median_cv
     print("Data initialization complete.")
 
-# FastAPI App Definition (using modern lifespan pattern)
+
 @asynccontextmanager
 async def lifespan(app):
-    """Startup: load data and model artifacts into memory."""
     initialize_data()
     yield
 
@@ -151,12 +141,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API Endpoints
-
 
 @app.get("/api/overview")
 def get_overview():
-    """Returns high-level national summary, KPI metrics, and category distribution."""
     raw = state["raw"]
     n_obs = len(raw)
     n_subs = raw["SUBDIVISION"].nunique()
@@ -184,7 +171,6 @@ def get_overview():
 
 @app.get("/api/subdivisions")
 def get_subdivisions():
-    """Returns list of all 36 subdivisions with their clean display names, LPA, CV%, and coords."""
     unique_subs = {}
     for s in state["sub_stats"].values():
         unique_subs[s["name"]] = s
@@ -192,7 +178,6 @@ def get_subdivisions():
 
 @app.get("/api/subdivision/{name}")
 def get_subdivision_detail(name: str):
-    """Returns detailed climatology for a single subdivision, resolving legacy typos to modern names."""
     raw = state["raw"]
     db_name = CANONICAL_DATASET_NAMES.get(name, name)
     disp_name = DISPLAY_NAME_MAP.get(db_name, db_name)
@@ -203,7 +188,6 @@ def get_subdivision_detail(name: str):
     stats = state["sub_stats"].get(disp_name, state["sub_stats"].get(db_name, {}))
     lpa_val = stats.get("lpa", 0.0)
 
-    # Historical timeline
     timeline = [
         {
             "year": int(row["YEAR"]),
@@ -215,14 +199,12 @@ def get_subdivision_detail(name: str):
         for _, row in sub_data.iterrows()
     ]
 
-    # Monthly progression
     month_cols = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     monthly = []
     for m in month_cols:
         if m in sub_data.columns:
             monthly.append({"month": m, "rainfall": round(float(sub_data[m].mean()), 1)})
 
-    # Decadal epochs
     sub_copy = sub_data.copy()
     sub_copy["epoch"] = pd.cut(sub_copy["YEAR"], bins=[1900, 1930, 1960, 1990, 2020],
                                labels=["1901-1930", "1931-1960", "1961-1990", "1991-2017"])
@@ -238,7 +220,6 @@ def get_subdivision_detail(name: str):
         for _, row in epoch_summary.iterrows()
     ]
 
-    # Default monthly / seasonal averages for scenario inputs
     default_jf = float(sub_data["JF"].mean()) if "JF" in sub_data.columns else 30.0
     default_mam = float(sub_data["MAM"].mean()) if "MAM" in sub_data.columns else 120.0
     default_ond = float(sub_data["OND"].mean()) if "OND" in sub_data.columns else 150.0
@@ -257,7 +238,6 @@ def get_subdivision_detail(name: str):
 
 @app.get("/api/map")
 def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actual"):
-    """Returns geospatial records for all subdivisions for a given year."""
     feat_df = state["feat"]
     pipeline = state["pipeline"]
 
@@ -269,7 +249,6 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
         valid_subs = MACRO_REGIONS[region]
         year_data = year_data[year_data["SUBDIVISION"].isin(valid_subs)]
 
-    # Telemetry prediction mode
     if mode == "prediction" and pipeline is not None:
         try:
             valid = year_data.dropna(subset=ALL_FEATURES)
@@ -298,12 +277,11 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
             "bubble_size": min(55, max(14, abs(dep))),
         })
 
-    # Summary
     n_total = len(records)
     n_def = sum(1 for r in records if r["category"] in ["Deficient", "Large Deficient", "No Rainfall"])
     pct_def = (n_def / n_total * 100) if n_total > 0 else 0.0
 
-    # Extremes: strictly filter by category to prevent Normal subdivisions from appearing in Deficient/Excess lists
+    # Filtering by category prevents Normal subdivisions with minor negative departures from appearing in deficit rankings during wet years
     sorted_by_dep = sorted(records, key=lambda x: x["departure"])
     top_deficient = [
         r for r in sorted_by_dep
@@ -330,7 +308,6 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
 
 @app.get("/api/leaderboard")
 def get_leaderboard():
-    """Returns model benchmark rankings and confusion matrix."""
     comp = state.get("comp", {})
     meta = state.get("meta", {})
     feat_df = state["feat"]
@@ -353,7 +330,6 @@ def get_leaderboard():
             "is_best": "RandomForest" in clean_name,
         })
 
-    # Confusion matrix on held-out test set
     cm_data = {"labels": [], "matrix": [], "normalized_matrix": [], "diagonal_accuracy": 56.0}
     if pipeline is not None:
         try:
@@ -388,7 +364,6 @@ def get_leaderboard():
 
 @app.get("/api/methodology")
 def get_methodology():
-    """Returns feature dictionary and feature importances."""
     features_list = [
         {"name": "prev_year_jjas", "desc": "Prior year JJAS rainfall total", "group": "Monsoon Lag"},
         {"name": "prev_annual_change", "desc": "Year-on-year JJAS delta", "group": "Monsoon Momentum"},
@@ -455,7 +430,6 @@ class PredictionRequest(BaseModel):
 
 @app.post("/api/predict")
 def predict_scenario(req: PredictionRequest):
-    """Executes live model inference on simulated climate vector."""
     pipeline = state["pipeline"]
     if pipeline is None:
         raise HTTPException(status_code=503, detail="Trained pipeline not loaded on server")
@@ -468,6 +442,7 @@ def predict_scenario(req: PredictionRequest):
     enso_tend = req.enso_mam - req.enso_djf
     enso_iod_inter = req.enso_mam * req.iod_mam
 
+    # Mapping modern UI names to dataset tokens (e.g., 'Marathwada' -> 'Matathwada') matches pre-trained OneHotEncoder categories
     db_sub = CANONICAL_DATASET_NAMES.get(req.subdivision, req.subdivision)
     disp_sub = DISPLAY_NAME_MAP.get(db_sub, db_sub)
 
@@ -515,7 +490,6 @@ def predict_scenario(req: PredictionRequest):
             if cat in ["Deficient", "Large Deficient", "No Rainfall"]:
                 drought_prob += p_val
 
-    # Operational advisory (unified via src/advisory.py)
     advisory = get_advisory_api(pred)
 
     return {
@@ -526,9 +500,6 @@ def predict_scenario(req: PredictionRequest):
         "probabilities": probabilities,
         "advisory": advisory,
     }
-
-
-# Static Frontend Serving
 
 FRONTEND_DIST = os.path.join(PROJECT_DIR, "frontend", "dist")
 if os.path.exists(FRONTEND_DIST):

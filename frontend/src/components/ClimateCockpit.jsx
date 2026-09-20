@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { runPrediction, fetchSubdivisions } from '../api/client';
 import { Sliders, Zap, ShieldAlert, Waves, CloudRain } from 'lucide-react';
 
@@ -49,36 +49,39 @@ export default function ClimateCockpit() {
     });
   }, []);
 
-  const executeInference = useCallback(() => {
+  const handlePredict = useCallback(async () => {
     setLoading(true);
-    const payload = {
-      subdivision: selectedSub,
-      prev_jjas: parseFloat(prevJJAS),
-      prev_change: parseFloat(prevChange),
-      rolling_3yr: parseFloat(rolling3),
-      rolling_5yr: parseFloat(rolling5),
-      cv_5yr: parseFloat(cv5),
-      prev_jun: parseFloat(prevJJAS) * 0.20,
-      prev_jul: parseFloat(prevJJAS) * 0.35,
-      prev_aug: parseFloat(prevJJAS) * 0.25,
-      prev_sep: parseFloat(prevJJAS) * 0.20,
-      prev_jf: 30.0,
-      prev_mam: 120.0,
-      prev_ond: 150.0,
-      enso_djf: parseFloat(ensoDjf),
-      enso_mam: parseFloat(ensoMam),
-      iod_mam: parseFloat(iodMam),
-    };
-
-    runPrediction(payload)
-      .then((res) => { setPrediction(res); setLoading(false); })
-      .catch((err) => { console.error('Inference error:', err); setLoading(false); });
+    try {
+      const payload = {
+        subdivision: selectedSub,
+        prev_jjas: prevJJAS,
+        prev_change: prevChange,
+        rolling_3yr: rolling3,
+        rolling_5yr: rolling5,
+        cv_5yr: cv5,
+        prev_jun: Math.round(prevJJAS * 0.22),
+        prev_jul: Math.round(prevJJAS * 0.32),
+        prev_aug: Math.round(prevJJAS * 0.28),
+        prev_sep: Math.round(prevJJAS * 0.18),
+        prev_jf: 30.0,
+        prev_mam: 120.0,
+        prev_ond: 150.0,
+        enso_djf: ensoDjf,
+        enso_mam: ensoMam,
+        iod_mam: iodMam,
+      };
+      const result = await runPrediction(payload);
+      setPrediction(result);
+    } catch (err) {
+      console.error('Prediction failed:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [selectedSub, prevJJAS, prevChange, rolling3, rolling5, cv5, ensoMam, ensoDjf, iodMam]);
 
   useEffect(() => {
-    const timer = setTimeout(executeInference, 120);
-    return () => clearTimeout(timer);
-  }, [executeInference]);
+    handlePredict();
+  }, [handlePredict]);
 
   const applyPreset = (presetKey) => {
     setActivePreset(presetKey);
@@ -104,7 +107,6 @@ export default function ClimateCockpit() {
     }
   };
 
-  /* Radial Arc */
   const radius = 68;
   const circumference = 2 * Math.PI * radius;
   const arcLength = circumference * 0.75;
@@ -115,7 +117,6 @@ export default function ClimateCockpit() {
   if (droughtPct > 45) arcColor = 'var(--accent-red)';
   else if (droughtPct > 25) arcColor = 'var(--accent-amber)';
 
-  /* Atmosphere background tint */
   let atmosphereBg = 'var(--bg-card)';
   if (ensoMam > 0.6) {
     atmosphereBg = 'linear-gradient(135deg, var(--hero-gradient-from) 0%, rgba(251, 191, 36, 0.06) 100%)';
@@ -125,7 +126,6 @@ export default function ClimateCockpit() {
 
   return (
     <div>
-      {/* Preset Chips Bar */}
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.1rem' }}>
         <div className="metric-label" style={{ marginBottom: '0.6rem' }}>
           Physical Climate Scenario Presets
@@ -136,16 +136,18 @@ export default function ClimateCockpit() {
               key={p.key}
               className={`preset-chip ${activePreset === p.key ? 'active' : ''}`}
               onClick={() => applyPreset(p.key)}
-            >{p.label}</button>
+            >
+              <Zap size={13} />
+              {p.label}
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="grid-split">
-        {/* Left: Controls */}
-        <div className="bento-card" style={{ background: atmosphereBg, transition: 'background 0.5s ease' }}>
-          <h3 className="section-title" style={{ marginBottom: '1rem' }}>
-            <Sliders size={17} color="var(--accent-sky)" />
+      <div className="grid-split" style={{ alignItems: 'start' }}>
+        <div className="bento-card" style={{ background: atmosphereBg, transition: 'background 0.4s ease' }}>
+          <h3 className="section-title" style={{ marginBottom: '1.25rem' }}>
+            <Sliders size={18} color="var(--accent-cyan)" />
             Meteorological & Ocean Teleconnection Inputs
           </h3>
 
@@ -170,7 +172,6 @@ export default function ClimateCockpit() {
             </select>
           </div>
 
-          {/* Teleconnection Section */}
           <div className="cockpit-section" style={{ marginBottom: '1.25rem' }}>
             <div className="cockpit-section-label" style={{ color: 'var(--accent-sky)' }}>
               <Waves size={14} />
@@ -198,7 +199,6 @@ export default function ClimateCockpit() {
             </div>
           </div>
 
-          {/* Regional Precipitation Section */}
           <div className="cockpit-section">
             <div className="cockpit-section-label" style={{ color: 'var(--accent-emerald)' }}>
               <CloudRain size={14} />
@@ -234,7 +234,6 @@ export default function ClimateCockpit() {
           </div>
         </div>
 
-        {/* Right: Risk Output */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {prediction && (
             <div className="bento-card" style={{ borderLeft: `4px solid ${prediction.color}`, padding: '1.5rem' }}>
@@ -249,7 +248,6 @@ export default function ClimateCockpit() {
                 Evaluated by Random Forest (23 Features + Teleconnections)
               </p>
 
-              {/* Radial Gauge */}
               <div className="radial-dial-wrapper">
                 <svg className="radial-dial-svg" viewBox="0 0 180 180">
                   <g transform="rotate(135 90 90)">
@@ -264,7 +262,6 @@ export default function ClimateCockpit() {
                 </div>
               </div>
 
-              {/* Probability Spectrum */}
               <div className="prob-spectrum">
                 {prediction.probabilities.map((item) => (
                   <div key={item.category} className="prob-segment"
@@ -282,7 +279,6 @@ export default function ClimateCockpit() {
             </div>
           )}
 
-          {/* Advisory */}
           {prediction && (
             <div className="bento-card" style={{ borderLeft: `3px solid ${prediction.advisory.color}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.6rem' }}>
@@ -294,7 +290,7 @@ export default function ClimateCockpit() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', fontSize: '0.81rem', color: 'var(--text-secondary)' }}>
                 {prediction.advisory.actions.map((act, idx) => (
                   <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: prediction.advisory.color, fontWeight: 'bold' }}>-</span>
+                    <span style={{ color: prediction.advisory.color, fontWeight: 'bold' }}>•</span>
                     <span>{act}</span>
                   </div>
                 ))}

@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { fetchMapData } from '../api/client';
-import { Compass, Play, Pause, AlertTriangle, Droplets, Maximize2, Filter, Layers } from 'lucide-react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Play, Pause, Compass, MapPin, Maximize2, AlertTriangle, Droplets, Layers } from 'lucide-react';
+import { fetchMapData } from '../api/client';
 
 const CATEGORY_COLORS = {
-  'No Rainfall':     '#94a3b8',
-  'Large Deficient': '#fb7185',
-  'Deficient':       '#fbbf24',
-  'Normal':          '#34d399',
-  'Excess':          '#60a5fa',
-  'Large Excess':    '#a78bfa',
+  'No Rainfall': '#64748b',
+  'Large Deficient': '#f43f5e',
+  'Deficient': '#f59e0b',
+  'Normal': '#10b981',
+  'Excess': '#06b6d4',
+  'Large Excess': '#3b82f6',
 };
 
+const REGIONS = ['All India', 'Northwest India', 'Central India', 'South Peninsula', 'East & Northeast India'];
+
 const REGION_BOUNDS = {
-  'All India': [[6.5, 66.5], [37.5, 98.5]],
-  'Northwest India': [[23.0, 68.0], [36.0, 84.0]],
-  'Central India': [[15.0, 69.0], [25.5, 87.0]],
-  'South Peninsula': [[7.5, 71.5], [20.0, 85.5]],
-  'East & Northeast India': [[20.5, 83.0], [30.0, 97.5]],
+  'All India': [[8.0, 68.0], [37.0, 97.5]],
+  'Northwest India': [[23.5, 68.0], [37.0, 84.5]],
+  'Central India': [[17.5, 68.5], [26.5, 87.5]],
+  'South Peninsula': [[8.0, 71.5], [20.0, 85.0]],
+  'East & Northeast India': [[21.5, 83.5], [29.5, 97.5]],
 };
 
 const CATEGORY_FILTERS = ['ALL', 'DROUGHT', 'NORMAL', 'SURPLUS'];
@@ -28,60 +30,63 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
   const [region, setRegion] = useState('All India');
   const [mode, setMode] = useState('actual');
   const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [mapData, setMapData] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [mapData, setMapData] = useState(null);
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersLayerRef = useRef(null);
   const playRef = useRef(null);
 
-  /* Initialize Leaflet map */
+  useEffect(() => {
+    if (initialYear) setYear(initialYear);
+  }, [initialYear]);
+
   useEffect(() => {
     if (!mapContainerRef.current || mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [22.0, 80.0],
-      zoom: 4.4,
-      minZoom: 3.5,
-      maxZoom: 10,
-      zoomControl: true,
-      attributionControl: true,
+      center: [22.8, 82.5],
+      zoom: 4.8,
+      minZoom: 4,
+      maxZoom: 9,
+      zoomControl: false,
+      attributionControl: false,
     });
 
     L.tileLayer(
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-      { attribution: '&copy; Esri, HERE, DeLorme, MapmyIndia', maxZoom: 16 }
+      { maxZoom: 16 }
     ).addTo(map);
 
     L.tileLayer(
       'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
-      { attribution: '', maxZoom: 16, opacity: 0.8 }
+      { maxZoom: 16, opacity: 0.6 }
     ).addTo(map);
 
-    const markersGroup = L.layerGroup().addTo(map);
-    markersLayerRef.current = markersGroup;
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    markersLayerRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
 
-    setTimeout(() => {
-      map.invalidateSize();
-      map.fitBounds(REGION_BOUNDS['All India'], { padding: [20, 20] });
-    }, 150);
+    return () => {
+      map.remove();
+      mapInstanceRef.current = null;
+    };
   }, []);
 
-  /* Fetch data */
   useEffect(() => {
-    fetchMapData(year, region, mode).then(setMapData).catch(console.error);
+    fetchMapData(year, region, mode)
+      .then(setMapData)
+      .catch((err) => console.error('Map fetch error:', err));
   }, [year, region, mode]);
 
-  /* Camera framing */
   useEffect(() => {
     if (!mapInstanceRef.current) return;
     const bounds = REGION_BOUNDS[region] || REGION_BOUNDS['All India'];
     mapInstanceRef.current.flyToBounds(bounds, { padding: [25, 25], duration: 1.0, easeLinearity: 0.25 });
   }, [region]);
 
-  /* Update markers */
   useEffect(() => {
     if (!mapInstanceRef.current || !markersLayerRef.current || !mapData) return;
 
@@ -142,6 +147,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
       `;
 
       marker.bindPopup(popupHtml);
+      // Retaining subdivisionName on marker instance enables fly-to focus and popup triggering from leaderboard clicks
       marker.subdivisionName = sub.subdivision;
 
       marker.on('popupopen', () => {
@@ -156,7 +162,6 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
     });
   }, [mapData, categoryFilter, onSelectSubdivision]);
 
-  /* Timeline playback */
   useEffect(() => {
     if (isPlaying) {
       playRef.current = setInterval(() => {
@@ -192,10 +197,8 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
 
   return (
     <div>
-      {/* Command Toolbar */}
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.1rem 1.35rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
-          {/* Year Slider */}
           <div>
             <div className="slider-header">
               <span className="slider-label" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
@@ -223,55 +226,74 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
               </div>
             </div>
             <input
-              type="range" min="1901" max="2017" value={year}
-              onChange={(e) => { setYear(+e.target.value); if (isPlaying) setIsPlaying(false); }}
-              className="custom-range"
+              type="range"
+              min={1901}
+              max={2017}
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+              style={{ width: '100%', accentColor: 'var(--accent-teal)' }}
             />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.66rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono', marginTop: '0.2rem' }}>
+              <span>1901</span>
+              <span>1930</span>
+              <span>1960</span>
+              <span>1990</span>
+              <span>2017</span>
+            </div>
           </div>
 
-          {/* Region Selector */}
           <div>
-            <label className="metric-label" style={{ marginBottom: '0.35rem', display: 'block' }}>Sub-Continent Focus</label>
-            <select value={region} onChange={(e) => setRegion(e.target.value)} className="custom-select">
-              <option value="All India">All India (36 Subdivisions)</option>
-              <option value="Northwest India">Northwest India</option>
-              <option value="Central India">Central India</option>
-              <option value="South Peninsula">South Peninsula</option>
-              <option value="East & Northeast India">East & Northeast India</option>
+            <div className="slider-header">
+              <span className="slider-label" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                <MapPin size={15} color="var(--accent-blue)" /> Macro-Region Focus
+              </span>
+            </div>
+            <select
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              className="select-input"
+              style={{ width: '100%', padding: '0.45rem 0.65rem', fontSize: '0.78rem' }}
+            >
+              {REGIONS.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
             </select>
           </div>
 
-          {/* Data Layer Toggle */}
           <div>
-            <label className="metric-label" style={{ marginBottom: '0.35rem', display: 'block' }}>Data Layer</label>
-            <div style={{ display: 'flex', gap: '0.35rem' }}>
+            <div className="slider-header">
+              <span className="slider-label" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                <Layers size={15} color="var(--accent-amber)" /> Data Layer
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
               <button
                 className={`preset-chip ${mode === 'actual' ? 'active' : ''}`}
-                style={{ flex: 1, textAlign: 'center', padding: '0.45rem 0' }}
+                style={{ flex: 1, padding: '0.45rem 0', justifyContent: 'center' }}
                 onClick={() => setMode('actual')}
               >Observed IMD</button>
               <button
                 className={`preset-chip ${mode === 'prediction' ? 'active' : ''}`}
-                style={{ flex: 1, textAlign: 'center', padding: '0.45rem 0' }}
+                style={{ flex: 1, padding: '0.45rem 0', justifyContent: 'center' }}
                 onClick={() => setMode('prediction')}
-              >Model Inferred</button>
+              >RF Forecast</button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Drought Status Strip */}
       {mapData && (
-        <div className="status-strip" style={{ borderLeftColor: mapData.deficient_percentage > 25 ? 'var(--risk-danger)' : 'var(--risk-safe)' }}>
-          <div>
-            <strong style={{ color: 'var(--text-primary)', fontSize: '0.92rem' }}>Monsoon Year {year}:</strong>{' '}
-            <span style={{ color: mapData.deficient_percentage > 25 ? 'var(--risk-danger)' : 'var(--risk-safe)', fontWeight: 600 }}>
-              {mapData.deficient_count} of {mapData.total_subdivisions} subdivisions ({mapData.deficient_percentage}%)
-            </span>{' '}
-            classified in drought anomaly.
+        <div className="status-strip">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span style={{ fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
+              {year} ALL-INDIA PROFILE:
+            </span>
+            <span style={{ color: 'var(--text-secondary)' }}>
+              {mapData.deficient_percentage}% Area Drought Stress
+            </span>
           </div>
 
-          <div className="status-strip-summary">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', fontSize: '0.75rem' }}>
             <span style={{ color: 'var(--accent-rose)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <span className="status-dot" style={{ background: 'var(--accent-rose)' }}></span>
               Deficit {mapData.deficient_count}
@@ -290,9 +312,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
         </div>
       )}
 
-      {/* Map and Extremes */}
       <div className="grid-split">
-        {/* Map Container */}
         <div className="bento-card" style={{ padding: '0.75rem', position: 'relative' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem', padding: '0.35rem 0.6rem' }}>
             <div>
@@ -350,9 +370,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
           </div>
         </div>
 
-        {/* Extreme Departure Leaders */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {/* Top Deficient */}
           <div className="bento-card" style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
@@ -390,7 +408,6 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
             </div>
           </div>
 
-          {/* Top Surplus */}
           <div className="bento-card" style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>

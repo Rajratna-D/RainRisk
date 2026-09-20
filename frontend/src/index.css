@@ -1,9 +1,3 @@
-/* ==========================================================================
-   RainRisk: Enterprise Climate Intelligence Design System
-   Aesthetic: High-Class Bloomberg Terminal / Linear Dark / Palantir Foundry
-   ========================================================================== */
-
-/* ── Dark Theme (Default) ── */
 :root {
   --bg-canvas: #0c0c0e;
   --bg-elevated: #131316;
@@ -64,7 +58,6 @@
   --strip-track: #27272a;
 }
 
-/* ── Light Theme ── */
 [data-theme="light"] {
   --bg-canvas: #f5f6f8;
   --bg-elevated: #ffffff;
@@ -98,7 +91,6 @@
   --strip-track: #e2e5ea;
 }
 
-/* ── Base Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -128,20 +120,17 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
 }
 
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
-/* ── App Shell ── */
 .app-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 1.25rem 2rem 3.5rem;
 }
 
-/* ── Card System ── */
 .bento-card {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
@@ -177,7 +166,6 @@ h1, h2, h3, h4, h5 {
 }
 .spotlight-card:hover::before { opacity: 1; }
 
-/* ── Navigation Command Deck ── */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -260,7 +248,6 @@ h1, h2, h3, h4, h5 {
   background: rgba(0, 0, 0, 0.07);
 }
 
-/* Theme Toggle */
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -317,7 +304,6 @@ h1, h2, h3, h4, h5 {
   50% { opacity: 0.4; transform: scale(0.8); }
 }
 
-/* ── Page Transitions ── */
 .page-enter {
   animation: pageIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -333,7 +319,6 @@ h1, h2, h3, h4, h5 {
   }
 }
 
-/* ── Hero Metric Layout ── */
 .hero-metric-deck {
   display: grid;
   grid-template-columns: 1.4fr 2.6fr;
@@ -367,7 +352,6 @@ h1, h2, h3, h4, h5 {
   gap: 1rem;
 }
 
-/* ── Metric Tile ── */
 .metric-tile {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -422,13 +406,11 @@ h1, h2, h3, h4, h5 {
 
 .kpi-sparkline { width: 58px; height: 22px; opacity: 0.6; }
 
-/* ── Animated Counter ── */
 .counter-animated {
   display: inline-block;
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Section Header Utility ── */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -446,7 +428,6 @@ h1, h2, h3, h4, h5 {
   color: var(--text-muted);
 }
 
-/* ── Stat Cell (repeated pattern in Explorer/Pulse) ── */
 .stat-cell {
   background: var(--bg-stat);
   padding: 0.65rem;
@@ -465,7 +446,6 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-mono);
 }
 
-/* ── Category Distribution Cards with Hover Glow ── */
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -509,7 +489,6 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-mono);
   color: var(--text-primary);
 }
-/* Progress fill bar inside category card */
 .category-bar {
   height: 3px;
   border-radius: 2px;
@@ -523,13 +502,11 @@ h1, h2, h3, h4, h5 {
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── Grids ── */
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.25rem; }
 .grid-split { display: grid; grid-template-columns: 1.35fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
 
-/* ── Leaflet India Map ── */
 .india-map-wrapper {
   position: relative;
   width: 100%;
@@ -593,7 +570,6 @@ h1, h2, h3, h4, h5 {
 .leaflet-popup-close-button { color: var(--text-muted) !important; padding: 6px !important; }
 .leaflet-popup-close-button:hover { color: var(--text-primary) !important; }
 
-/* Map Floating Overlays */
 .map-floating-panel {
   position: absolute;
   top: 14px;
@@ -641,7 +617,6 @@ h1, h2, h3, h4, h5 {
   100% { transform: scale(1); opacity: 0.9; }
 }
 
-/* ── Form Controls ── */
 .slider-group { margin-bottom: 1.1rem; }
 .slider-header {
   display: flex;
@@ -704,7 +679,6 @@ h1, h2, h3, h4, h5 {
 }
 .custom-select:focus { border-color: var(--border-hover); }
 
-/* ── Preset Chips ── */
 .preset-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .preset-chip {
   background: rgba(255, 255, 255, 0.04);
@@ -734,7 +708,6 @@ h1, h2, h3, h4, h5 {
   border-color: rgba(45, 212, 168, 0.35);
 }
 
-/* ── Radial Gauge ── */
 .radial-dial-wrapper {
   position: relative;
   display: flex;
@@ -774,7 +747,6 @@ h1, h2, h3, h4, h5 {
   margin-top: 0.3rem;
 }
 
-/* ── Probability Spectrum ── */
 .prob-spectrum {
   display: flex;
   height: 8px;
@@ -785,7 +757,6 @@ h1, h2, h3, h4, h5 {
 }
 .prob-segment { height: 100%; transition: width 0.3s ease; }
 
-/* ── Shimmer Skeleton Loader ── */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -801,7 +772,6 @@ h1, h2, h3, h4, h5 {
   background-size: 200% 100%;
 }
 
-/* ── Sparkline (inline SVG mini-charts) ── */
 .sparkline-wrapper {
   display: flex;
   align-items: center;
@@ -815,7 +785,6 @@ h1, h2, h3, h4, h5 {
   overflow: visible;
 }
 
-/* ── Extremes List Items ── */
 .extreme-row {
   display: flex;
   justify-content: space-between;
@@ -847,7 +816,6 @@ h1, h2, h3, h4, h5 {
   font-weight: 700;
 }
 
-/* ── Cockpit Sections ── */
 .cockpit-section {
   background: var(--bg-inner);
   padding: 1.1rem;
@@ -865,7 +833,6 @@ h1, h2, h3, h4, h5 {
   letter-spacing: 0.04em;
 }
 
-/* ── Explorer Decadal Rows ── */
 .epoch-row {
   display: flex;
   justify-content: space-between;
@@ -886,7 +853,6 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-mono);
 }
 
-/* ── Bar Chart ── */
 .bar-chart-container {
   height: 180px;
   display: flex;
@@ -903,7 +869,6 @@ h1, h2, h3, h4, h5 {
 }
 .bar-item:hover { opacity: 0.8; }
 
-/* Monthly bar chart */
 .monthly-chart {
   display: flex;
   align-items: flex-end;
@@ -935,7 +900,6 @@ h1, h2, h3, h4, h5 {
   margin-top: 4px;
 }
 
-/* ── Drought Status Strip ── */
 .status-strip {
   background: var(--bg-card);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -961,7 +925,6 @@ h1, h2, h3, h4, h5 {
   display: inline-block;
 }
 
-/* ── Footer ── */
 .app-footer {
   margin-top: 3.5rem;
   padding-top: 1.5rem;
@@ -977,7 +940,6 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
 }
 
-/* ── Landmark Chips Section ── */
 .landmark-section {
   margin-top: 1.1rem;
   padding-top: 0.85rem;
@@ -990,7 +952,6 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
 }
 
-/* ── Hero Tag ── */
 .hero-tag {
   display: flex;
   align-items: center;
@@ -1039,7 +1000,6 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-mono);
 }
 
-/* ── SVG Chart ── */
 .chart-wrapper {
   width: 100%;
   position: relative;
@@ -1081,7 +1041,6 @@ h1, h2, h3, h4, h5 {
   display: inline-block;
 }
 
-/* ── Responsive ── */
 @media (max-width: 1100px) {
   .navbar { flex-direction: column; gap: 0.75rem; align-items: stretch; }
   .nav-tabs { width: 100%; overflow-x: auto; }
@@ -1096,7 +1055,6 @@ h1, h2, h3, h4, h5 {
   .app-container { padding: 0.75rem; }
 }
 
-/* ── Spin animation ── */
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

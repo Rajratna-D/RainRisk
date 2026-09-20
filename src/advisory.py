@@ -1,17 +1,11 @@
-"""
-RainRisk: Agro-Climatic Decision Advisory Module.
+﻿"""
+RainRisk: Agro-climatic decision advisory module.
 
-Single source of truth for drought/surplus advisory content.
-Used by both the Streamlit dashboard (app.py) and the FastAPI backend
-(backend/main.py) to eliminate the previously duplicated advisory logic.
+Provides contingency mitigation protocols keyed to predicted drought severity tiers.
 """
 
 from constants import CATEGORY_COLORS
 
-
-# ---------------------------------------------------------------------------
-# Advisory Data (structured, format-agnostic)
-# ---------------------------------------------------------------------------
 ADVISORIES = {
     "emergency": {
         "title": "Severe Drought Emergency Protocol",
@@ -96,19 +90,6 @@ ADVISORIES = {
 
 
 def get_advisory(predicted_category):
-    """
-    Returns the advisory dict for a given predicted drought category.
-
-    Parameters
-    ----------
-    predicted_category : str
-        One of the IMD operational categories (e.g. "Normal", "Deficient").
-
-    Returns
-    -------
-    dict
-        Advisory dict with keys: title, tier, color, actions.
-    """
     if predicted_category in ("Large Deficient", "No Rainfall"):
         return ADVISORIES["emergency"]
     elif predicted_category == "Deficient":
@@ -121,12 +102,7 @@ def get_advisory(predicted_category):
 
 def get_advisory_api(predicted_category):
     """
-    Returns the advisory in flat API-friendly format (for JSON serialization).
-
-    Returns
-    -------
-    dict
-        {title, tier, color, actions: [str, ...]}
+    Returns advisory structured for API serialization.
     """
     adv = get_advisory(predicted_category)
     return {
@@ -138,17 +114,8 @@ def get_advisory_api(predicted_category):
 
 
 def render_advisory_html(predicted_category):
-    """
-    Returns a Streamlit-ready HTML string for the advisory card.
-
-    Used by app.py's Climate Cockpit tab.
-    """
     adv = get_advisory(predicted_category)
-    title_color = adv["color"]
-    # Use a slightly different accent for surplus title
-    if adv["tier"] == "surplus":
-        title_color = "#38bdf8"
-
+    title_color = "#38bdf8" if adv["tier"] == "surplus" else adv["color"]
     actions_html = "<br>".join(
         f"• <strong>{a['label']}:</strong> {a['text']}" for a in adv["actions"]
     )

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { fetchSubdivisions, fetchSubdivisionDetail } from '../api/client';
 import { GitCompare, Calendar, BarChart2 } from 'lucide-react';
 
-/* ── Inline Sparkline Component ── */
 function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
   if (!data || data.length === 0) return null;
 
@@ -17,7 +16,6 @@ function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
     return `${x},${y}`;
   }).join(' ');
 
-  // Area fill path
   const areaPath = `M 0,${height} ` +
     values.map((v, i) => {
       const x = (i / (values.length - 1)) * width;
@@ -78,7 +76,7 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
       });
   }, [focusSub, twinSub]);
 
-  /* Pre-compute max values for charts to avoid computing inside render loops */
+  // Memoizing chart scale ceilings avoids scanning array extrema during state updates
   const focusMaxJJAS = useMemo(() => {
     if (!focusData?.timeline) return 1;
     return Math.max(...focusData.timeline.map((x) => x.jjas), 1);
@@ -91,7 +89,6 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
 
   return (
     <div>
-      {/* Top Selectors Bar */}
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.2rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           <div>
@@ -126,7 +123,6 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
         </div>
       </div>
 
-      {/* Climate Twins Benchmark Cards with Sparklines */}
       <div className="grid-2">
         {focusData && (
           <SubdivisionCard
@@ -143,7 +139,6 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
         )}
       </div>
 
-      {/* Historical Annual Timeline Bar Chart */}
       {focusData && (
         <div className="bento-card" style={{ marginBottom: '1.5rem' }}>
           <div className="section-header">
@@ -154,10 +149,10 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
               </p>
             </div>
             <div className="chart-legend">
-              <span style={{ color: 'var(--accent-red)' }}>■ Large Deficit</span>
-              <span style={{ color: 'var(--accent-amber)' }}>■ Deficit</span>
-              <span style={{ color: 'var(--accent-emerald)' }}>■ Normal</span>
-              <span style={{ color: 'var(--accent-cyan)' }}>■ Surplus</span>
+              <span style={{ color: 'var(--risk-danger)' }}>• Large Deficit</span>
+              <span style={{ color: 'var(--risk-warning)' }}>• Deficit</span>
+              <span style={{ color: 'var(--risk-safe)' }}>• Normal</span>
+              <span style={{ color: 'var(--accent-teal)' }}>• Surplus</span>
             </div>
           </div>
 
@@ -177,10 +172,8 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
         </div>
       )}
 
-      {/* Monthly Progression and Decadal Regimes Grid */}
       {focusData && (
         <div className="grid-split">
-          {/* Monthly Climatology */}
           <div className="bento-card">
             <h4 style={{ fontSize: '0.95rem', marginBottom: '0.75rem' }}>12-Month Mean Precipitation Distribution</h4>
             <div className="monthly-chart">
@@ -217,7 +210,6 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
             </div>
           </div>
 
-          {/* Decadal Epochs */}
           <div className="bento-card">
             <h4 style={{ fontSize: '0.95rem', marginBottom: '0.75rem' }}>Decadal Regime Shift Matrix</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
@@ -238,7 +230,6 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
   );
 }
 
-/* ── Subdivision Summary Card with Sparkline ── */
 function SubdivisionCard({ data, accentColor, chipActive = false }) {
   const stats = [
     { label: 'LPA Baseline', value: `${data.metadata.lpa} mm` },
@@ -254,7 +245,6 @@ function SubdivisionCard({ data, accentColor, chipActive = false }) {
         <span className={`preset-chip ${chipActive ? 'active' : ''}`}>{data.metadata.macro_region}</span>
       </div>
 
-      {/* Sparkline: 117-year trend at a glance */}
       {data.timeline && (
         <div style={{ marginBottom: '0.75rem' }}>
           <Sparkline data={data.timeline} color={accentColor} />

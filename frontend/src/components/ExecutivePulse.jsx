@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Layers, CheckCircle2, ShieldCheck, BarChart2, TrendingUp, AlertCircle } from 'lucide-react';
 
-/* ── Animated Counter Hook ── */
 function useAnimatedCounter(target, duration = 1200, decimals = 0) {
   const [value, setValue] = useState(0);
   const frameRef = useRef(null);
@@ -36,7 +35,6 @@ function useAnimatedCounter(target, duration = 1200, decimals = 0) {
   return Math.round(value);
 }
 
-/* ── Spotlight Mouse Tracker ── */
 function useSpotlight() {
   return (e) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -45,7 +43,6 @@ function useSpotlight() {
   };
 }
 
-/* ── Landmark Drought Years ── */
 const LANDMARK_YEARS = [
   { year: 1918, dep: '-23.8%', label: 'Spanish Flu Era Failure' },
   { year: 1965, dep: '-18.2%', label: 'Green Revolution Catalyst' },
@@ -60,7 +57,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
   const [hoverPoint, setHoverPoint] = useState(null);
   const spotlightMove = useSpotlight();
 
-  /* Animated hero counters */
   const animOBO   = useAnimatedCounter(overviewData?.off_by_one_accuracy, 1400, 1);
   const animExact = useAnimatedCounter(overviewData?.exact_accuracy, 1200, 1);
   const animRecs  = useAnimatedCounter(overviewData?.total_records, 1000, 0);
@@ -83,7 +79,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
     national_trend = [],
   } = overviewData;
 
-  /* SVG time-series chart dimensions */
   const cW = 960, cH = 200, pad = { t: 15, r: 15, b: 28, l: 42 };
   const yMin = 700, yMax = 1400, xMin = 1901, xMax = 2017;
   const sx = (yr) => pad.l + ((yr - xMin) / (xMax - xMin)) * (cW - pad.l - pad.r);
@@ -99,9 +94,7 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
 
   return (
     <div>
-      {/* Hero Metric Deck */}
       <div className="hero-metric-deck">
-        {/* Primary Hero Card */}
         <div className="hero-primary-card spotlight-card" onMouseMove={spotlightMove}>
           <div>
             <div className="hero-tag">
@@ -125,9 +118,7 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
           </div>
         </div>
 
-        {/* Supporting Secondary Tiles */}
         <div className="hero-secondary-grid">
-          {/* Exact Accuracy */}
           <div className="metric-tile spotlight-card" style={{ '--tile-accent': '#60a5fa' }} onMouseMove={spotlightMove}>
             <div className="metric-header-row">
               <div className="metric-label">Exact 6-Tier Hit</div>
@@ -142,7 +133,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
             </div>
           </div>
 
-          {/* Dataset Depth */}
           <div className="metric-tile spotlight-card" style={{ '--tile-accent': '#a78bfa' }} onMouseMove={spotlightMove}>
             <div className="metric-header-row">
               <div className="metric-label">Historical Archive</div>
@@ -157,7 +147,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
             </div>
           </div>
 
-          {/* National LPA */}
           <div className="metric-tile spotlight-card" style={{ '--tile-accent': '#fbbf24' }} onMouseMove={spotlightMove}>
             <div className="metric-header-row">
               <div className="metric-label">National LPA</div>
@@ -177,7 +166,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
         </div>
       </div>
 
-      {/* 117-Year Time Series */}
       <div className="bento-card spotlight-card" style={{ marginBottom: '1.25rem' }} onMouseMove={spotlightMove}>
         <div className="section-header">
           <div>
@@ -219,7 +207,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
               </linearGradient>
             </defs>
 
-            {/* Gridlines */}
             {[800, 1000, 1200].map((v) => (
               <g key={v}>
                 <line x1={pad.l} y1={sy(v)} x2={cW - pad.r} y2={sy(v)} stroke="var(--chart-gridline)" />
@@ -258,7 +245,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
             )}
           </svg>
 
-          {/* Hover Tooltip */}
           {hoverPoint && (
             <div className="chart-tooltip" style={{ left: `${((sx(hoverPoint.year) / cW) * 100).toFixed(1)}%` }}>
               <div className="chart-tooltip-title">Monsoon Year {hoverPoint.year}</div>
@@ -268,7 +254,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
           )}
         </div>
 
-        {/* Landmark Drought Shocks */}
         <div className="landmark-section">
           <div className="metric-label" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
             <AlertCircle size={13} color="var(--accent-rose)" />
@@ -290,7 +275,6 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
         </div>
       </div>
 
-      {/* 6-Tier IMD Distribution with Hover Glow */}
       <div className="bento-card">
         <h3 style={{ fontSize: '0.98rem', marginBottom: '0.75rem' }}>
           Climatological Frequency Breakdown (4,188 Sub-Divisional Archive Observations)

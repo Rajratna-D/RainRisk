@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import ExecutivePulse from './components/ExecutivePulse';
 import GeospatialRadar from './components/GeospatialRadar';
@@ -16,25 +16,22 @@ export default function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('rainrisk-theme') || 'dark');
   const pageRef = useRef(null);
 
-  /* Apply theme to DOM */
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('rainrisk-theme', theme);
   }, [theme]);
 
-  /* Fetch overview data on mount */
   useEffect(() => {
     fetchOverview()
       .then(setOverviewData)
       .catch((err) => console.error('Failed fetching overview:', err));
   }, []);
 
-  /* Trigger page-enter animation on tab change */
   useEffect(() => {
     const el = pageRef.current;
     if (!el) return;
     el.classList.remove('page-enter');
-    // Force reflow to restart animation
+    // Force reflow to restart CSS animation across tab transitions
     void el.offsetWidth;
     el.classList.add('page-enter');
   }, [activeTab]);

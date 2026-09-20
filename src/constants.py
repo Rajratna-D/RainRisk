@@ -1,29 +1,18 @@
-"""
-RainRisk: Shared Constants Module.
-
-Single source of truth for geographic coordinates, macro-region mappings,
-and category color palettes used across the Streamlit dashboard (app.py),
-FastAPI backend (backend/main.py), and any other consumer.
-
-Centralizing these prevents the ~140 lines of silent duplication that
-previously existed between the two entry points.
+﻿"""
+RainRisk: Shared geographic coordinates, regional groupings, color maps, and naming aliases.
 """
 
-# ---------------------------------------------------------------------------
-# Curated Jewel Meteorological Palette (High Contrast & Perceptual Distinction)
-# ---------------------------------------------------------------------------
+# High-contrast color mapping corresponding to IMD meteorological severity levels
 CATEGORY_COLORS = {
-    "No Rainfall":     "#64748b",  # Steel Slate
-    "Large Deficient": "#f43f5e",  # Coral Crimson (Severe Drought Emergency)
-    "Deficient":       "#f59e0b",  # Warm Amber Topaz (Moderate Drought)
-    "Normal":          "#10b981",  # Emerald Jade (Climatological Optimum)
-    "Excess":          "#06b6d4",  # Electric Aqua (Monsoon Surplus)
-    "Large Excess":    "#3b82f6",  # Sapphire Blue (Extreme Flood Surge)
+    "No Rainfall":     "#64748b",
+    "Large Deficient": "#f43f5e",
+    "Deficient":       "#f59e0b",
+    "Normal":          "#10b981",
+    "Excess":          "#06b6d4",
+    "Large Excess":    "#3b82f6",
 }
 
-# ---------------------------------------------------------------------------
-# IMD Subdivision Centroid Coordinates (lat, lon)
-# ---------------------------------------------------------------------------
+# Representative subdivision centroid coordinates (lat, lon) for map rendering
 COORDS = {
     "Andaman & Nicobar Islands": (11.7, 92.7),
     "Arunachal Pradesh": (28.2, 94.7),
@@ -67,9 +56,7 @@ COORDS = {
     "West Uttar Pradesh": (28.5, 78.5),
 }
 
-# ---------------------------------------------------------------------------
-# Macro-Region Groupings (IMD Administrative Classification)
-# ---------------------------------------------------------------------------
+# IMD regional meteorological classifications
 MACRO_REGIONS = {
     "Northwest India": [
         "West Uttar Pradesh", "East Uttar Pradesh", "Uttarakhand", "Haryana Delhi & Chandigarh",
@@ -92,9 +79,8 @@ MACRO_REGIONS = {
     ],
 }
 
-# ---------------------------------------------------------------------------
-# Human-Readable Display Names (Correcting legacy colonial/data entry typos)
-# ---------------------------------------------------------------------------
+# Historical IMD dataset artifacts retain legacy spelling variants (e.g. 'Matathwada', 'Orissa')
+# required by the pre-trained OneHotEncoder pipeline; DISPLAY_NAME_MAP translates them to modern standardized names.
 DISPLAY_NAME_MAP = {
     "Matathwada": "Marathwada",
     "Orissa": "Odisha",

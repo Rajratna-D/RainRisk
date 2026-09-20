@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { fetchLeaderboard } from '../api/client';
-import { ShieldCheck } from 'lucide-react';
+import { Award, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
 
 export default function ModelLeaderboard() {
   const [data, setData] = useState(null);
@@ -11,40 +11,27 @@ export default function ModelLeaderboard() {
   }, []);
 
   if (!data) {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <div className="skeleton" style={{ height: '140px' }} />
-        <div className="skeleton" style={{ height: '280px' }} />
-      </div>
-    );
+    return <div className="skeleton" style={{ height: '400px' }} />;
   }
 
-  const { active_model, models = [], confusion_matrix } = data;
+  const { active_model, models, confusion_matrix } = data;
   const { labels = [], matrix = [], normalized_matrix = [], diagonal_accuracy = 56.0 } = confusion_matrix || {};
 
   return (
     <div>
-      {/* Active Best Model Hero Banner */}
-      <div
-        className="bento-card"
-        style={{
-          background: 'linear-gradient(135deg, rgba(22, 22, 28, 0.95) 0%, rgba(28, 28, 36, 0.85) 100%)',
-          borderLeft: '4px solid var(--accent-teal)',
-          marginBottom: '1.5rem',
-        }}
-      >
+      <div className="bento-card" style={{ borderLeft: '4px solid var(--accent-teal)', marginBottom: '1.5rem', padding: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.35rem' }}>
-              <ShieldCheck size={16} color="var(--accent-teal)" />
-              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--accent-teal)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Active Production Classifier
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+              <Award size={18} color="var(--accent-teal)" />
+              <span className="preset-chip active" style={{ fontSize: '0.72rem', padding: '0.15rem 0.6rem' }}>
+                Production Deployed Classifier
               </span>
             </div>
-            <h2 style={{ fontSize: '1.45rem', marginBottom: '0.35rem' }}>
-              Random Forest + Planetary Teleconnections (23 Features)
+            <h2 style={{ fontSize: '1.6rem', marginBottom: '0.45rem' }}>
+              Random Forest Classifier (Balanced Accuracy: 43.2%)
             </h2>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', maxWidth: '780px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', maxWidth: '780px' }}>
               Evaluated strictly on held-out 2011-2017 test records (N=243). Pre-monsoon Pacific (Niño 3.4) and Indian Ocean (DMI) SST anomalies elevated Balanced Accuracy from 34.4% to <strong style={{ color: 'var(--text-primary)' }}>43.2%</strong> and Off-by-One Accuracy to <strong style={{ color: 'var(--accent-teal)' }}>93.0%</strong>.
             </p>
           </div>
@@ -62,7 +49,6 @@ export default function ModelLeaderboard() {
         </div>
       </div>
 
-      {/* Model Benchmark Table */}
       <div className="bento-card" style={{ marginBottom: '1.5rem' }}>
         <h3 style={{ fontSize: '1.05rem', marginBottom: '0.85rem' }}>Algorithmic Progression Leaderboard</h3>
         <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
@@ -103,7 +89,6 @@ export default function ModelLeaderboard() {
                   </div>
                 </div>
 
-                {/* Accuracy Progress Bar */}
                 <div style={{ width: '100%', height: '5px', background: '#27272a', borderRadius: '3px', overflow: 'hidden' }}>
                   <div
                     style={{
@@ -121,7 +106,6 @@ export default function ModelLeaderboard() {
         </div>
       </div>
 
-      {/* Held-Out Test Confusion Matrix */}
       {labels.length > 0 && (
         <div className="bento-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
