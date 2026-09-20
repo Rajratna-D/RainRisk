@@ -211,14 +211,6 @@ Execute the comprehensive test suite (61 unit, integration, and regression guard
 pytest tests
 ```
 
-### 4. Regenerate the 22-Page Publication PDF Report
-Recompile the full 14,000+ word academic report with all 7 embedded figures and tables:
-
-```bash
-python scripts/generate_report_pdf.py
-```
-Output generated at: `docs/RainRisk_Project_Report.pdf`.
-
 ---
 
 ## Repository Structure
