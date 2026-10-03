@@ -1,4 +1,4 @@
-﻿"""
+"""
 RainRisk: Agro-climatic decision advisory module.
 
 Provides contingency mitigation protocols keyed to predicted drought severity tiers.
@@ -109,7 +109,7 @@ def get_advisory_api(predicted_category):
         "title": adv["title"],
         "tier": adv["tier"],
         "color": adv["color"],
-        "actions": [a["text"] for a in adv["actions"]],
+        "actions": [f"{a['label']}: {a['text']}" for a in adv["actions"]],
     }
 
 
