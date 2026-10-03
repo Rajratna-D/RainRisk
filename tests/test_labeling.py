@@ -111,6 +111,23 @@ def test_ordinal_distance_rejects_unknown_label():
         assert False, "regression: raised bare KeyError instead of clear ValueError"
 
 
+def test_compute_pct_departure_zero_or_negative_lpa():
+    """Confirms departure calculation with LPA <= 0 returns NaN instead of inf or inverted value."""
+    assert np.isnan(compute_pct_departure(100, 0))
+    assert np.isnan(compute_pct_departure(100, -50))
+
+
+def test_ordinal_distance_rejects_mismatched_lengths():
+    """Confirms ordinal_distance raises ValueError if true and predicted list lengths differ."""
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+    from evaluate import ordinal_distance
+    try:
+        ordinal_distance(['Normal', 'Normal'], ['Normal'])
+        assert False, "Expected ValueError on length mismatch"
+    except ValueError:
+        pass
+
+
 if __name__ == "__main__":
     import inspect
     test_fns = [obj for name, obj in list(globals().items())
