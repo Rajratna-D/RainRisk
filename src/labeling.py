@@ -1,4 +1,4 @@
-﻿"""
+"""
 RainRisk: Rainfall categorization based on IMD operational classification standards.
 
 Categories:
@@ -55,4 +55,12 @@ def compute_lpa(df, subdivision_col="SUBDIVISION", year_col="YEAR",
 
 
 def compute_pct_departure(actual, lpa):
-    return (actual - lpa) / lpa * 100
+    if isinstance(lpa, (int, float, np.number)) and lpa <= 0:
+        return np.nan
+    with np.errstate(divide='ignore', invalid='ignore'):
+        dep = (actual - lpa) / lpa * 100
+        if isinstance(dep, (float, int, np.number)):
+            return np.nan if np.isinf(dep) else float(dep)
+        if hasattr(dep, "replace"):
+            return dep.replace([np.inf, -np.inf], np.nan)
+        return dep
