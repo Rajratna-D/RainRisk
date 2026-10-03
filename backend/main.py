@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import json
 from contextlib import asynccontextmanager
@@ -63,7 +63,7 @@ def initialize_data():
     sub_stats = {}
     cv_series = (raw.groupby("SUBDIVISION")["JJAS"]
                  .agg(["mean", "std"])
-                 .assign(cv=lambda d: d["std"] / d["mean"] * 100))
+                 .assign(cv=lambda d: (d["std"] / d["mean"] * 100).replace([np.inf, -np.inf], np.nan).fillna(0.0)))
     national_median_cv = float(cv_series["cv"].median())
 
     drought_freq = (raw.assign(
@@ -121,6 +121,12 @@ def initialize_data():
     print("Data initialization complete.")
 
 
+def ensure_initialized():
+    """Ensure datasets and models are loaded into application cache."""
+    if "raw" not in state or "pipeline" not in state:
+        initialize_data()
+
+
 @asynccontextmanager
 async def lifespan(app):
     initialize_data()
@@ -144,6 +150,7 @@ app.add_middleware(
 
 @app.get("/api/overview")
 def get_overview():
+    ensure_initialized()
     raw = state["raw"]
     n_obs = len(raw)
     n_subs = raw["SUBDIVISION"].nunique()
@@ -171,6 +178,7 @@ def get_overview():
 
 @app.get("/api/subdivisions")
 def get_subdivisions():
+    ensure_initialized()
     unique_subs = {}
     for s in state["sub_stats"].values():
         unique_subs[s["name"]] = s
@@ -178,6 +186,7 @@ def get_subdivisions():
 
 @app.get("/api/subdivision/{name}")
 def get_subdivision_detail(name: str):
+    ensure_initialized()
     raw = state["raw"]
     db_name = CANONICAL_DATASET_NAMES.get(name, name)
     disp_name = DISPLAY_NAME_MAP.get(db_name, db_name)
@@ -238,6 +247,7 @@ def get_subdivision_detail(name: str):
 
 @app.get("/api/map")
 def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actual"):
+    ensure_initialized()
     feat_df = state["feat"]
     pipeline = state["pipeline"]
 
@@ -245,13 +255,18 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
     if year_data.empty:
         raise HTTPException(status_code=404, detail=f"Year {year} not found in database")
 
-    if region != "All India" and region in MACRO_REGIONS:
+    if region != "All India":
+        if region not in MACRO_REGIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid macro-region '{region}'. Allowed regions: {list(MACRO_REGIONS.keys())} or 'All India'",
+            )
         valid_subs = MACRO_REGIONS[region]
         year_data = year_data[year_data["SUBDIVISION"].isin(valid_subs)]
 
     if mode == "prediction" and pipeline is not None:
         try:
-            valid = year_data.dropna(subset=ALL_FEATURES)
+            valid = year_data.dropna(subset=ALL_FEATURES).copy()
             if len(valid):
                 valid["drought_category"] = pipeline.predict(valid[ALL_FEATURES])
                 year_data = valid
@@ -308,6 +323,7 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
 
 @app.get("/api/leaderboard")
 def get_leaderboard():
+    ensure_initialized()
     comp = state.get("comp", {})
     meta = state.get("meta", {})
     feat_df = state["feat"]
@@ -364,6 +380,7 @@ def get_leaderboard():
 
 @app.get("/api/methodology")
 def get_methodology():
+    ensure_initialized()
     features_list = [
         {"name": "prev_year_jjas", "desc": "Prior year JJAS rainfall total", "group": "Monsoon Lag"},
         {"name": "prev_annual_change", "desc": "Year-on-year JJAS delta", "group": "Monsoon Momentum"},
@@ -430,17 +447,18 @@ class PredictionRequest(BaseModel):
 
 @app.post("/api/predict")
 def predict_scenario(req: PredictionRequest):
+    ensure_initialized()
     pipeline = state["pipeline"]
     if pipeline is None:
         raise HTTPException(status_code=503, detail="Trained pipeline not loaded on server")
 
-    p_annual = req.prev_jf + req.prev_mam + req.prev_jjas + req.prev_ond
-    peak = max(req.prev_jun, req.prev_jul, req.prev_aug, req.prev_sep)
-    conc = peak / req.prev_jjas if req.prev_jjas > 0 else 0.3
-    ratio = req.prev_jjas / p_annual if p_annual > 0 else 0.8
-    pre_sig = req.prev_mam / p_annual if p_annual > 0 else 0.08
-    enso_tend = req.enso_mam - req.enso_djf
-    enso_iod_inter = req.enso_mam * req.iod_mam
+    p_annual = max(0.0, req.prev_jf + req.prev_mam + req.prev_jjas + req.prev_ond)
+    peak = max(0.0, req.prev_jun, req.prev_jul, req.prev_aug, req.prev_sep)
+    conc = min(1.0, max(0.0, peak / req.prev_jjas if req.prev_jjas > 0 else 0.3))
+    ratio = min(1.0, max(0.0, req.prev_jjas / p_annual if p_annual > 0 else 0.8))
+    pre_sig = min(1.0, max(0.0, req.prev_mam / p_annual if p_annual > 0 else 0.08))
+    enso_tend = round(req.enso_mam - req.enso_djf, 4)
+    enso_iod_inter = round(req.enso_mam * req.iod_mam, 4)
 
     # Mapping modern UI names to dataset tokens (e.g., 'Marathwada' -> 'Matathwada') matches pre-trained OneHotEncoder categories
     db_sub = CANONICAL_DATASET_NAMES.get(req.subdivision, req.subdivision)
@@ -478,17 +496,20 @@ def predict_scenario(req: PredictionRequest):
 
     probabilities = []
     drought_prob = 0.0
+    raw_prob_dict = {}
     if hasattr(pipeline, "predict_proba") and hasattr(pipeline, "classes_"):
         raw_probs = pipeline.predict_proba(inp)[0]
-        for cat, pr in zip(pipeline.classes_, raw_probs):
-            p_val = float(pr)
-            probabilities.append({
-                "category": cat,
-                "probability": round(p_val * 100, 1),
-                "color": CATEGORY_COLORS.get(cat, "#64748b"),
-            })
-            if cat in ["Deficient", "Large Deficient", "No Rainfall"]:
-                drought_prob += p_val
+        raw_prob_dict = {cat: float(pr) for cat, pr in zip(pipeline.classes_, raw_probs)}
+
+    for cat in CATEGORY_ORDER:
+        p_val = raw_prob_dict.get(cat, 0.0)
+        probabilities.append({
+            "category": cat,
+            "probability": round(p_val * 100, 1),
+            "color": CATEGORY_COLORS.get(cat, "#64748b"),
+        })
+        if cat in ["Deficient", "Large Deficient", "No Rainfall"]:
+            drought_prob += p_val
 
     advisory = get_advisory_api(pred)
 
@@ -514,4 +535,5 @@ if os.path.exists(FRONTEND_DIST):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8008))
+    uvicorn.run("main:app", host="127.0.0.1", port=port, reload=True)
