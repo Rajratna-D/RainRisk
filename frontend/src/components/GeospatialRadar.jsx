@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Play, Pause, Compass, MapPin, Maximize2, AlertTriangle, Droplets, Layers } from 'lucide-react';
@@ -103,7 +103,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
 
     filteredRecords.forEach((sub) => {
       const color = CATEGORY_COLORS[sub.category] || '#94a3b8';
-      const isDrought = sub.category.includes('Deficient');
+      const isDrought = sub.category.includes('Deficient') || sub.category === 'No Rainfall';
 
       const marker = L.circleMarker([sub.lat, sub.lon], {
         radius: isDrought ? 9 : 7,
@@ -121,6 +121,8 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
          </div>`,
         { direction: 'top', offset: [0, -6], className: 'custom-map-tooltip' }
       );
+
+      const safeId = `inspect-sub-${sub.subdivision.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
       const popupHtml = `
         <div style="font-family: Inter, sans-serif; min-width: 190px;">
@@ -140,7 +142,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
               <strong style="color: ${color};">${sub.departure > 0 ? '+' : ''}${sub.departure}%</strong>
             </div>
           </div>
-          <button id="inspect-sub-${sub.subdivision.replace(/\s+/g, '-')}" style="width: 100%; background: var(--bg-stat); border: 1px solid var(--border-hover); color: var(--text-primary); font-size: 10px; font-weight: 600; padding: 5px 0; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;">
+          <button id="${safeId}" style="width: 100%; background: var(--bg-stat); border: 1px solid var(--border-hover); color: var(--text-primary); font-size: 10px; font-weight: 600; padding: 5px 0; border-radius: 6px; cursor: pointer; transition: all 0.15s ease;">
             Inspect in Regional Explorer
           </button>
         </div>
@@ -151,9 +153,8 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
       marker.subdivisionName = sub.subdivision;
 
       marker.on('popupopen', () => {
-        const btnId = `inspect-sub-${sub.subdivision.replace(/\s+/g, '-')}`;
         setTimeout(() => {
-          const btn = document.getElementById(btnId);
+          const btn = document.getElementById(safeId);
           if (btn) btn.onclick = () => onSelectSubdivision?.(sub.subdivision);
         }, 10);
       });
