@@ -91,6 +91,33 @@ def test_get_models_with_ordinal_integration():
     assert "OrdinalLogisticRegression" in all_models
 
 
+def test_frank_hall_default_estimator():
+    """Confirms base_estimator=None defaults safely to LogisticRegression without crashing."""
+    X = np.array([[-1.0], [0.0], [1.0], [2.0]])
+    y = np.array(["Deficient", "Normal", "Normal", "Excess"])
+    clf = FrankHallClassifier(base_estimator=None, category_order=["Deficient", "Normal", "Excess"])
+    clf.fit(X, y)
+    preds = clf.predict(X)
+    assert len(preds) == 4
+
+
+def test_frank_hall_not_fitted_error():
+    """Confirms FrankHallClassifier raises NotFittedError if predict or predict_proba called prior to fit."""
+    from sklearn.exceptions import NotFittedError
+    clf = FrankHallClassifier()
+    X = np.array([[1.0, 2.0]])
+    try:
+        clf.predict(X)
+        assert False, "Expected NotFittedError"
+    except NotFittedError:
+        pass
+    try:
+        clf.predict_proba(X)
+        assert False, "Expected NotFittedError"
+    except NotFittedError:
+        pass
+
+
 
 if __name__ == "__main__":
     import inspect
