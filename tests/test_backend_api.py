@@ -84,6 +84,11 @@ class TestBackendEndpoints:
         response = client.get("/api/map?year=9999")
         assert response.status_code == 404
 
+    def test_map_endpoint_invalid_region(self, client):
+        response = client.get("/api/map?year=2015&region=InvalidRegionXYZ")
+        assert response.status_code == 400
+        assert "Invalid macro-region" in response.json()["detail"]
+
     def test_leaderboard_endpoint(self, client):
         response = client.get("/api/leaderboard")
         assert response.status_code == 200
@@ -129,6 +134,11 @@ class TestBackendEndpoints:
         assert "color" in data
         assert "composite_drought_risk" in data
         assert "probabilities" in data
+        # Confirms all 6 IMD operational categories are present in natural ordinal order
+        assert len(data["probabilities"]) == 6
+        assert [p["category"] for p in data["probabilities"]] == [
+            "No Rainfall", "Large Deficient", "Deficient", "Normal", "Excess", "Large Excess"
+        ]
         assert "advisory" in data
         assert "title" in data["advisory"]
         assert "actions" in data["advisory"]
