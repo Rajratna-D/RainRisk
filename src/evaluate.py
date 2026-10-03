@@ -32,6 +32,8 @@ def ordinal_distance(y_true, y_pred):
             f"unexpected in y_pred={bad_pred}. "
             f"Filter out 'Unknown'/invalid rows before evaluation."
         )
+    if len(y_true) != len(y_pred):
+        raise ValueError(f"Length mismatch: len(y_true)={len(y_true)} does not match len(y_pred)={len(y_pred)}")
     return np.array([abs(CAT_IDX[t] - CAT_IDX[p]) for t, p in zip(y_true, y_pred)])
 
 
