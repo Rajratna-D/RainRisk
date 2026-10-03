@@ -1,4 +1,4 @@
-﻿"""
+"""
 RainRisk: Frank & Hall (2001) ordinal classification decomposition.
 
 Decomposes a K-class ordinal classification problem into K-1 cumulative
@@ -16,6 +16,9 @@ Reference:
 
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
+from sklearn.exceptions import NotFittedError
+from sklearn.linear_model import LogisticRegression
+from sklearn.utils.validation import check_is_fitted
 
 from labeling import CATEGORY_ORDER as DEFAULT_CATEGORY_ORDER
 
@@ -37,6 +40,8 @@ class FrankHallClassifier(BaseEstimator, ClassifierMixin):
         if len(self.active_categories_) < 2:
             raise ValueError(f"At least 2 distinct classes must be present in y, found {len(self.active_categories_)}")
 
+        estimator = self.base_estimator if self.base_estimator is not None else LogisticRegression(max_iter=1000)
+
         self.classes_ = np.array(self.active_categories_)
         self.cat_to_rank_ = {cat: i for i, cat in enumerate(self.active_categories_)}
         self.rank_to_cat_ = {i: cat for i, cat in enumerate(self.active_categories_)}
@@ -47,13 +52,14 @@ class FrankHallClassifier(BaseEstimator, ClassifierMixin):
         self.classifiers_ = []
         for k in range(self.num_classes_ - 1):
             binary_y = (y_ranks > k).astype(int)
-            clf = clone(self.base_estimator)
+            clf = clone(estimator)
             clf.fit(X, binary_y)
             self.classifiers_.append(clf)
 
         return self
 
     def predict_proba(self, X):
+        check_is_fitted(self, attributes=["classifiers_", "classes_", "cat_to_rank_"])
         cum_probs = []
         for clf in self.classifiers_:
             if hasattr(clf, "predict_proba"):
@@ -66,7 +72,7 @@ class FrankHallClassifier(BaseEstimator, ClassifierMixin):
             cum_probs.append(p)
 
         cum_probs = np.column_stack(cum_probs)
-        N = X.shape[0]
+        N = X.shape[0] if hasattr(X, "shape") else len(X)
         K = self.num_classes_
         probs = np.zeros((N, K))
 
@@ -82,6 +88,7 @@ class FrankHallClassifier(BaseEstimator, ClassifierMixin):
         return probs / row_sums
 
     def predict(self, X):
+        check_is_fitted(self, attributes=["classifiers_", "classes_", "cat_to_rank_"])
         probs = self.predict_proba(X)
         pred_ranks = np.argmax(probs, axis=1)
         return np.array([self.rank_to_cat_[r] for r in pred_ranks])
@@ -90,6 +97,7 @@ class FrankHallClassifier(BaseEstimator, ClassifierMixin):
         """
         Computes continuous expected severity rank: E[r | X] = sum(k * P(Y = C_k | X)).
         """
+        check_is_fitted(self, attributes=["classifiers_", "classes_", "cat_to_rank_"])
         probs = self.predict_proba(X)
         ranks = np.arange(self.num_classes_)
         return np.sum(probs * ranks, axis=1)
