@@ -1,4 +1,4 @@
-﻿"""
+"""
 RainRisk: Feature engineering module.
 
 Constructs strictly antecedent lag, rolling, and teleconnection features.
@@ -12,9 +12,14 @@ import numpy as np
 
 
 def _jjas_features_for_subdivision(group, year_col="YEAR", value_col="JJAS"):
+    if group.empty or group[year_col].dropna().empty:
+        return pd.DataFrame(columns=[year_col, "prev_year_jjas", "prev_annual_change",
+                                     "rolling_3yr_jjas", "rolling_5yr_jjas", "cv_5yr_jjas"])
+
     # Reindexing to full year range ensures rolling windows return NaN across historical gaps
     group = group.sort_values(year_col).copy()
-    years = range(int(group[year_col].min()), int(group[year_col].max()) + 1)
+    valid_years = group[year_col].dropna().astype(int)
+    years = range(int(valid_years.min()), int(valid_years.max()) + 1)
     indexed = group.set_index(year_col).reindex(years)
 
     shifted = indexed[value_col].shift(1)
@@ -23,7 +28,7 @@ def _jjas_features_for_subdivision(group, year_col="YEAR", value_col="JJAS"):
     indexed["rolling_3yr_jjas"] = shifted.rolling(3, min_periods=3).mean()
     indexed["rolling_5yr_jjas"] = shifted.rolling(5, min_periods=5).mean()
     std5 = shifted.rolling(5, min_periods=5).std()
-    indexed["cv_5yr_jjas"] = std5 / indexed["rolling_5yr_jjas"] * 100
+    indexed["cv_5yr_jjas"] = (std5 / indexed["rolling_5yr_jjas"] * 100).replace([np.inf, -np.inf], np.nan)
 
     indexed = indexed.reset_index().rename(columns={"index": year_col})
     return indexed[[year_col, "prev_year_jjas", "prev_annual_change",
@@ -67,8 +72,13 @@ ALL_ENGINEERED_FEATURES = ORIGINAL_FEATURES + ALL_NEW_FEATURES + TELECONNECTION_
 
 
 def _enhanced_features_for_subdivision(group, year_col="YEAR"):
+    feature_cols = ORIGINAL_FEATURES + ALL_NEW_FEATURES
+    if group.empty or group[year_col].dropna().empty:
+        return pd.DataFrame(columns=[year_col] + feature_cols)
+
     group = group.sort_values(year_col).copy()
-    years = range(int(group[year_col].min()), int(group[year_col].max()) + 1)
+    valid_years = group[year_col].dropna().astype(int)
+    years = range(int(valid_years.min()), int(valid_years.max()) + 1)
     indexed = group.set_index(year_col).reindex(years)
 
     jjas_shifted = indexed["JJAS"].shift(1)
@@ -77,7 +87,7 @@ def _enhanced_features_for_subdivision(group, year_col="YEAR"):
     indexed["rolling_3yr_jjas"] = jjas_shifted.rolling(3, min_periods=3).mean()
     indexed["rolling_5yr_jjas"] = jjas_shifted.rolling(5, min_periods=5).mean()
     std5 = jjas_shifted.rolling(5, min_periods=5).std()
-    indexed["cv_5yr_jjas"] = std5 / indexed["rolling_5yr_jjas"] * 100
+    indexed["cv_5yr_jjas"] = (std5 / indexed["rolling_5yr_jjas"] * 100).replace([np.inf, -np.inf], np.nan)
 
     for month in MONSOON_MONTHS:
         if month in indexed.columns:
@@ -137,6 +147,10 @@ def build_lag_rolling_features(df, subdivision_col="SUBDIVISION", year_col="YEAR
     if include_teleconnections is None:
         include_teleconnections = enhanced
 
+    if df.empty:
+        extra_cols = ALL_ENGINEERED_FEATURES if enhanced else ORIGINAL_FEATURES
+        return df.reindex(columns=list(df.columns) + [c for c in extra_cols if c not in df.columns])
+
     base = df.copy().sort_values([subdivision_col, year_col])
     parts = []
     for sub, group in base.groupby(subdivision_col, sort=False):
@@ -152,8 +166,8 @@ def build_lag_rolling_features(df, subdivision_col="SUBDIVISION", year_col="YEAR
     if include_teleconnections:
         tele_path = os.path.join(os.path.dirname(__file__), "..", "data", "interim", "teleconnections.csv")
         if os.path.exists(tele_path):
-            tele_df = pd.read_csv(tele_path)
+            tele_df = pd.read_csv(tele_path).drop_duplicates(subset=[year_col])
             cols_to_merge = [c for c in tele_df.columns if c == year_col or c not in result.columns]
-            result = result.merge(tele_df[cols_to_merge], on=year_col, how="left")
+            result = result.merge(tele_df[cols_to_merge], on=year_col, how="left", validate="many_to_one")
 
     return result.sort_values([subdivision_col, year_col]).reset_index(drop=True)
