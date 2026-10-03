@@ -231,6 +231,26 @@ def test_teleconnections_zero_nans_and_physical_bounds():
     assert feat_df['iod_mam_lag'].max() <= 2.5, "IOD DMI MAM above +2.5"
 
 
+def test_cv_5yr_jjas_zero_mean_produces_nan():
+    """Confirms that if rolling 5-year mean is 0, cv_5yr_jjas yields NaN and never inf."""
+    df = pd.DataFrame({
+        "SUBDIVISION": ["AridZone"] * 7,
+        "YEAR": [2000, 2001, 2002, 2003, 2004, 2005, 2006],
+        "JJAS": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    })
+    feat = build_lag_rolling_features(df, enhanced=False)
+    # The 6th row depends on 5 prior zero years: mean=0, std=0 -> cv must be NaN, not inf
+    row_2006 = feat[feat["YEAR"] == 2006].iloc[0]
+    assert np.isnan(row_2006["cv_5yr_jjas"]), "cv_5yr_jjas with zero mean should be NaN, not inf"
+
+
+def test_empty_subdivision_dataframe_handled_safely():
+    """Confirms empty subdivision DataFrame does not raise unhandled exception."""
+    df = pd.DataFrame(columns=["SUBDIVISION", "YEAR", "JJAS"])
+    feat = build_lag_rolling_features(df, enhanced=True)
+    assert len(feat) == 0
+
+
 if __name__ == "__main__":
     import inspect
     test_fns = [obj for name, obj in list(globals().items())
