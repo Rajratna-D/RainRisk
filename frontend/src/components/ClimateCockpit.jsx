@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { runPrediction, fetchSubdivisions } from '../api/client';
 import { Sliders, Zap, ShieldAlert, Waves, CloudRain } from 'lucide-react';
 
@@ -288,12 +288,20 @@ export default function ClimateCockpit() {
                 </h4>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', fontSize: '0.81rem', color: 'var(--text-secondary)' }}>
-                {prediction.advisory.actions.map((act, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: prediction.advisory.color, fontWeight: 'bold' }}>•</span>
-                    <span>{act}</span>
-                  </div>
-                ))}
+                {prediction.advisory.actions.map((act, idx) => {
+                  const colonIdx = act.indexOf(': ');
+                  const label = colonIdx !== -1 ? act.substring(0, colonIdx) : null;
+                  const desc = colonIdx !== -1 ? act.substring(colonIdx + 2) : act;
+                  return (
+                    <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+                      <span style={{ color: prediction.advisory.color, fontWeight: 'bold' }}>•</span>
+                      <span>
+                        {label && <strong style={{ color: 'var(--text-primary)', marginRight: '4px' }}>{label}:</strong>}
+                        {desc}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
