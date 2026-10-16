@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Scenario Simulation & Inference Lifecycle",
+    "output": "rainrisk_sequence.html",
+    "viewBox": [1120, 640],
+    "column_fit": "spread",
+    "quality_profile": "standard",
+    "animation": "trace",
+    "views": [
+      {
+        "id": "client-interaction",
+        "label": "Client interaction and debounce",
+        "focus": ["user", "cockpit", "cache"],
+        "note": "User manipulates physical climate parameters with in-memory cache inspection."
+      },
+      {
+        "id": "server-inference",
+        "label": "Defense and ML execution",
+        "focus": ["api", "guard", "ml", "adv"],
+        "note": "FastAPI enforces Pydantic bounds and evaluates the Random Forest ensemble."
+      }
+    ]
+  },
+  "participants": [
+    { "id": "user", "type": "external", "label": "Agronomist", "sublabel": "Browser / Mobile" },
+    { "id": "cockpit", "type": "frontend", "label": "Climate Cockpit", "sublabel": "React 18 UI" },
+    { "id": "cache", "type": "database", "label": "Client Cache", "sublabel": "In-Memory Map" },
+    { "id": "api", "type": "backend", "label": "FastAPI Core", "sublabel": "Uvicorn Engine" },
+    { "id": "guard", "type": "security", "label": "Security Shield", "sublabel": "Pydantic + RateLimit" },
+    { "id": "ml", "type": "backend", "label": "ML Pipeline", "sublabel": "RandomForest (N=100)" },
+    { "id": "adv", "type": "backend", "label": "Advisory Engine", "sublabel": "Agronomic Protocol" }
+  ],
+  "segments": [
+    { "from": 150, "to": 236, "label": "Client Debounce & Cache" },
+    { "from": 242, "to": 462, "label": "Validation & ML Inference" },
+    { "from": 468, "to": 558, "label": "Payload Delivery & Animation" }
+  ],
+  "messages": [
+    { "id": "drag-slider", "from": "user", "to": "cockpit", "y": 160, "label": "adjust teleconnection slider", "variant": "default" },
+    { "id": "cache-check", "from": "cockpit", "to": "cache", "y": 192, "label": "query cache (scenario hash)", "variant": "default" },
+    { "id": "cache-miss", "from": "cache", "to": "cockpit", "y": 224, "label": "cache miss (recalculate)", "variant": "return" },
+    { "id": "api-request", "from": "cockpit", "to": "api", "y": 256, "label": "POST /api/predict (JSON)", "variant": "emphasis" },
+    { "id": "guard-check", "from": "api", "to": "guard", "y": 288, "label": "validate physical bounds", "variant": "security" },
+    { "id": "guard-pass", "from": "guard", "to": "api", "y": 320, "label": "bounds ok + token granted", "variant": "return" },
+    { "id": "ml-infer", "from": "api", "to": "ml", "y": 352, "label": "predict_proba(feature_vector)", "variant": "emphasis" },
+    { "id": "ml-result", "from": "ml", "to": "api", "y": 384, "label": "6-tier probabilities & class", "variant": "return" },
+    { "id": "adv-query", "from": "api", "to": "adv", "y": 416, "label": "get_advisory_api(tier)", "variant": "default" },
+    { "id": "adv-return", "from": "adv", "to": "api", "y": 448, "label": "agronomic actions array", "variant": "return" },
+    { "id": "api-response", "from": "api", "to": "cockpit", "y": 480, "label": "200 OK (Risk% + Advisory)", "variant": "return" },
+    { "id": "cache-store", "from": "cockpit", "to": "cache", "y": 512, "label": "store scenario response", "variant": "dashed" },
+    { "id": "ui-render", "from": "cockpit", "to": "user", "y": 544, "label": "animate dial & update advisory", "variant": "return" }
+  ],
+  "activations": [
+    { "participant": "cockpit", "from": 158, "to": 550, "type": "frontend" },
+    { "participant": "cache", "from": 186, "to": 228, "type": "database" },
+    { "participant": "api", "from": 250, "to": 486, "type": "backend" },
+    { "participant": "guard", "from": 284, "to": 324, "type": "security" },
+    { "participant": "ml", "from": 348, "to": 388, "type": "backend" },
+    { "participant": "adv", "from": 412, "to": 452, "type": "backend" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Low Latency Path",
+      "items": [
+        "120ms debounce absorbs rapid slider dragging on mobile touchscreens",
+        "In-memory Map cache provides 0ms instant recall for explored scenarios",
+        "AbortController automatically cancels stale in-flight HTTP requests"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Security & Defense",
+      "items": [
+        "Pydantic schema validates physical bounds on all 16 input parameters",
+        "Sliding-window token limiter restricts requests to 120 per minute per IP",
+        "Invalid requests return 422 Unprocessable Entity with exact field diagnostics"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Decision Support",
+      "items": [
+        "Random Forest Classifier outputs full probability distribution across 6 IMD tiers",
+        "Composite drought risk score computed by summing deficit category probabilities",
+        "Dynamic advisory maps directly to agronomic irrigation and sowing protocols"
+      ]
+    }
+  ]
+}

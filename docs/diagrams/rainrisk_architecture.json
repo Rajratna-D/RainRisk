@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "RainRisk System Component Architecture",
+    "output": "rainrisk_architecture.html",
+    "quality_profile": "standard",
+    "views": [
+      {
+        "id": "inference-path",
+        "label": "Inference and simulation flow",
+        "focus": ["browser", "spa", "api", "ml"],
+        "note": "Follow the scenario simulation from the client slider to the Random Forest model."
+      },
+      {
+        "id": "security-and-data",
+        "label": "Defense and climatology",
+        "focus": ["sec", "api", "imd", "tele"],
+        "note": "Inspect protective API middleware and climatological ground truth datasets."
+      }
+    ]
+  },
+  "components": [
+    { "id": "browser", "type": "external", "label": "Client Browser", "sublabel": "Mobile / Desktop UI", "pos": [40, 260], "size": [130, 60] },
+    { "id": "spa", "type": "frontend", "label": "React 18 SPA", "sublabel": "Vite + Leaflet Carto", "pos": [250, 260], "size": [130, 60] },
+    { "id": "sec", "type": "security", "label": "Security Shield", "sublabel": "Rate Limit + Headers", "pos": [470, 110], "size": [130, 60], "tag": "120 req/min" },
+    { "id": "api", "type": "backend", "label": "FastAPI Core", "sublabel": "Uvicorn :8008", "pos": [470, 260], "size": [130, 60] },
+    { "id": "adv", "type": "backend", "label": "Advisory Engine", "sublabel": "Agronomic Protocol", "pos": [470, 420], "size": [130, 60] },
+    { "id": "ml", "type": "backend", "label": "ML Inference Core", "sublabel": "RandomForest (N=100)", "pos": [690, 260], "size": [130, 60] },
+    { "id": "imd", "type": "database", "label": "IMD Rainfall Archive", "sublabel": "1901-2017 Ground Truth", "pos": [910, 180], "size": [130, 60] },
+    { "id": "tele", "type": "database", "label": "Teleconnection Index", "sublabel": "Niño 3.4 + IOD DMI", "pos": [910, 340], "size": [130, 60] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Production Host: Render Linux Container", "wraps": ["spa", "sec", "api", "adv", "ml", "imd", "tele"] },
+    { "kind": "security-group", "label": "FastAPI Defense Perimeter", "wraps": ["sec", "api"] }
+  ],
+  "connections": [
+    { "id": "user-to-spa", "from": "browser", "to": "spa", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "sec-to-api", "from": "sec", "to": "api", "label": "guard", "variant": "security", "fromSide": "bottom", "toSide": "top", "labelDy": 24 },
+    { "id": "spa-to-api", "from": "spa", "to": "api", "label": "REST JSON", "variant": "emphasis" },
+    { "id": "api-to-adv", "from": "api", "to": "adv", "label": "advisory", "fromSide": "bottom", "toSide": "top", "labelDy": 24 },
+    { "id": "api-to-ml", "from": "api", "to": "ml", "label": "inference vector", "variant": "emphasis" },
+    { "id": "ml-to-imd", "from": "ml", "to": "imd", "label": "LPA baseline" },
+    { "id": "ml-to-tele", "from": "ml", "to": "tele", "label": "SST anomalies" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Client Tier", "items": ["React 18 SPA with responsive Bento Grid architecture", "Esri Dark Cartography with interactive circle markers", "Client-side 120ms debounce with in-memory LRU cache"] },
+    { "dot": "emerald", "title": "Inference Tier", "items": ["FastAPI asynchronous backend with GZip response compression", "Random Forest Classifier (100 trees) with 93.0% Off-by-One accuracy", "StandardScaler and OneHotEncoder preprocessing pipeline"] },
+    { "dot": "rose", "title": "Security & Data", "items": ["Pydantic physical bounds validation on all numerical parameters", "Defense-in-depth security headers (X-Frame, Nosniff)", "117-year IMD rainfall dataset paired with NOAA teleconnections"] }
+  ]
+}
