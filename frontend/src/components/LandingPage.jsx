@@ -58,12 +58,24 @@ export default function LandingPage({ onLaunchDashboard, isExiting = false }) {
     panelsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // 4 corners convergence
-  const card1Transform = `translate3d(${(1 - progress) * -90}px, ${(1 - progress) * -40}px, 0)`;
-  const card2Transform = `translate3d(${(1 - progress) * 90}px, ${(1 - progress) * -40}px, 0)`;
-  const card3Transform = `translate3d(${(1 - progress) * -90}px, ${(1 - progress) * 40}px, 0)`;
-  const card4Transform = `translate3d(${(1 - progress) * 90}px, ${(1 - progress) * 40}px, 0)`;
-  const centerTransform = `translate3d(0, ${(1 - progress) * 50}px, 0) scale(${0.86 + progress * 0.14})`;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // 4 corners convergence (subtle vertical lift on mobile, 4-corner convergence on desktop)
+  const xOffset = isMobile ? 0 : 90;
+  const yOffset = isMobile ? 25 : 40;
+  const card1Transform = `translate3d(${(1 - progress) * -xOffset}px, ${(1 - progress) * -yOffset}px, 0)`;
+  const card2Transform = `translate3d(${(1 - progress) * xOffset}px, ${(1 - progress) * -yOffset}px, 0)`;
+  const card3Transform = `translate3d(${(1 - progress) * -xOffset}px, ${(1 - progress) * yOffset}px, 0)`;
+  const card4Transform = `translate3d(${(1 - progress) * xOffset}px, ${(1 - progress) * yOffset}px, 0)`;
+  const centerTransform = `translate3d(0, ${(1 - progress) * (isMobile ? 20 : 50)}px, 0) scale(${isMobile ? 1 : 0.86 + progress * 0.14})`;
+
 
   return (
     <div className={`lp ${isExiting ? 'lp-exit' : ''}`}>
