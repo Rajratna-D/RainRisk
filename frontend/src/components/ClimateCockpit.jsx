@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { runPrediction, fetchSubdivisions, fetchSubdivisionDetail } from '../api/client';
 import { Sliders, Zap, ShieldAlert, Waves, CloudRain } from 'lucide-react';
 
@@ -285,6 +285,13 @@ export default function ClimateCockpit() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {!prediction && (
+            <div className="bento-card" style={{ padding: '2.5rem', textAlign: 'center', minHeight: '340px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="spin" style={{ width: 32, height: 32, border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--accent-teal)', borderRadius: '50%', marginBottom: '1rem' }} />
+              <span style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Loading Climate Risk Intelligence...</span>
+            </div>
+          )}
+
           {prediction && (
             <div className="bento-card" style={{ borderLeft: `4px solid ${prediction.color}`, padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
