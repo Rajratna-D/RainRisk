@@ -8,12 +8,15 @@ import pandas as pd
 import numpy as np
 import joblib
 
-from fastapi import FastAPI, HTTPException
+import time
+from collections import defaultdict
+
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 BACKEND_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(BACKEND_DIR)
@@ -29,6 +32,22 @@ from advisory import get_advisory_api
 
 state: Dict[str, Any] = {}
 _init_lock = threading.Lock()
+_rate_limits: Dict[str, list] = defaultdict(list)
+_rate_lock = threading.Lock()
+
+def is_rate_limited(client_ip: str, limit: int = 120, window_sec: int = 60) -> bool:
+    """Sliding-window request rate limiter guarding ML inference endpoints against DoS floods."""
+    now = time.time()
+    with _rate_lock:
+        timestamps = _rate_limits[client_ip]
+        # Discard expired timestamps outside current window
+        valid_timestamps = [t for t in timestamps if now - t < window_sec]
+        if len(valid_timestamps) >= limit:
+            _rate_limits[client_ip] = valid_timestamps
+            return True
+        valid_timestamps.append(now)
+        _rate_limits[client_ip] = valid_timestamps
+        return False
 
 def initialize_data():
     """Load datasets and model artifacts into application memory cache."""
@@ -164,6 +183,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def attach_security_headers(request: Request, call_next):
+    """Enforce defense-in-depth HTTP security headers on all responses."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
 
 @app.get("/health")
 @app.get("/api/health")
@@ -222,7 +250,22 @@ def get_subdivisions():
 def get_subdivision_detail(name: str):
     ensure_initialized()
     raw = state["raw"]
-    db_name = CANONICAL_DATASET_NAMES.get(name, name)
+    cleaned_name = name.strip()
+
+    # Case-insensitive resolution for robust client nomenclature
+    matched_name = None
+    for k, v in CANONICAL_DATASET_NAMES.items():
+        if k.lower() == cleaned_name.lower():
+            matched_name = v
+            break
+
+    if not matched_name:
+        for s in raw["SUBDIVISION"].unique():
+            if s.lower() == cleaned_name.lower():
+                matched_name = s
+                break
+
+    db_name = matched_name if matched_name else CANONICAL_DATASET_NAMES.get(cleaned_name, cleaned_name)
     disp_name = DISPLAY_NAME_MAP.get(db_name, db_name)
     sub_data = raw[raw["SUBDIVISION"] == db_name].sort_values("YEAR")
     if sub_data.empty:
@@ -474,25 +517,29 @@ def get_methodology():
     }
 
 class PredictionRequest(BaseModel):
-    subdivision: str
-    prev_jjas: float
-    prev_change: float
-    rolling_3yr: float
-    rolling_5yr: float
-    cv_5yr: float
-    prev_jun: float
-    prev_jul: float
-    prev_aug: float
-    prev_sep: float
-    prev_jf: float
-    prev_mam: float
-    prev_ond: float
-    enso_djf: float
-    enso_mam: float
-    iod_mam: float
+    subdivision: str = Field(..., min_length=2, max_length=100, description="Target meteorological subdivision")
+    prev_jjas: float = Field(..., ge=0.0, le=10000.0, description="Prior year JJAS monsoon rainfall (mm)")
+    prev_change: float = Field(..., ge=-6000.0, le=6000.0, description="Year-on-year rainfall momentum delta (mm)")
+    rolling_3yr: float = Field(..., ge=0.0, le=10000.0, description="3-year rolling JJAS mean (mm)")
+    rolling_5yr: float = Field(..., ge=0.0, le=10000.0, description="5-year rolling JJAS mean (mm)")
+    cv_5yr: float = Field(..., ge=0.0, le=250.0, description="5-year rainfall coefficient of variation (%)")
+    prev_jun: float = Field(..., ge=0.0, le=5000.0, description="Prior June rainfall (mm)")
+    prev_jul: float = Field(..., ge=0.0, le=5000.0, description="Prior July rainfall (mm)")
+    prev_aug: float = Field(..., ge=0.0, le=5000.0, description="Prior August rainfall (mm)")
+    prev_sep: float = Field(..., ge=0.0, le=5000.0, description="Prior September rainfall (mm)")
+    prev_jf: float = Field(..., ge=0.0, le=3000.0, description="Prior Jan-Feb rainfall (mm)")
+    prev_mam: float = Field(..., ge=0.0, le=4000.0, description="Prior Mar-May rainfall (mm)")
+    prev_ond: float = Field(..., ge=0.0, le=4000.0, description="Prior Oct-Dec rainfall (mm)")
+    enso_djf: float = Field(..., ge=-5.0, le=5.0, description="Niño 3.4 DJF SST anomaly (°C)")
+    enso_mam: float = Field(..., ge=-5.0, le=5.0, description="Niño 3.4 MAM SST anomaly (°C)")
+    iod_mam: float = Field(..., ge=-3.5, le=3.5, description="Dipole Mode Index MAM anomaly")
 
 @app.post("/api/predict")
-def predict_scenario(req: PredictionRequest):
+def predict_scenario(req: PredictionRequest, request: Request):
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    if is_rate_limited(client_ip, limit=120, window_sec=60):
+        raise HTTPException(status_code=429, detail="Inference rate limit exceeded (120 req/min). Please slow down.")
+
     ensure_initialized()
     pipeline = state["pipeline"]
     if pipeline is None:
@@ -506,8 +553,22 @@ def predict_scenario(req: PredictionRequest):
     enso_tend = round(req.enso_mam - req.enso_djf, 4)
     enso_iod_inter = round(req.enso_mam * req.iod_mam, 4)
 
-    # Mapping modern UI names to dataset tokens (e.g., 'Marathwada' -> 'Matathwada') matches pre-trained OneHotEncoder categories
-    db_sub = CANONICAL_DATASET_NAMES.get(req.subdivision, req.subdivision)
+    # Robust case-insensitive canonical mapping
+    cleaned_sub = req.subdivision.strip()
+    db_sub = None
+    for k, v in CANONICAL_DATASET_NAMES.items():
+        if k.lower() == cleaned_sub.lower():
+            db_sub = v
+            break
+    if not db_sub:
+        raw_subs = state["raw"]["SUBDIVISION"].unique() if "raw" in state else []
+        for s in raw_subs:
+            if s.lower() == cleaned_sub.lower():
+                db_sub = s
+                break
+    if not db_sub:
+        db_sub = CANONICAL_DATASET_NAMES.get(cleaned_sub, cleaned_sub)
+
     disp_sub = DISPLAY_NAME_MAP.get(db_sub, db_sub)
 
     row = {

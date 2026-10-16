@@ -9,10 +9,24 @@ import ClimateCockpit from './components/ClimateCockpit';
 import Methodology from './components/Methodology';
 import { fetchOverview } from './api/client';
 
+const VALID_TABS = ['pulse', 'radar', 'explorer', 'leaderboard', 'cockpit', 'methodology'];
+
+function getInitialNavState() {
+  if (typeof window === 'undefined') {
+    return { viewMode: 'landing', activeTab: 'pulse' };
+  }
+  const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+  if (VALID_TABS.includes(hash)) {
+    return { viewMode: 'dashboard', activeTab: hash };
+  }
+  return { viewMode: 'landing', activeTab: 'pulse' };
+}
+
 export default function App() {
-  const [viewMode, setViewMode] = useState('landing'); // 'landing' | 'dashboard'
+  const initial = useRef(getInitialNavState()).current;
+  const [viewMode, setViewMode] = useState(initial.viewMode); // 'landing' | 'dashboard'
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [activeTab, setActiveTab] = useState('pulse');
+  const [activeTab, setActiveTab] = useState(initial.activeTab);
   const [overviewData, setOverviewData] = useState(null);
   const [activeYear, setActiveYear] = useState(2015);
   const [activeSubdivision, setActiveSubdivision] = useState('Kerala');
@@ -28,6 +42,22 @@ export default function App() {
       .catch((err) => console.error('Failed fetching overview:', err));
   }, []);
 
+  // Listen to browser Back / Forward buttons and URL hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+      if (VALID_TABS.includes(hash)) {
+        setViewMode('dashboard');
+        setActiveTab(hash);
+      } else if (!hash || hash === 'landing' || hash === 'home') {
+        setViewMode('landing');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   useEffect(() => {
     const el = pageRef.current;
     if (!el) return;
@@ -35,6 +65,14 @@ export default function App() {
     void el.offsetWidth;
     el.classList.add('page-enter');
   }, [activeTab]);
+
+  const handleTabChange = (tabId) => {
+    if (tabId === activeTab) return;
+    setActiveTab(tabId);
+    if (window.location.hash !== `#${tabId}`) {
+      window.location.hash = tabId;
+    }
+  };
 
   const handleLaunchDashboard = () => {
     if (isTransitioning) return;
@@ -44,6 +82,10 @@ export default function App() {
       setViewMode('dashboard');
       window.scrollTo(0, 0);
       setIsTransitioning(false);
+      const targetTab = VALID_TABS.includes(activeTab) ? activeTab : 'pulse';
+      if (window.location.hash !== `#${targetTab}`) {
+        window.location.hash = targetTab;
+      }
     }, 380);
   };
 
@@ -55,17 +97,22 @@ export default function App() {
       setViewMode('landing');
       window.scrollTo(0, 0);
       setIsTransitioning(false);
+      if (window.location.hash) {
+        history.pushState(null, '', window.location.pathname + window.location.search);
+      }
     }, 380);
   };
 
   const handleSelectYear = (yr) => {
     setActiveYear(yr);
     setActiveTab('radar');
+    window.location.hash = 'radar';
   };
 
   const handleSelectSubdivision = (subName) => {
     setActiveSubdivision(subName);
     setActiveTab('explorer');
+    window.location.hash = 'explorer';
   };
 
   if (viewMode === 'landing') {
@@ -81,7 +128,7 @@ export default function App() {
     <div className={`app-container ${isTransitioning ? 'dashboard-exit' : 'dashboard-enter'}`}>
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={handleTabChange}
         onExitToLanding={handleExitToLanding}
       />
 

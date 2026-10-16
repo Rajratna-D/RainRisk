@@ -175,3 +175,60 @@ class TestBackendEndpoints:
         data = response.json()
         assert "detail" in data
 
+    def test_security_headers_present(self, client):
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.headers.get("X-Content-Type-Options") == "nosniff"
+        assert response.headers.get("X-Frame-Options") == "SAMEORIGIN"
+        assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+
+    def test_predict_bounds_validation_rejects_negative_rainfall(self, client):
+        payload = {
+            "subdivision": "Kerala",
+            "prev_jjas": -500.0,  # Negative rainfall should be rejected with 422
+            "prev_change": 0.0,
+            "rolling_3yr": 1500.0,
+            "rolling_5yr": 1500.0,
+            "cv_5yr": 20.0,
+            "prev_jun": 300.0,
+            "prev_jul": 500.0,
+            "prev_aug": 400.0,
+            "prev_sep": 300.0,
+            "prev_jf": 30.0,
+            "prev_mam": 120.0,
+            "prev_ond": 150.0,
+            "enso_djf": 0.0,
+            "enso_mam": 0.0,
+            "iod_mam": 0.0,
+        }
+        response = client.post("/api/predict", json=payload)
+        assert response.status_code == 422
+
+    def test_predict_bounds_validation_rejects_impossible_sst(self, client):
+        payload = {
+            "subdivision": "Kerala",
+            "prev_jjas": 1500.0,
+            "prev_change": 0.0,
+            "rolling_3yr": 1500.0,
+            "rolling_5yr": 1500.0,
+            "cv_5yr": 20.0,
+            "prev_jun": 300.0,
+            "prev_jul": 500.0,
+            "prev_aug": 400.0,
+            "prev_sep": 300.0,
+            "prev_jf": 30.0,
+            "prev_mam": 120.0,
+            "prev_ond": 150.0,
+            "enso_djf": 99.0,  # Impossible SST anomaly should be rejected with 422
+            "enso_mam": 0.0,
+            "iod_mam": 0.0,
+        }
+        response = client.post("/api/predict", json=payload)
+        assert response.status_code == 422
+
+    def test_subdivision_case_insensitive_lookup(self, client):
+        response = client.get("/api/subdivision/coastal karnataka")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["metadata"]["name"] == "Coastal Karnataka"
+
