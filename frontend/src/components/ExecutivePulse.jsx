@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Layers, CheckCircle2, ShieldCheck, BarChart2, TrendingUp, AlertCircle } from 'lucide-react';
 
 function useAnimatedCounter(target, duration = 1200, decimals = 0) {
@@ -245,13 +245,17 @@ export default function ExecutivePulse({ overviewData, onSelectYear }) {
             )}
           </svg>
 
-          {hoverPoint && (
-            <div className="chart-tooltip" style={{ left: `${((sx(hoverPoint.year) / cW) * 100).toFixed(1)}%` }}>
-              <div className="chart-tooltip-title">Monsoon Year {hoverPoint.year}</div>
-              <div style={{ color: '#60a5fa' }}>JJAS: {hoverPoint.jjas} mm</div>
-              <div style={{ color: '#fbbf24' }}>10-Yr Smooth: {hoverPoint.smooth} mm</div>
-            </div>
-          )}
+          {hoverPoint && (() => {
+            const rawPct = (sx(hoverPoint.year) / cW) * 100;
+            const clampedPct = Math.max(16, Math.min(84, rawPct));
+            return (
+              <div className="chart-tooltip" style={{ left: `${clampedPct.toFixed(1)}%` }}>
+                <div className="chart-tooltip-title">Monsoon Year {hoverPoint.year}</div>
+                <div style={{ color: '#60a5fa' }}>JJAS: {hoverPoint.jjas} mm</div>
+                <div style={{ color: '#fbbf24' }}>10-Yr Smooth: {hoverPoint.smooth} mm</div>
+              </div>
+            );
+          })()}
         </div>
 
         <div className="landmark-section">

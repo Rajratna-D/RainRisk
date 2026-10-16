@@ -308,30 +308,28 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
 
       {mapData && (
         <div className="status-strip">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.04em' }}>
-              {year} ALL-INDIA PROFILE:
+          <div className="status-strip-header">
+            <span className="status-strip-title">
+              {year} ALL-INDIA PROFILE
             </span>
-            <span style={{ color: 'var(--text-secondary)' }}>
+            <span className="status-strip-stress">
               {mapData.deficient_percentage}% Area Drought Stress
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', fontSize: '0.75rem' }}>
-            <span style={{ color: 'var(--accent-rose)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+          <div className="status-strip-pills">
+            <div className="status-pill status-pill-deficit">
               <span className="status-dot" style={{ background: 'var(--accent-rose)' }}></span>
-              Deficit {mapData.deficient_count}
-            </span>
-            <span style={{ color: 'var(--text-muted)' }}>-</span>
-            <span style={{ color: 'var(--risk-safe)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <span>Deficit <strong>{mapData.deficient_count}</strong></span>
+            </div>
+            <div className="status-pill status-pill-normal">
               <span className="status-dot" style={{ background: 'var(--risk-safe)' }}></span>
-              Normal {normalCount}
-            </span>
-            <span style={{ color: 'var(--text-muted)' }}>-</span>
-            <span style={{ color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <span>Normal <strong>{normalCount}</strong></span>
+            </div>
+            <div className="status-pill status-pill-surplus">
               <span className="status-dot" style={{ background: 'var(--accent-blue)' }}></span>
-              Surplus {surplusCount}
-            </span>
+              <span>Surplus <strong>{surplusCount}</strong></span>
+            </div>
           </div>
         </div>
       )}

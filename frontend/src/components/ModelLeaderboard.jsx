@@ -107,14 +107,14 @@ export default function ModelLeaderboard() {
 
       {labels.length > 0 && (
         <div className="bento-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <div className="matrix-header-bar">
             <div>
-              <h3 style={{ fontSize: '1.05rem' }}>Held-Out Test Confusion Matrix (2011-2017)</h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              <h3 style={{ fontSize: '1.05rem', marginBottom: '0.25rem' }}>Held-Out Test Confusion Matrix (2011-2017)</h3>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
                 Exact diagonal agreement: <strong style={{ color: 'var(--accent-teal)' }}>{diagonal_accuracy}%</strong>. Off-diagonal errors concentrate strictly in adjacent ordinal categories.
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '0.4rem' }}>
+            <div className="matrix-toggle-group">
               <button
                 className={`preset-chip ${showNormalized ? 'active' : ''}`}
                 onClick={() => setShowNormalized(true)}
@@ -130,20 +130,20 @@ export default function ModelLeaderboard() {
             </div>
           </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '0.8rem' }}>
+          <div className="matrix-table-container">
+            <table>
               <thead>
                 <tr>
-                  <th style={{ padding: '0.65rem', color: 'var(--text-muted)', textAlign: 'left' }}>True \ Pred</th>
+                  <th style={{ padding: '0.65rem 0.6rem', color: 'var(--text-muted)', textAlign: 'left', whiteSpace: 'nowrap' }}>True \ Pred</th>
                   {labels.map((l) => (
-                    <th key={l} style={{ padding: '0.65rem', color: 'var(--text-secondary)', fontWeight: 600 }}>{l}</th>
+                    <th key={l} style={{ padding: '0.65rem 0.5rem', color: 'var(--text-secondary)', fontWeight: 600, whiteSpace: 'nowrap', fontSize: '0.76rem' }}>{l}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {labels.map((trueLabel, rowIdx) => (
                   <tr key={trueLabel}>
-                    <td style={{ padding: '0.65rem', color: 'var(--text-secondary)', fontWeight: 600, textAlign: 'left' }}>
+                    <td style={{ padding: '0.65rem 0.6rem', color: 'var(--text-secondary)', fontWeight: 600, textAlign: 'left', whiteSpace: 'nowrap', fontSize: '0.76rem' }}>
                       {trueLabel}
                     </td>
                     {labels.map((predLabel, colIdx) => {

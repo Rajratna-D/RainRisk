@@ -333,7 +333,7 @@ export default function ClimateCockpit() {
                     title={`${item.category}: ${item.probability}%`} />
                 ))}
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.71rem', fontFamily: 'var(--font-mono)', marginTop: '0.45rem' }}>
+              <div className="cockpit-prob-labels">
                 {prediction.probabilities.map((p) => (
                   <div key={p.category} style={{ color: p.color, fontWeight: p.probability > 20 ? 700 : 400 }}>
                     {CATEGORY_SHORT[p.category] || p.category}: {p.probability}%

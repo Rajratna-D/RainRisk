@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchMethodology } from '../api/client';
 import { BookOpen, Shield, Layers, Search, Cpu } from 'lucide-react';
 
@@ -109,22 +109,22 @@ export default function Methodology() {
       </div>
 
       <div className="bento-card" style={{ marginTop: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <div className="methodology-header-bar">
           <div>
-            <h3 style={{ fontSize: '1.05rem' }}>Engineered Feature Dictionary (23 Features + 1 Categorical)</h3>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <h3 style={{ fontSize: '1.05rem', marginBottom: '0.25rem' }}>Engineered Feature Dictionary (23 Features + 1 Categorical)</h3>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
               All features strictly adhere to zero-leakage prior-year (.shift(1)) or pre-monsoon spring time horizons.
             </p>
           </div>
 
-          <div style={{ position: 'relative', width: '240px' }}>
+          <div className="methodology-search-wrapper">
             <input
               type="text"
               placeholder="Search feature identifier..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="custom-select"
-              style={{ paddingLeft: '2rem', height: '36px' }}
+              style={{ paddingLeft: '2rem', height: '36px', width: '100%' }}
             />
             <Search size={14} color="var(--text-muted)" style={{ position: 'absolute', left: '10px', top: '11px' }} />
           </div>
