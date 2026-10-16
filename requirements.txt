@@ -1,28 +1,18 @@
-# RainRisk: Python dependencies
-# Core ML & Data
-pandas>=2.0
-numpy>=1.24
-scipy>=1.10
-matplotlib>=3.7
-scikit-learn>=1.3
-imbalanced-learn>=0.11
-joblib>=1.3
+# RainRisk: Production Web & ML Runtime Dependencies
 
-# Notebook & Testing
-jupyter>=1.0
-nbformat>=5.9
-pytest>=7.4
-httpx>=0.25
+# Core Data & Machine Learning Engine
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+scikit-learn>=1.3.0
+imbalanced-learn>=0.11.0
+joblib>=1.3.0
 
-# Streamlit Dashboard
-streamlit>=1.30
-plotly>=5.18
+# FastAPI Backend & High-Performance Async Server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
 
-# FastAPI Backend & Web Server
-fastapi>=0.104
-uvicorn>=0.24
-
-# Report & PDF Generation
-python-docx>=1.1
-fpdf2>=2.8
-Pillow>=10.0
+# HTTP Client (required for testing & deployment health checks)
+httpx>=0.25.0

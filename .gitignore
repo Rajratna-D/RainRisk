@@ -87,12 +87,14 @@ desktop.ini
 
 # Large Model Binaries (>50MB, exceeds GitHub limits)
 # Regenerate anytime with: python src/save_model.py
-results/model/*.joblib
+# results/model/*.joblib  (Compressed to 18.7MB, safe for GitHub)
 
 # Temporary / Scratch Files
 scratch/
 *.tmp
 *.bak
+168313-838656609_medium.mp4
+Gemini_Generated_Image*.png
 
 # Excluded documents, presentations, and notes per user request
 *.docx
@@ -105,3 +107,6 @@ scratch/
 *rainrisk notes*
 *RainRisk_poster*
 *rainrisk poster*
+RAINRISK_DEPLOYMENT_GUIDE.md
+RAINRISK_MASTER_GUIDE.md
+

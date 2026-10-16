@@ -1,8 +1,10 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useId } from 'react';
 import { fetchSubdivisions, fetchSubdivisionDetail } from '../api/client';
 import { GitCompare, Calendar, BarChart2 } from 'lucide-react';
 
 function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
+  const uid = useId();
+  const gradId = `spark-fill-${uid.replace(/[^a-zA-Z0-9]/g, '')}`;
   if (!data || data.length === 0) return null;
 
   const values = data.map((d) => d.jjas);
@@ -28,12 +30,12 @@ function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
     <div className="sparkline-wrapper">
       <svg className="sparkline-svg" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
         <defs>
-          <linearGradient id={`spark-fill-${color.replace('#','')}`} x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={color} stopOpacity="0.25" />
             <stop offset="100%" stopColor={color} stopOpacity="0.02" />
           </linearGradient>
         </defs>
-        <path d={areaPath} fill={`url(#spark-fill-${color.replace('#','')})`} />
+        <path d={areaPath} fill={`url(#${gradId})`} />
         <polyline
           fill="none"
           stroke={color}
@@ -50,10 +52,17 @@ function Sparkline({ data, color = '#60a5fa', width = 120, height = 28 }) {
 export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
   const [subdivisions, setSubdivisions] = useState([]);
   const [focusSub, setFocusSub] = useState(selectedSub);
-  const [twinSub, setTwinSub] = useState('West Rajasthan');
+  const [twinSub, setTwinSub] = useState(selectedSub === 'West Rajasthan' ? 'Kerala' : 'West Rajasthan');
   const [focusData, setFocusData] = useState(null);
   const [twinData, setTwinData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (selectedSub) {
+      setFocusSub(selectedSub);
+      setTwinSub((prev) => (prev === selectedSub ? (selectedSub === 'Kerala' ? 'West Rajasthan' : 'Kerala') : prev));
+    }
+  }, [selectedSub]);
 
   useEffect(() => {
     fetchSubdivisions().then(setSubdivisions);

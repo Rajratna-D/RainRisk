@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  rainrisk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rainrisk:latest
+    container_name: rainrisk-app
+    ports:
+      - "8008:8008"
+    environment:
+      - PORT=8008
+      - HOST=0.0.0.0
+      - ENVIRONMENT=production
+      - ALLOWED_ORIGINS=*
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

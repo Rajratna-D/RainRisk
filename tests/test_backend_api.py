@@ -143,3 +143,35 @@ class TestBackendEndpoints:
         assert "title" in data["advisory"]
         assert "actions" in data["advisory"]
         assert len(data["advisory"]["actions"]) > 0
+
+    def test_spa_path_traversal_prevention(self, client):
+        response = client.get("/../../requirements.txt")
+        # Must serve index.html (SPA fallback) or error, never raw parent file contents
+        assert "RainRisk" not in response.text or "<!doctype html>" in response.text
+        assert "pandas>=" not in response.text
+
+    def test_map_pre_1906_cold_start_flag(self, client):
+        response = client.get("/api/map?year=1903&mode=prediction")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["prediction_available"] is False
+        assert "warning" in data and data["warning"] is not None
+
+    def test_health_endpoints(self, client):
+        for path in ["/health", "/api/health"]:
+            response = client.get(path)
+            assert response.status_code == 200
+            data = response.json()
+            assert data["status"] == "healthy"
+            assert data["model_loaded"] is True
+            assert data["data_loaded"] is True
+            assert data["version"] == "2.0.0"
+            assert data["total_records"] > 4000
+
+    def test_unknown_api_endpoint_returns_404(self, client):
+        response = client.get("/api/nonexistent_route")
+        assert response.status_code == 404
+        assert response.headers.get("content-type", "").startswith("application/json")
+        data = response.json()
+        assert "detail" in data
+

@@ -3,7 +3,7 @@
  * Connects to FastAPI backend endpoints with fallback handling.
  */
 
-const BASE_URL = ''; // Relative path leverages Vite proxy or FastAPI static serving
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '');
 
 export async function fetchOverview() {
   const res = await fetch(`${BASE_URL}/api/overview`);

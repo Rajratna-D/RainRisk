@@ -114,13 +114,18 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
         fillOpacity: 0.85,
       });
 
-      marker.bindTooltip(
-        `<div style="font-family: Inter, sans-serif; font-size: 11px;">
-           <strong style="color: var(--text-primary);">${sub.subdivision}</strong><br/>
-           <span style="color:${color}; font-weight:600;">${sub.category} (${sub.departure > 0 ? '+' : ''}${sub.departure}%)</span>
-         </div>`,
-        { direction: 'top', offset: [0, -6], className: 'custom-map-tooltip' }
-      );
+      const tooltipText = mode === 'prediction'
+        ? `<div style="font-family: Inter, sans-serif; font-size: 11px;">
+             <strong style="color: var(--text-primary);">${sub.subdivision}</strong><br/>
+             <span style="color:${color}; font-weight:600;">Predicted: ${sub.category}</span><br/>
+             <span style="color: var(--text-muted); font-size: 10px;">(Observed Departure: ${sub.departure > 0 ? '+' : ''}${sub.departure}%)</span>
+           </div>`
+        : `<div style="font-family: Inter, sans-serif; font-size: 11px;">
+             <strong style="color: var(--text-primary);">${sub.subdivision}</strong><br/>
+             <span style="color:${color}; font-weight:600;">${sub.category} (${sub.departure > 0 ? '+' : ''}${sub.departure}%)</span>
+           </div>`;
+
+      marker.bindTooltip(tooltipText, { direction: 'top', offset: [0, -6], className: 'custom-map-tooltip' });
 
       const safeId = `inspect-sub-${sub.subdivision.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
@@ -130,7 +135,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
             ${sub.subdivision}
           </div>
           <div style="display: inline-block; background: ${color}22; border: 1px solid ${color}66; color: ${color}; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; margin-bottom: 8px;">
-            ${sub.category.toUpperCase()}
+            ${mode === 'prediction' ? 'PREDICTED: ' : ''}${sub.category.toUpperCase()}
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 10px; font-family: 'JetBrains Mono', monospace;">
             <div style="background: var(--bg-stat); padding: 5px 8px; border-radius: 4px;">
@@ -138,7 +143,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
               <strong style="color: var(--text-primary);">${sub.jjas} mm</strong>
             </div>
             <div style="background: var(--bg-stat); padding: 5px 8px; border-radius: 4px;">
-              <span style="color: var(--text-muted); display: block; font-size: 9px;">DEPARTURE</span>
+              <span style="color: var(--text-muted); display: block; font-size: 9px;">${mode === 'prediction' ? 'HIST. DEPARTURE' : 'DEPARTURE'}</span>
               <strong style="color: ${color};">${sub.departure > 0 ? '+' : ''}${sub.departure}%</strong>
             </div>
           </div>
@@ -282,6 +287,24 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
           </div>
         </div>
       </div>
+
+      {mapData?.warning && (
+        <div style={{
+          background: 'rgba(245, 158, 11, 0.12)',
+          border: '1px solid rgba(245, 158, 11, 0.35)',
+          color: 'var(--accent-amber)',
+          fontSize: '0.78rem',
+          padding: '0.55rem 0.9rem',
+          borderRadius: '8px',
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+        }}>
+          <AlertTriangle size={15} />
+          <span>{mapData.warning}</span>
+        </div>
+      )}
 
       {mapData && (
         <div className="status-strip">

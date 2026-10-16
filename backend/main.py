@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import threading
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 import pandas as pd
@@ -9,6 +10,7 @@ import joblib
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
@@ -26,6 +28,7 @@ from constants import CATEGORY_COLORS, COORDS, MACRO_REGIONS, DISPLAY_NAME_MAP, 
 from advisory import get_advisory_api
 
 state: Dict[str, Any] = {}
+_init_lock = threading.Lock()
 
 def initialize_data():
     """Load datasets and model artifacts into application memory cache."""
@@ -122,9 +125,11 @@ def initialize_data():
 
 
 def ensure_initialized():
-    """Ensure datasets and models are loaded into application cache."""
+    """Ensure datasets and models are loaded into application cache in a thread-safe manner."""
     if "raw" not in state or "pipeline" not in state:
-        initialize_data()
+        with _init_lock:
+            if "raw" not in state or "pipeline" not in state:
+                initialize_data()
 
 
 @asynccontextmanager
@@ -139,13 +144,42 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# High-performance GZip response compression for JSON and static payloads
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Environment-configurable CORS
+allowed_origins_env = os.environ.get("ALLOWED_ORIGINS", "*")
+if allowed_origins_env == "*":
+    cors_origins = ["*"]
+    cors_credentials = False
+else:
+    cors_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+    cors_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=cors_origins,
+    allow_credentials=cors_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health")
+@app.get("/api/health")
+def health_check():
+    """Deployment health probe for Render, Railway, Docker, and Kubernetes."""
+    ensure_initialized()
+    is_model_loaded = state.get("pipeline") is not None
+    is_data_loaded = state.get("raw") is not None and not state["raw"].empty
+    return {
+        "status": "healthy" if (is_model_loaded and is_data_loaded) else "degraded",
+        "service": "RainRisk API",
+        "version": "2.0.0",
+        "model_loaded": is_model_loaded,
+        "data_loaded": is_data_loaded,
+        "total_records": len(state["raw"]) if is_data_loaded else 0,
+    }
 
 
 @app.get("/api/overview")
@@ -264,14 +298,24 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
         valid_subs = MACRO_REGIONS[region]
         year_data = year_data[year_data["SUBDIVISION"].isin(valid_subs)]
 
-    if mode == "prediction" and pipeline is not None:
-        try:
-            valid = year_data.dropna(subset=ALL_FEATURES).copy()
-            if len(valid):
-                valid["drought_category"] = pipeline.predict(valid[ALL_FEATURES])
-                year_data = valid
-        except Exception as e:
-            print(f"Prediction error in map: {e}")
+    prediction_available = True
+    warning_msg = None
+    if mode == "prediction":
+        if year < 1906:
+            prediction_available = False
+            warning_msg = f"Model predictions require a 5-year antecedent window (available from 1906 onwards). Showing historical observations for {year}."
+        elif pipeline is not None:
+            try:
+                valid = year_data.dropna(subset=ALL_FEATURES).copy()
+                if len(valid):
+                    valid["drought_category"] = pipeline.predict(valid[ALL_FEATURES])
+                    year_data = valid
+                else:
+                    prediction_available = False
+                    warning_msg = f"Insufficient continuous antecedent records to compute predictions for {year}."
+            except Exception as e:
+                print(f"Prediction error in map: {e}")
+                prediction_available = False
 
     records = []
     for _, row in year_data.iterrows():
@@ -313,6 +357,8 @@ def get_map_data(year: int = 2015, region: str = "All India", mode: str = "actua
         "year": year,
         "region": region,
         "mode": mode,
+        "prediction_available": prediction_available,
+        "warning": warning_msg,
         "total_subdivisions": n_total,
         "deficient_count": n_def,
         "deficient_percentage": round(pct_def, 1),
@@ -478,8 +524,8 @@ def predict_scenario(req: PredictionRequest):
         "prev_mam": req.prev_mam,
         "prev_ond": req.prev_ond,
         "prev_annual": p_annual,
-        "rolling_3yr_annual": req.rolling_3yr * 1.2,
-        "rolling_5yr_annual": req.rolling_5yr * 1.2,
+        "rolling_3yr_annual": round(req.rolling_3yr * min(5.0, max(1.0, (p_annual / req.prev_jjas) if req.prev_jjas > 0 else 1.2)), 1),
+        "rolling_5yr_annual": round(req.rolling_5yr * min(5.0, max(1.0, (p_annual / req.prev_jjas) if req.prev_jjas > 0 else 1.2)), 1),
         "monsoon_concentration": conc,
         "jjas_to_annual_ratio": ratio,
         "prev_premonsoon_signal": pre_sig,
@@ -528,12 +574,20 @@ if os.path.exists(FRONTEND_DIST):
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        file_path = os.path.join(FRONTEND_DIST, full_path)
-        if os.path.exists(file_path) and os.path.isfile(file_path):
-            return FileResponse(file_path)
-        return FileResponse(os.path.join(FRONTEND_DIST, "index.html"), headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"})
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail=f"API endpoint '/{full_path}' not found")
+        safe_root = os.path.abspath(FRONTEND_DIST)
+        target_path = os.path.abspath(os.path.join(safe_root, full_path))
+        if target_path.startswith(safe_root) and os.path.exists(target_path) and os.path.isfile(target_path):
+            return FileResponse(target_path)
+        return FileResponse(
+            os.path.join(safe_root, "index.html"),
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"},
+        )
 
 if __name__ == "__main__":
     import uvicorn
+    host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", 8008))
-    uvicorn.run("main:app", host="127.0.0.1", port=port, reload=True)
+    is_prod = os.environ.get("ENVIRONMENT", "production").lower() == "production"
+    uvicorn.run("backend.main:app", host=host, port=port, reload=not is_prod)

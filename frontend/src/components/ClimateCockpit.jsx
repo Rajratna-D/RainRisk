@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { runPrediction, fetchSubdivisions } from '../api/client';
+import { runPrediction, fetchSubdivisions, fetchSubdivisionDetail } from '../api/client';
 import { Sliders, Zap, ShieldAlert, Waves, CloudRain } from 'lucide-react';
 
 const CATEGORY_SHORT = {
@@ -28,6 +28,7 @@ export default function ClimateCockpit() {
   const [rolling3, setRolling3] = useState(1500);
   const [rolling5, setRolling5] = useState(1500);
   const [cv5, setCv5] = useState(20);
+  const [subDefaults, setSubDefaults] = useState({ jf: 30.0, mam: 120.0, ond: 150.0 });
   const [ensoMam, setEnsoMam] = useState(0.0);
   const [ensoDjf, setEnsoDjf] = useState(0.0);
   const [iodMam, setIodMam] = useState(0.0);
@@ -49,6 +50,16 @@ export default function ClimateCockpit() {
     });
   }, []);
 
+  useEffect(() => {
+    fetchSubdivisionDetail(selectedSub)
+      .then((det) => {
+        if (det && det.defaults) {
+          setSubDefaults(det.defaults);
+        }
+      })
+      .catch((err) => console.error('Failed fetching subdivision defaults:', err));
+  }, [selectedSub]);
+
   const handlePredict = useCallback(async () => {
     setLoading(true);
     try {
@@ -63,9 +74,9 @@ export default function ClimateCockpit() {
         prev_jul: Math.round(prevJJAS * 0.32),
         prev_aug: Math.round(prevJJAS * 0.28),
         prev_sep: Math.round(prevJJAS * 0.18),
-        prev_jf: 30.0,
-        prev_mam: 120.0,
-        prev_ond: 150.0,
+        prev_jf: subDefaults.jf || 30.0,
+        prev_mam: subDefaults.mam || 120.0,
+        prev_ond: subDefaults.ond || 150.0,
         enso_djf: ensoDjf,
         enso_mam: ensoMam,
         iod_mam: iodMam,
@@ -77,7 +88,7 @@ export default function ClimateCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [selectedSub, prevJJAS, prevChange, rolling3, rolling5, cv5, ensoMam, ensoDjf, iodMam]);
+  }, [selectedSub, prevJJAS, prevChange, rolling3, rolling5, cv5, subDefaults, ensoMam, ensoDjf, iodMam]);
 
   useEffect(() => {
     handlePredict();
@@ -90,19 +101,28 @@ export default function ClimateCockpit() {
 
     if (presetKey === 'elnino') {
       setEnsoMam(1.8); setEnsoDjf(1.2); setIodMam(0.0);
-      setPrevJJAS(Math.round(baseLpa * 0.72)); setPrevChange(-350); setCv5(35);
+      setPrevJJAS(Math.round(baseLpa * 0.72));
+      setPrevChange(-Math.round(baseLpa * 0.25));
+      setCv5(35);
     } else if (presetKey === 'buffered') {
       setEnsoMam(1.5); setEnsoDjf(1.0); setIodMam(0.75);
-      setPrevJJAS(Math.round(baseLpa * 0.95)); setPrevChange(-50); setCv5(22);
+      setPrevJJAS(Math.round(baseLpa * 0.95));
+      setPrevChange(-Math.round(baseLpa * 0.05));
+      setCv5(22);
     } else if (presetKey === 'lanina') {
       setEnsoMam(-1.2); setEnsoDjf(-0.9); setIodMam(0.1);
-      setPrevJJAS(Math.round(baseLpa * 1.30)); setPrevChange(300); setCv5(16);
+      setPrevJJAS(Math.round(baseLpa * 1.30));
+      setPrevChange(Math.round(baseLpa * 0.20));
+      setCv5(16);
     } else if (presetKey === 'deficit') {
       setEnsoMam(1.4); setEnsoDjf(0.8); setIodMam(-0.2);
-      setPrevJJAS(Math.round(baseLpa * 0.70)); setPrevChange(-400); setCv5(38);
+      setPrevJJAS(Math.round(baseLpa * 0.70));
+      setPrevChange(-Math.round(baseLpa * 0.30));
+      setCv5(38);
     } else {
       setEnsoMam(0.0); setEnsoDjf(0.0); setIodMam(0.0);
-      setPrevJJAS(baseLpa); setPrevChange(0);
+      setPrevJJAS(baseLpa);
+      setPrevChange(0);
       setCv5(subObj ? subObj.cv : 20);
     }
   };
@@ -158,8 +178,14 @@ export default function ClimateCockpit() {
             <select
               value={selectedSub}
               onChange={(e) => {
-                setSelectedSub(e.target.value);
-                const match = subdivisions.find((s) => s.name === e.target.value);
+                const newSub = e.target.value;
+                setSelectedSub(newSub);
+                setActivePreset('baseline');
+                setPrevChange(0);
+                setEnsoMam(0.0);
+                setEnsoDjf(0.0);
+                setIodMam(0.0);
+                const match = subdivisions.find((s) => s.name === newSub);
                 if (match) {
                   setPrevJJAS(match.lpa); setRolling3(match.lpa); setRolling5(match.lpa); setCv5(match.cv);
                 }

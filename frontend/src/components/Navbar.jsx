@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloudRain, BarChart3, Map, LineChart, Award, Sliders, BookOpen, Sun, Moon } from 'lucide-react';
+import { CloudRain, BarChart3, Map, LineChart, Award, Sliders, BookOpen, ArrowLeft } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'pulse', label: 'Executive Pulse', icon: BarChart3 },
@@ -10,10 +10,15 @@ const NAV_ITEMS = [
   { id: 'methodology', label: 'Methodology', icon: BookOpen },
 ];
 
-export default function Navbar({ activeTab, setActiveTab, theme, onToggleTheme }) {
+export default function Navbar({ activeTab, setActiveTab, onExitToLanding }) {
   return (
     <nav className="navbar">
-      <div className="brand">
+      <div 
+        className="brand" 
+        onClick={onExitToLanding}
+        style={{ cursor: 'pointer' }}
+        title="Return to Landing Page"
+      >
         <div className="brand-icon">
           <CloudRain size={20} strokeWidth={2.5} />
         </div>
@@ -41,13 +46,16 @@ export default function Navbar({ activeTab, setActiveTab, theme, onToggleTheme }
       </div>
 
       <div className="nav-right">
-        <button
-          className="theme-toggle"
-          onClick={onToggleTheme}
-          title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+        {onExitToLanding && (
+          <button
+            className="exit-to-landing-btn"
+            onClick={onExitToLanding}
+            title="Return to Landing Page"
+          >
+            <ArrowLeft size={13} />
+            <span>Home</span>
+          </button>
+        )}
 
         <div className="status-capsule">
           <span className="pulse-dot"></span>

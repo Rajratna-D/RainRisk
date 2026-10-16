@@ -1,0 +1,51 @@
+# Git & CI/CD
+.git/
+.github/
+.gitignore
+
+# Python Virtual Environments & Bytecode
+.venv/
+venv/
+env/
+**/__pycache__/
+**/*.py[cod]
+*.egg-info/
+
+# Frontend local dependencies
+frontend/node_modules/
+node_modules/
+frontend/.npm/
+npm-debug.log*
+
+# Test & coverage caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+
+# IDE & OS caches
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Notebooks & exploration
+notebooks/
+.ipynb_checkpoints/
+
+# Scratch & Temporary Files
+scratch/
+*.tmp
+*.bak
+*.docx
+*.doc
+*.pptx
+
+# Large root media / uncompressed assets
+*.mp4
+!frontend/public/hero-monsoon.mp4
+!frontend/dist/hero-monsoon.mp4
+Gemini_Generated_Image*.png
+notes.txt
