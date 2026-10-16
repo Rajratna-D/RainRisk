@@ -41,12 +41,15 @@ export async function fetchMethodology() {
   return res.json();
 }
 
-export async function runPrediction(payload) {
-  const res = await fetch(`${BASE_URL}/api/predict`, {
+export async function runPrediction(payload, signal = null) {
+  const fetchOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
-  });
+  };
+  if (signal) fetchOptions.signal = signal;
+
+  const res = await fetch(`${BASE_URL}/api/predict`, fetchOptions);
   if (!res.ok) throw new Error('Inference request failed');
   return res.json();
 }

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchLeaderboard } from '../api/client';
 import { Award, CheckCircle2, TrendingUp, AlertCircle } from 'lucide-react';
 
@@ -20,7 +20,7 @@ export default function ModelLeaderboard() {
   return (
     <div>
       <div className="bento-card" style={{ borderLeft: '4px solid var(--accent-teal)', marginBottom: '1.5rem', padding: '1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="leaderboard-hero-row">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
               <Award size={18} color="var(--accent-teal)" />
@@ -28,22 +28,22 @@ export default function ModelLeaderboard() {
                 Production Deployed Classifier
               </span>
             </div>
-            <h2 style={{ fontSize: '1.6rem', marginBottom: '0.45rem' }}>
+            <h2 style={{ fontSize: '1.45rem', marginBottom: '0.45rem', letterSpacing: '-0.01em' }}>
               Random Forest Classifier (Balanced Accuracy: 43.2%)
             </h2>
-            <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', maxWidth: '780px' }}>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', maxWidth: '780px', lineHeight: 1.6 }}>
               Evaluated strictly on held-out 2011-2017 test records (N=243). Pre-monsoon Pacific (Niño 3.4) and Indian Ocean (DMI) SST anomalies elevated Balanced Accuracy from 34.4% to <strong style={{ color: 'var(--text-primary)' }}>43.2%</strong> and Off-by-One Accuracy to <strong style={{ color: 'var(--accent-teal)' }}>93.0%</strong>.
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '1.5rem', textAlign: 'right' }}>
-            <div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Exact Acc</div>
-              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#f4f4f6', fontFamily: 'var(--font-mono)' }}>56.0%</div>
+          <div className="leaderboard-hero-stats">
+            <div className="leaderboard-hero-stat-card">
+              <div className="leaderboard-stat-label">Exact Acc</div>
+              <div className="leaderboard-stat-num" style={{ color: '#f4f4f6' }}>56.0%</div>
             </div>
-            <div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Within ±1 Class</div>
-              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-teal)', fontFamily: 'var(--font-mono)' }}>93.0%</div>
+            <div className="leaderboard-hero-stat-card">
+              <div className="leaderboard-stat-label">Within ±1 Class</div>
+              <div className="leaderboard-stat-num" style={{ color: 'var(--accent-teal)' }}>93.0%</div>
             </div>
           </div>
         </div>
@@ -61,15 +61,13 @@ export default function ModelLeaderboard() {
             return (
               <div
                 key={m.name}
+                className="leaderboard-model-card"
                 style={{
                   background: isBest ? 'rgba(45, 212, 168, 0.05)' : 'var(--bg-inner)',
                   border: `1px solid ${isBest ? 'rgba(45, 212, 168, 0.3)' : 'var(--border-subtle)'}`,
-                  borderRadius: '10px',
-                  padding: '1rem 1.25rem',
-                  transition: 'var(--transition)',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div className="leaderboard-model-header">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                     <span style={{ fontWeight: 700, fontSize: '0.92rem', color: isBest ? 'var(--accent-teal)' : 'var(--text-primary)' }}>
                       {m.name}
@@ -80,12 +78,13 @@ export default function ModelLeaderboard() {
                       </span>
                     )}
                   </div>
-                  <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem', fontFamily: 'var(--font-mono)' }}>
-                    <span>Exact: <strong style={{ color: 'var(--text-primary)' }}>{m.accuracy}%</strong></span>
-                    <span>Balanced: <strong>{m.balanced_accuracy}%</strong></span>
-                    <span>Macro-F1: <strong>{m.macro_f1}</strong></span>
-                    <span style={{ color: 'var(--accent-teal)' }}>±1 Class: <strong>{m.off_by_one}%</strong></span>
-                    <span style={{ color: 'var(--text-muted)' }}>Train: {m.train_time}s</span>
+
+                  <div className="leaderboard-metrics-grid">
+                    <span className="metric-pill">Exact: <strong>{m.accuracy}%</strong></span>
+                    <span className="metric-pill">Bal: <strong>{m.balanced_accuracy}%</strong></span>
+                    <span className="metric-pill">F1: <strong>{m.macro_f1}</strong></span>
+                    <span className="metric-pill" style={{ color: 'var(--accent-teal)' }}>±1: <strong>{m.off_by_one}%</strong></span>
+                    <span className="metric-pill" style={{ color: 'var(--text-muted)' }}>{m.train_time}s</span>
                   </div>
                 </div>
 

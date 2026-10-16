@@ -204,7 +204,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
   return (
     <div>
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.1rem 1.35rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr', gap: '1.5rem', alignItems: 'center' }}>
+        <div className="radar-controls-grid">
           <div>
             <div className="slider-header">
               <span className="slider-label" style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
@@ -338,7 +338,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
 
       <div className="grid-split">
         <div className="bento-card" style={{ padding: '0.75rem', position: 'relative' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem', padding: '0.35rem 0.6rem' }}>
+          <div className="radar-header-bar">
             <div>
               <h3 className="section-title">
                 <Layers size={16} color="var(--accent-teal)" />
@@ -347,7 +347,7 @@ export default function GeospatialRadar({ initialYear = 2015, onSelectSubdivisio
               <span className="section-subtitle">Esri Dark Cartography - 36 Meteorological Subdivisions</span>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.3rem' }}>
+            <div className="radar-filter-chips">
               {CATEGORY_FILTERS.map((f) => (
                 <button
                   key={f}

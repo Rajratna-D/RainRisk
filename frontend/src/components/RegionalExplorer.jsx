@@ -99,7 +99,7 @@ export default function RegionalExplorer({ selectedSub = 'Kerala' }) {
   return (
     <div>
       <div className="bento-card" style={{ marginBottom: '1.25rem', padding: '1.2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div className="subdivision-select-grid">
           <div>
             <label className="metric-label" style={{ marginBottom: '0.35rem', display: 'block' }}>
               Primary Target Subdivision
@@ -265,7 +265,7 @@ function SubdivisionCard({ data, accentColor, chipActive = false }) {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem', textAlign: 'center' }}>
+      <div className="subdivision-stats-grid">
         {stats.map((s) => (
           <div key={s.label} className="stat-cell">
             <div className="stat-cell-label">{s.label}</div>

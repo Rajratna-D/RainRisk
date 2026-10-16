@@ -35,7 +35,10 @@ export default function ClimateCockpit() {
 
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [activePreset, setActivePreset] = useState('baseline');
+  const abortControllerRef = useRef(null);
+  const cacheRef = useRef(new Map());
 
   useEffect(() => {
     fetchSubdivisions().then((list) => {
@@ -60,39 +63,60 @@ export default function ClimateCockpit() {
       .catch((err) => console.error('Failed fetching subdivision defaults:', err));
   }, [selectedSub]);
 
-  const handlePredict = useCallback(async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        subdivision: selectedSub,
-        prev_jjas: prevJJAS,
-        prev_change: prevChange,
-        rolling_3yr: rolling3,
-        rolling_5yr: rolling5,
-        cv_5yr: cv5,
-        prev_jun: Math.round(prevJJAS * 0.22),
-        prev_jul: Math.round(prevJJAS * 0.32),
-        prev_aug: Math.round(prevJJAS * 0.28),
-        prev_sep: Math.round(prevJJAS * 0.18),
-        prev_jf: subDefaults.jf || 30.0,
-        prev_mam: subDefaults.mam || 120.0,
-        prev_ond: subDefaults.ond || 150.0,
-        enso_djf: ensoDjf,
-        enso_mam: ensoMam,
-        iod_mam: iodMam,
-      };
-      const result = await runPrediction(payload);
-      setPrediction(result);
-    } catch (err) {
-      console.error('Prediction failed:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedSub, prevJJAS, prevChange, rolling3, rolling5, cv5, subDefaults, ensoMam, ensoDjf, iodMam]);
-
+  // Debounced, cancellable prediction pipeline with in-memory caching
   useEffect(() => {
-    handlePredict();
-  }, [handlePredict]);
+    const payload = {
+      subdivision: selectedSub,
+      prev_jjas: prevJJAS,
+      prev_change: prevChange,
+      rolling_3yr: rolling3,
+      rolling_5yr: rolling5,
+      cv_5yr: cv5,
+      prev_jun: Math.round(prevJJAS * 0.22),
+      prev_jul: Math.round(prevJJAS * 0.32),
+      prev_aug: Math.round(prevJJAS * 0.28),
+      prev_sep: Math.round(prevJJAS * 0.18),
+      prev_jf: subDefaults.jf || 30.0,
+      prev_mam: subDefaults.mam || 120.0,
+      prev_ond: subDefaults.ond || 150.0,
+      enso_djf: ensoDjf,
+      enso_mam: ensoMam,
+      iod_mam: iodMam,
+    };
+
+    const cacheKey = JSON.stringify(payload);
+    if (cacheRef.current.has(cacheKey)) {
+      setPrediction(cacheRef.current.get(cacheKey));
+      setIsSyncing(false);
+      return;
+    }
+
+    setIsSyncing(true);
+    const timer = setTimeout(() => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      runPrediction(payload, controller.signal)
+        .then((result) => {
+          cacheRef.current.set(cacheKey, result);
+          setPrediction(result);
+          setIsSyncing(false);
+        })
+        .catch((err) => {
+          if (err.name !== 'AbortError') {
+            console.error('Prediction failed:', err);
+            setIsSyncing(false);
+          }
+        });
+    }, 120);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [selectedSub, prevJJAS, prevChange, rolling3, rolling5, cv5, subDefaults, ensoMam, ensoDjf, iodMam]);
 
   const applyPreset = (presetKey) => {
     setActivePreset(presetKey);
@@ -263,7 +287,14 @@ export default function ClimateCockpit() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {prediction && (
             <div className="bento-card" style={{ borderLeft: `4px solid ${prediction.color}`, padding: '1.5rem' }}>
-              <div className="metric-label">Predicted Anomaly Tier</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="metric-label">Predicted Anomaly Tier</div>
+                {isSyncing && (
+                  <span className="sync-badge">
+                    <span className="sync-pulse"></span> Recalculating...
+                  </span>
+                )}
+              </div>
               <div style={{
                 fontSize: '2.3rem', fontWeight: 800, color: prediction.color,
                 fontFamily: 'var(--font-display)', letterSpacing: '-0.02em', margin: '0.2rem 0',
