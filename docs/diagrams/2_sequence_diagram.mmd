@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor User as Agronomist / User
+    participant UI as Climate Cockpit (React)
+    participant Cache as In-Memory Cache (Map)
+    participant API as FastAPI Backend (/api/predict)
+    participant Guard as Security & Bounds Validator
+    participant ML as Random Forest Pipeline
+    participant Adv as Advisory Engine
+
+    User->>UI: Adjusts Niño 3.4 SST slider (+1.8°C)
+    Note over UI: Debounces input (120ms)<br/>Cancels stale in-flight AbortController
+    UI->>Cache: Query cache(scenario_key)
+    
+    alt Cache Hit (0ms recall)
+        Cache-->>UI: Cached prediction payload
+        UI->>User: Instantly update radial dial & risk tier
+    else Cache Miss
+        UI->>API: POST /api/predict (JSON payload)
+        API->>Guard: Verify Pydantic bounds & sliding rate limit
+        alt Out of Bounds / Rate Limit Exceeded
+            Guard-->>API: Reject with 422 Unprocessable / 429 Too Many Requests
+            API-->>UI: Error response
+        else Validation Passed
+            Guard-->>API: Token granted
+            API->>ML: Derive momentum, concentration & teleconnection vectors
+            ML->>ML: Execute StandardScaler + OneHotEncoder
+            ML->>ML: Traverse 100 Trees (predict + predict_proba)
+            ML-->>API: 6-tier probabilities & winning drought category
+            API->>Adv: get_advisory_api(predicted_category)
+            Adv-->>API: Actionable agronomic mitigation protocol array
+            API-->>UI: 200 OK JSON (Category, Risk%, Probs, Advisory)
+            UI->>Cache: Store scenario response in cache
+            UI->>User: Animate radial dial gauge & render advisory actions
+        end
+    end

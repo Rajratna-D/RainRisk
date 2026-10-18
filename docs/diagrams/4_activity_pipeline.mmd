@@ -1,0 +1,24 @@
+flowchart TD
+    A(["Raw IMD CSV (1901-2017)"]) --> B["Ingest 4,116 Annual-Subdivisional Observations"]
+    B --> C["Compute Fixed 1971-2020 Long Period Average (LPA) Baseline"]
+    C --> D["Calculate Percentage Departure: (JJAS - LPA) / LPA * 100"]
+    D --> E["Discretize into 6 IMD Operational Severity Tiers"]
+    
+    E --> F{"Temporal Cutoff (2010)"}
+    F -- "Years 1901-2010" --> G["Training Set (N = 3,873 observations)"]
+    F -- "Years 2011-2017" --> H["Held-Out Test Set (N = 243 observations)"]
+    
+    G --> I["Calendar Gap Reindexing (Avoid Lookahead Bridging)"]
+    I --> J["Derive 23 Zero-Leakage Lag & Rolling Monsoon Features"]
+    J --> K["Ingest Antecedent Winter (DJF) & Spring (MAM) Teleconnections"]
+    K --> L["Temporal Expanding-Window Cross-Validation Folds"]
+    L --> M["In-Fold SMOTENC (Synthetic Minority Oversampling)"]
+    M --> N["Fit StandardScaler + OneHotEncoder + RandomForest (N=100)"]
+    
+    H --> O["Transform Frozen Test Features (No Future Knowledge)"]
+    N --> P["Predict on Held-Out Test Records"]
+    O --> P
+    
+    P --> Q["Evaluate Metrics: Exact Acc (56.0%), ±1 Acc (93.0%), Bal Acc (43.2%)"]
+    Q --> R["Serialize Production Artifact: best_pipeline.joblib"]
+    R --> S(["Production API Service Deployment"])

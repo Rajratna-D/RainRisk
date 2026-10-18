@@ -1,0 +1,18 @@
+stateDiagram-v2
+    [*] --> Normal: Monsoon JJAS Onset
+
+    Normal --> Deficient: Pacific El Nino / Delayed Onset (-20% to -59% departure)
+    Normal --> Excess: La Nina / Bay of Bengal Low Pressure (+20% to +59% departure)
+    
+    Deficient --> LargeDeficient: Severe Teleconnection Coupling (-60% to -99% departure)
+    Deficient --> Normal: Late Monsoon Revival (Mid-August Recharge)
+    
+    LargeDeficient --> NoRainfall: Total Monsoon Failure (-100% departure)
+    LargeDeficient --> Deficient: Cyclonic Post-Monsoon Transition
+    
+    Excess --> LargeExcess: Extreme Orographic Cloudburst (>= +60% departure)
+    Excess --> Normal: Climatological Regression
+    
+    LargeExcess --> Excess: Watershed Discharge
+    NoRainfall --> [*]: Season Closes (October 1st)
+    Normal --> [*]: Season Closes (October 1st)

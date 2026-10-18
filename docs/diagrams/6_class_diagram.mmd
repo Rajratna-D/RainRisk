@@ -1,0 +1,82 @@
+classDiagram
+    class PredictionRequest {
+        +str subdivision
+        +float prev_jjas
+        +float prev_change
+        +float rolling_3yr
+        +float rolling_5yr
+        +float cv_5yr
+        +float prev_jun
+        +float prev_jul
+        +float prev_aug
+        +float prev_sep
+        +float prev_jf
+        +float prev_mam
+        +float prev_ond
+        +float enso_djf
+        +float enso_mam
+        +float iod_mam
+    }
+
+    class PredictionResponse {
+        +str subdivision
+        +str predicted_category
+        +str color
+        +float composite_drought_risk
+        +List~ProbabilityItem~ probabilities
+        +Advisory advisory
+    }
+
+    class ProbabilityItem {
+        +str category
+        +float probability
+        +str color
+    }
+
+    class Advisory {
+        +str category
+        +str title
+        +str color
+        +List~str~ actions
+    }
+
+    class SubdivisionMetadata {
+        +str name
+        +str raw_name
+        +float lpa
+        +float mean_jjas
+        +float cv
+        +float drought_frequency
+        +float lat
+        +float lon
+        +str macro_region
+    }
+
+    class ModelMetrics {
+        +str model_name
+        +float accuracy
+        +float balanced_accuracy
+        +float macro_f1
+        +float off_by_one_accuracy
+        +float train_time_seconds
+    }
+
+    class FastAPIService {
+        +dict state
+        +initialize_data()
+        +ensure_initialized()
+        +health_check()
+        +get_overview()
+        +get_subdivisions()
+        +get_subdivision_detail(name: str)
+        +get_map_data(year: int, region: str, mode: str)
+        +get_leaderboard()
+        +predict_scenario(req: PredictionRequest)
+    }
+
+    FastAPIService --> PredictionRequest : validates
+    FastAPIService --> PredictionResponse : returns
+    FastAPIService --> SubdivisionMetadata : queries
+    FastAPIService --> ModelMetrics : evaluates
+    PredictionResponse *-- ProbabilityItem
+    PredictionResponse *-- Advisory

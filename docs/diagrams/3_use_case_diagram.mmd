@@ -1,0 +1,29 @@
+flowchart LR
+    subgraph Actors
+        Agri["Agricultural Officer / Agronomist"]
+        Disaster["Disaster Management Authority (NDMA/SDMA)"]
+        Researcher["Climate Researcher / Data Scientist"]
+    end
+
+    subgraph RainRiskPlatform["RainRisk Platform Boundary"]
+        UC1(["UC-1: Monitor 117-Year National Monsoon Telemetry"])
+        UC2(["UC-2: Track Sub-Divisional Drought Shocks on Geospatial Radar"])
+        UC3(["UC-3: Benchmark Classification Models against Baselines"])
+        UC4(["UC-4: Simulate Pacific/Indian Ocean SST Teleconnection Shocks"])
+        UC5(["UC-5: Generate Crop Mitigation & Irrigation Advisories"])
+        UC6(["UC-6: Compare Climatological Twin Subdivisions"])
+    end
+
+    Agri --> UC2
+    Agri --> UC4
+    Agri --> UC5
+    Agri --> UC6
+
+    Disaster --> UC1
+    Disaster --> UC2
+    Disaster --> UC4
+    Disaster --> UC5
+
+    Researcher --> UC1
+    Researcher --> UC3
+    Researcher --> UC4

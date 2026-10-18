@@ -1,0 +1,49 @@
+flowchart TD
+    subgraph ClientTier["Client Presentation Tier (Browser / Mobile)"]
+        UI["React 18 SPA Shell (App.jsx)"]
+        Nav["Two-Way Hash Router (#pulse, #radar, #cockpit)"]
+        ClientCache["In-Memory LRU Cache (Map)"]
+        MapEngine["Leaflet GIS Cartography Engine"]
+    end
+
+    subgraph DefenseTier["Security & Boundary Perimeter"]
+        SecHeaders["Security Headers Middleware (X-Frame, Nosniff)"]
+        RateLimiter["Sliding-Window Rate Limiter (120 req/min)"]
+        BoundsVal["Pydantic Physical Bounds Validator"]
+    end
+
+    subgraph BackendTier["Application Core (FastAPI :8008)"]
+        Router["FastAPI REST Router (/api)"]
+        AdvisoryEngine["Agronomic Advisory Engine (advisory.py)"]
+        FeatureDeriver["Zero-Leakage Feature Engine (features.py)"]
+    end
+
+    subgraph MLTier["Machine Learning Inference Tier"]
+        Pipeline["Serialized Pipeline (best_pipeline.joblib)"]
+        Scaler["StandardScaler (Continuous Features)"]
+        OHE["OneHotEncoder (Subdivision Identifiers)"]
+        RF["Random Forest Ensemble (100 Decision Trees)"]
+    end
+
+    subgraph DataTier["Climatological Data Storage"]
+        IMD["Sub_Division_IMD_2017.csv (117-yr Historical Series)"]
+        Telecon["NOAA Niño 3.4 & IOD DMI Teleconnection Indices"]
+    end
+
+    UI --> Nav
+    UI --> ClientCache
+    UI --> MapEngine
+    UI -- "HTTPS / JSON Payload" --> SecHeaders
+    SecHeaders --> RateLimiter
+    RateLimiter --> BoundsVal
+    BoundsVal --> Router
+
+    Router --> AdvisoryEngine
+    Router --> FeatureDeriver
+    FeatureDeriver --> Pipeline
+    Pipeline --> Scaler
+    Pipeline --> OHE
+    Pipeline --> RF
+
+    Router -.-> IMD
+    Router -.-> Telecon

@@ -1,3 +1,5 @@
+
+
 # RainRisk UML Diagrams & Architectural Specifications
 
 This document defines the formal Unified Modeling Language (UML) specifications and system models for the **RainRisk** platform. These diagrams detail the system's structural components, runtime interactions, user workflows, data pipelines, and state transitions for academic reports, technical documentation, and presentation viva.
