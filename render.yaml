@@ -25,4 +25,4 @@ services:
       - key: PGPORT
         value: "5432"
       - key: CORS_ORIGINS
-        value: "https://maharainrisk.vercel.app,http://localhost:3000"
+        value: "https://maharainrisk.vercel.app,https://maharainrisk.pages.dev,http://localhost:3000"
