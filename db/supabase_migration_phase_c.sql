@@ -41,3 +41,4 @@ ON public.talukas (district_name);
 ALTER TABLE public.taluka_risk_history ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS public_read_taluka_risk_history ON public.taluka_risk_history;
 CREATE POLICY public_read_taluka_risk_history ON public.taluka_risk_history FOR SELECT USING (true);
+

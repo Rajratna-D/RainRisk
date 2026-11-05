@@ -385,9 +385,14 @@ class BackendDataService:
             "extreme_count": int(cat_counts.get(4, 0))
         }
 
-        # 2. State Averages (Monsoon-adjusted 3-month climatological normal)
+        # 2. State Averages (Season-adjusted 3-month climatological normal - BUG-09)
         rain_sum = self.latest_df["rain_roll_3"].fillna(100.0)
-        norm_rain = self.latest_df["normal_annual_rainfall_mm"].fillna(750.0) * 0.85 * (3.0 / 4.0)
+        annual_normal = self.latest_df["normal_annual_rainfall_mm"].fillna(750.0)
+        curr_month = int(self.latest_df["month"].iloc[0]) if "month" in self.latest_df.columns and not self.latest_df.empty else 8
+        if 6 <= curr_month <= 10:
+            norm_rain = annual_normal * 0.85 * (3.0 / 4.0)
+        else:
+            norm_rain = annual_normal * 0.15 * (3.0 / 8.0)
         deficit_series = ((rain_sum - norm_rain) / (norm_rain + 1e-5)) * 100.0
         avg_deficit = round(float(deficit_series.mean()), 1)
         avg_smi = round(float(self.latest_df["soil_moisture_index"].mean()), 1)
@@ -673,7 +678,7 @@ class BackendDataService:
             (self.latest_df["district_name_mr"] == canonical_district)
         ]
         if matches.empty:
-            matches = self.latest_df[self.latest_df["district_name"].str.lower().str.contains(canonical_district.lower())]
+            matches = self.latest_df[self.latest_df["district_name"].str.lower().str.contains(canonical_district.lower(), regex=False)]
 
         if matches.empty:
             raise ValueError(f"District '{district_query}' not found in Maharashtra 36 districts.")

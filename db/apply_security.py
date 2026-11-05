@@ -46,12 +46,9 @@ def apply_security():
             
             CREATE INDEX IF NOT EXISTS idx_talukas_district 
             ON talukas (district_name);
-            
-            CREATE INDEX IF NOT EXISTS idx_risk_shap_gin 
-            ON taluka_risk_latest USING GIN (shap_summary);
-            
-            CREATE INDEX IF NOT EXISTS idx_risk_advisory_gin 
-            ON taluka_risk_latest USING GIN (bilingual_advisory);
+
+            DROP INDEX IF EXISTS idx_risk_shap_gin;
+            DROP INDEX IF EXISTS idx_risk_advisory_gin;
         """)
 
         # 2. Row Level Security

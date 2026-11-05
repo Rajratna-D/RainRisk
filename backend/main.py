@@ -366,6 +366,7 @@ async def get_taluka_insights(query: str):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Inference error: {str(e)}")
 
 @app.get("/api/analytics/overview", response_model=OverviewResponse, tags=["Analytics"])
+@app.get("/api/v1/state/summary", response_model=OverviewResponse, tags=["Analytics"])
 async def get_statewide_overview():
     """
     Returns macro state-wide telemetry, risk tier distribution (Safe/Watch/Alert/Severe/Extreme),

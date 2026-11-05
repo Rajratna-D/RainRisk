@@ -269,6 +269,19 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
 
     # 7. Dynamic Feature Cleaning & Dual-Mode ML Inference
     logger.info("[*] Running Dual-Mode ML Inference & TreeSHAP XAI for all 194 talukas...")
+
+    # ML-12: Statistical Data Drift and Value Sanity Monitoring
+    all_rains = [r[2] for r in weather_records]
+    all_temps = [r[3] for r in weather_records]
+    all_smis = [r[6] for r in weather_records]
+    if all_rains and all_temps:
+        avg_r, max_r = float(np.mean(all_rains)), float(np.max(all_rains))
+        avg_t, max_t = float(np.mean(all_temps)), float(np.max(all_temps))
+        avg_smi = float(np.mean(all_smis)) if all_smis else 50.0
+        logger.info(f"[*] ML-12 Telemetry Drift Check: Rain Avg={avg_r:.1f}mm Max={max_r:.1f}mm | Temp Max Avg={avg_t:.1f}°C | Soil Moisture Avg={avg_smi:.1f}%")
+        if max_r > 500.0 or max_t > 60.0 or avg_t < 0.0:
+            logger.warning("[!] ML-12 ALERT: Statistical distribution drift detected in incoming meteorological telemetry!")
+
     from ml.predict import MahaRainRiskInference
     inference = MahaRainRiskInference()
 

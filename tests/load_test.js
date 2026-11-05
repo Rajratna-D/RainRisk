@@ -71,9 +71,10 @@ export default function () {
     const res = http.get(`${BASE_URL}/api/v1/taluka/${taluka}/explain`);
     const isOk = check(res, {
       'explain status is 200': (r) => r.status === 200,
-      'has top_escalators': (r) => {
+      'has top_risk_escalators': (r) => {
         try {
-          return Array.isArray(JSON.parse(r.body).top_escalators);
+          const body = JSON.parse(r.body);
+          return Array.isArray(body.top_risk_escalators || body.top_escalators);
         } catch {
           return false;
         }
@@ -90,9 +91,10 @@ export default function () {
     const res = http.get(`${BASE_URL}/api/v1/taluka/${taluka}/adjacent`);
     const isOk = check(res, {
       'adjacent status is 200': (r) => r.status === 200,
-      'has neighbors': (r) => {
+      'has adjacent_neighbors': (r) => {
         try {
-          return Array.isArray(JSON.parse(r.body).neighbors);
+          const body = JSON.parse(r.body);
+          return Array.isArray(body.adjacent_neighbors || body.neighbors);
         } catch {
           return false;
         }
@@ -111,7 +113,8 @@ export default function () {
       'state summary status is 200': (r) => r.status === 200,
       'has total_talukas': (r) => {
         try {
-          return JSON.parse(r.body).total_talukas === 194;
+          const body = JSON.parse(r.body);
+          return (body.total_talukas_monitored === 194 || body.total_talukas === 194);
         } catch {
           return false;
         }

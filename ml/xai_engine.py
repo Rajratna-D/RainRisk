@@ -167,13 +167,16 @@ class MahaRainRiskXAI:
             "अति-गंभीर दुष्काळ"
         ])
 
-        # Precompute feature medians from master panel for safe imputations
-        panel_path = os.path.join(PROCESSED_DIR, "master_panel.parquet")
-        if os.path.exists(panel_path):
-            panel_df = pd.read_parquet(panel_path)
-            self.medians = panel_df[self.feature_names].median().to_dict()
+        # Precompute feature medians without duplicating parquet in memory (PERF-07)
+        if "feature_medians" in artifact and artifact["feature_medians"]:
+            self.medians = artifact["feature_medians"]
         else:
-            self.medians = {f: 0.0 for f in self.feature_names}
+            panel_path = os.path.join(PROCESSED_DIR, "master_panel.parquet")
+            if os.path.exists(panel_path):
+                panel_df = pd.read_parquet(panel_path)
+                self.medians = panel_df[self.feature_names].median().to_dict()
+            else:
+                self.medians = {f: 0.0 for f in self.feature_names}
 
         # Initialize and pre-compile TreeExplainer once into RAM
         logger.info("[*] Initializing TreeSHAP Explainer C++ decision graph...")

@@ -16,13 +16,9 @@ ON daily_weather (taluka_lgd_code, record_date DESC);
 CREATE INDEX IF NOT EXISTS idx_talukas_district 
 ON talukas (district_name);
 
--- GIN (Generalized Inverted Index) for fast JSONB querying on XAI drivers
-CREATE INDEX IF NOT EXISTS idx_risk_shap_gin 
-ON taluka_risk_latest USING GIN (shap_summary);
-
--- GIN index on bilingual advisories
-CREATE INDEX IF NOT EXISTS idx_risk_advisory_gin 
-ON taluka_risk_latest USING GIN (bilingual_advisory);
+-- DB-04: Drop non-functional GIN indexes on 194-row table to reduce write overhead
+DROP INDEX IF EXISTS idx_risk_shap_gin;
+DROP INDEX IF EXISTS idx_risk_advisory_gin;
 
 -- -----------------------------------------------------------------------------
 -- 2. Row Level Security (RLS) - Threat 3 Defense
