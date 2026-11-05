@@ -1171,5 +1171,49 @@ bufImpact.textContent = `-${formattedBufPct}% ${isMr ? 'जोखीम नि�
    - Verified live across both Marathi and English bilingual modes.
 
 ---
+
+## 15. Text-to-Speech (TTS) Neural Audio Streaming & Rate Limiting Proxy Resolution (Phase 10 Audio Fix)
+
+### 15.1 What the Problem Was
+
+1. **Audio Button Unresponsive or Silent:**
+   - Clicking the audio broadcast button (`Listen` / `सल्ला ऐका`) in both the farmer banner and sidebar failed to play audio or appeared stuck.
+2. **Three Compounding Root Causes Identified:**
+   - **Render Container Restart Downtime (HTTP 503):** Following the Git push of commit `22ecfa5`, Render initiated an automatic container build/restart cycle (~60–90 seconds). Any click during this period received `503 Service Unavailable`.
+   - **Proxy IP Rate-Limiting Collisions (HTTP 429):** The security middleware previously extracted `client_ip = request.client.host`. Behind Render's reverse proxy, all users and incoming requests shared the internal proxy IP address. Multiple requests tripped the 120 req/min limit, blocking subsequent audio streaming requests with `HTTP 429 Too Many Requests`.
+   - **Starlette `FileResponse` Content-Disposition Header:** When `filename` was supplied without `content_disposition_type="inline"`, Starlette defaulted to `Content-Disposition: attachment`. Modern browsers (Chrome, Edge, Safari) reject inline media streaming when served with `attachment`, triggering `player.onerror`.
+   - **Silent Browser Fallback in Marathi Mode:** When the neural backend request failed, `fallbackBrowserSpeech()` checked for a native Marathi SAPI voice on the operating system. Because Windows PCs rarely bundle a native Devanagari speech synthesizer, the fallback exited silently without audible output or feedback.
+
+---
+
+### 15.2 What Measures We Took to Fix It
+
+1. **Proxy-Aware Client IP Parsing & Rate Limit Headroom:**
+   - Updated `security_and_timing_middleware` to inspect `X-Forwarded-For` first, isolating distinct client IPs behind reverse proxies.
+   - Increased rate limit to 240 requests/minute to provide ample headroom for audio streaming and map interactions.
+2. **Inline Audio Streaming Headers:**
+   - Explicitly configured `FileResponse` with `content_disposition_type="inline"`, instructing browsers to decode and play the MP3 audio directly in-memory without download prompts.
+3. **Robust Click Binding & Audio Player Handling (`audio.js` & `index.html`):**
+   - Added `onclick="toggleAudioSpeech()"` directly to `#tts-audio-btn` and `#tts-inline-btn`.
+   - Set `player.crossOrigin = "anonymous"` on the `Audio` object.
+   - Connected `player.oncanplay` to seamlessly release the loading state once the first audio buffer is ready.
+   - In `fallbackBrowserSpeech()`, supported any standard English system voice (`en-US`, `en-GB`, `en-IN`) and surfaced an informative toast message in Marathi mode if the audio server is warming up.
+
+---
+
+### 15.3 What Was the Result
+
+1. **High-Fidelity Audio Streaming Verified:**
+   - Live endpoint `https://rainrisk-vcra.onrender.com/api/audio/advisory/Paithan?lang=mr` verified live: `HTTP 200 OK`, `Content-Type: audio/mpeg`, Length ~301 KB.
+   - English audio endpoint verified live: `HTTP 200 OK`, Length ~290 KB.
+2. **Instant Playback in Browser:**
+   - Direct button click immediately triggers playback without event listener delays or `Content-Disposition` rejection.
+3. **Full Test Suite Passing:**
+   - All **65 tests passed, 1 skipped in 15.87s**.
+4. **Cloudflare Pages Deployed:**
+   - Deployed updated frontend with asset cache-busting `?v=116` to Cloudflare Pages (`https://maharainrisk.pages.dev`).
+
+---
 *Log generated and verified autonomously. All tests passing (65/65).*
+
 
