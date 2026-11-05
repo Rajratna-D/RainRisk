@@ -47,7 +47,8 @@ CREATE POLICY public_read_taluka_risk ON taluka_risk_latest FOR SELECT USING (tr
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'maharain_app') THEN
-        CREATE ROLE maharain_app WITH LOGIN PASSWORD 'maharain_app_secure_pass';
+        -- SEC-05: Provision role without hardcoded password in VCS; set via ALTER ROLE in deployment
+        CREATE ROLE maharain_app WITH LOGIN;
     END IF;
 END
 $$;

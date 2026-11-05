@@ -197,16 +197,23 @@ class MultiTierCacheManager:
 
     def get_or_compute(self, key: str, compute_fn: Callable[[], Any]) -> Any:
         """
-        Atomic get-or-compute with double-checked locking to eliminate thundering herds.
+        Atomic get-or-compute with double-checked locking (BUG-05 / PERF-03).
+        Expensive compute_fn is executed outside the global lock to prevent
+        serialization across concurrent HTTP worker threads.
         """
         with self._lock:
             if key in self._cache:
                 self._hits += 1
                 return copy.deepcopy(self._cache[key])
 
-            # Compute under lock to prevent thundering herd stampedes
-            result = compute_fn()
-            validate_zero_pickle(result)
+        # Execute compute_fn outside the lock
+        result = compute_fn()
+        validate_zero_pickle(result)
+
+        with self._lock:
+            if key in self._cache:
+                self._hits += 1
+                return copy.deepcopy(self._cache[key])
             self._cache[key] = copy.deepcopy(result)
             self._misses += 1
             return copy.deepcopy(result)

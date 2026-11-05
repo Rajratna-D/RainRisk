@@ -150,11 +150,21 @@ def get_taluka_risk(
         m = month if month is not None else 10
         row = service.resolve_taluka_row(resolved_name)
         code = int(row["taluka_lgd_code"])
-        detail = service.get_taluka_detail(resolved_name)
-        meta = detail["meta"]
-        diag = detail["live_diagnosis"]
-        fc = detail["30_day_forecast"]
-        cards = detail["farmer_cards"]
+        
+        # ML-08: If specific historical period requested, evaluate target period features
+        if year is not None or month is not None:
+            analysis = service.inference_engine.analyze_taluka(resolved_name, year=y, month=m)
+            diag = analysis["live_diagnosis"]
+            fc = analysis["30_day_forecast"]
+            detail = service.get_taluka_detail(resolved_name)
+            meta = analysis.get("meta", detail["meta"])
+            cards = detail["farmer_cards"]
+        else:
+            detail = service.get_taluka_detail(resolved_name)
+            meta = detail["meta"]
+            diag = detail["live_diagnosis"]
+            fc = detail["30_day_forecast"]
+            cards = detail["farmer_cards"]
 
         return {
             "status": "SUCCESS",

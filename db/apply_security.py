@@ -5,6 +5,7 @@ Applies Row-Level Security (RLS), creates indices, and configures least-privileg
 
 import os
 import getpass
+import secrets
 import psycopg2
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,17 +70,20 @@ def apply_security():
             CREATE POLICY public_read_taluka_risk ON taluka_risk_latest FOR SELECT USING (true);
         """)
 
-        # 3. Least-privilege Application Role
+        # 3. Least-privilege Application Role (SEC-05)
         print("  - Configuring least-privilege application role (maharain_app)...")
+        app_password = os.getenv("MAHARAIN_APP_PASSWORD") or secrets.token_urlsafe(24)
         cur.execute("""
             DO $$
             BEGIN
                 IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'maharain_app') THEN
-                    CREATE ROLE maharain_app WITH LOGIN PASSWORD 'maharain_app_secure_pass';
+                    CREATE ROLE maharain_app WITH LOGIN;
                 END IF;
             END
             $$;
-            
+        """)
+        cur.execute("ALTER ROLE maharain_app WITH PASSWORD %s;", (app_password,))
+        cur.execute("""
             GRANT CONNECT ON DATABASE maharainrisk_db TO maharain_app;
             GRANT USAGE ON SCHEMA public TO maharain_app;
             GRANT SELECT ON talukas, daily_weather, taluka_risk_latest TO maharain_app;

@@ -68,6 +68,9 @@ class BackendDataService:
             print(f"[!] TreeSHAP Explainer initialization fallback: {e}")
             self.explainer = None
 
+        self._districts_cache = None
+        self._overview_cache = None
+
         # Load master panel
         panel_path = os.path.join(PROCESSED_DIR, "master_panel.parquet")
         self.master_df = pd.read_parquet(panel_path)
@@ -367,8 +370,11 @@ class BackendDataService:
     def get_statewide_overview(self) -> Dict[str, Any]:
         """
         Computes state-wide macro telemetry, risk tier distributions,
-        and identifies top drought hotspots across all 194 talukas.
+        and identifies top drought hotspots across all 194 talukas (cached in memory).
         """
+        if self._overview_cache is not None:
+            return self._overview_cache
+
         # 1. Risk Tier Counts
         cat_counts = self.latest_df["drought_risk_category"].value_counts().to_dict()
         risk_dist = {
@@ -408,7 +414,7 @@ class BackendDataService:
                 "dry_spell_days": int(r.get("max_consecutive_dry_days", 5))
             })
 
-        return {
+        self._overview_cache = {
             "total_talukas": len(self.latest_df),
             "total_districts": int(self.latest_df["district_name"].nunique()),
             "state_avg_rainfall_deficit_pct": avg_deficit,
@@ -417,11 +423,15 @@ class BackendDataService:
             "risk_distribution": risk_dist,
             "top_hotspots": hotspots
         }
+        return self._overview_cache
 
     def get_districts_list(self) -> List[Dict[str, Any]]:
         """
-        Aggregates all 194 talukas into their 36 parent administrative districts.
+        Aggregates all 194 talukas into their 36 parent administrative districts (cached in memory).
         """
+        if self._districts_cache is not None:
+            return self._districts_cache
+
         districts = []
         for d_name, g in self.latest_df.groupby("district_name"):
             r0 = g.iloc[0]
@@ -439,7 +449,8 @@ class BackendDataService:
                 "dominant_risk_label": RISK_LABELS_EN.get(dom_cat, "Safe"),
                 "primary_university": str(r0.get("university_affiliation", "MPKV Rahuri"))
             })
-        return sorted(districts, key=lambda x: x["district_name"])
+        self._districts_cache = sorted(districts, key=lambda x: x["district_name"])
+        return self._districts_cache
 
     def compare_talukas(self, query1: str, query2: str) -> Dict[str, Any]:
         """

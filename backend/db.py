@@ -95,12 +95,15 @@ class DatabasePool:
                 pass
             self._pool = None
 
+        timeout_options = "-c statement_timeout=5000 -c idle_in_transaction_session_timeout=10000"
         db_url = os.getenv("DATABASE_URL")
         if db_url:
             self._pool = pool.ThreadedConnectionPool(
                 minconn=min_conn,
                 maxconn=max_conn,
-                dsn=db_url
+                dsn=db_url,
+                connect_timeout=5,
+                options=timeout_options
             )
             return self._pool
 
@@ -117,7 +120,9 @@ class DatabasePool:
             user=db_user,
             password=db_pass,
             host=db_host,
-            port=db_port
+            port=db_port,
+            connect_timeout=5,
+            options=timeout_options
         )
         return self._pool
 

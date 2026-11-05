@@ -278,6 +278,8 @@ async def security_and_timing_middleware(request: Request, call_next):
     response.headers["X-Process-Time-Ms"] = f"{process_time_ms:.2f}"
     response.headers["X-RateLimit-Limit"] = str(RATE_LIMIT_PER_MINUTE)
     response.headers["X-RateLimit-Remaining"] = str(remaining_requests)
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org *.tile.openstreetmap.org; media-src 'self' blob:;"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-XSS-Protection"] = "1; mode=block"
