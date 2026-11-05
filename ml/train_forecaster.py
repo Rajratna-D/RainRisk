@@ -164,8 +164,24 @@ def train_and_evaluate():
     print(f" 2026 Macro F1: {champion_f1:.4f} (Baseline was 0.4435)")
     print("=" * 75)
 
-    print("\nClassification Report (Unseen 2026 Live Validation):")
+    print("\nClassification Report (Unseen 2026 Raw Argmax Validation):")
     print(classification_report(y_test, y_best, labels=[0, 1, 2, 3, 4], target_names=LABELS_EN, zero_division=0))
+
+    # Evaluate with Cost-Sensitive Decision Policy (ML-01)
+    probs_best = champion_model.predict_proba(X_test)
+    y_cost = []
+    for p in probs_best:
+        if len(p) >= 5 and p[4] >= 0.15: y_cost.append(4)
+        elif len(p) >= 4 and p[3] >= 0.25: y_cost.append(3)
+        elif len(p) >= 3 and p[2] >= 0.35: y_cost.append(2)
+        elif len(p) >= 2 and p[1] >= 0.40: y_cost.append(1)
+        else: y_cost.append(int(np.argmax(p)))
+    y_cost = np.array(y_cost)
+    f1_cost = f1_score(y_test, y_cost, average="macro", zero_division=0)
+    acc_cost = accuracy_score(y_test, y_cost)
+    print(f"\n[OK] Cost-Sensitive 2026 Macro F1-Score: {f1_cost:.4f} | Accuracy: {acc_cost * 100:.2f}%")
+    print("Classification Report (Unseen 2026 Cost-Sensitive Early Warning):")
+    print(classification_report(y_test, y_cost, labels=[0, 1, 2, 3, 4], target_names=LABELS_EN, zero_division=0))
 
     # Top drivers (using RF feature importances)
     feat_imp = pd.Series(rf.feature_importances_, index=FEATURE_COLS).sort_values(ascending=False)

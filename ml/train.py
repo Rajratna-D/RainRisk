@@ -74,8 +74,24 @@ def train_production_model():
     print(f"[OK] Out-of-time 2026 Validation Macro F1-Score: {macro_f1:.4f}")
     print(f"[OK] Out-of-time 2026 Validation Accuracy:      {test_acc * 100:.2f}%")
     print(f"[OK] Out-of-Bag (OOB) Training Accuracy:        {oob_acc * 100:.2f}%")
-    print("\nClassification Report (2026 Kharif Evaluation):")
+    print("\nClassification Report (2026 Kharif Raw Evaluation):")
     print(classification_report(y_test, y_pred, labels=[0, 1, 2, 3, 4], target_names=LABELS_EN, zero_division=0))
+
+    # Calibrated decision policy evaluation (ML-01)
+    probs = model.predict_proba(X_test)
+    y_calib = []
+    for p in probs:
+        if len(p) >= 5 and p[4] >= 0.20: y_calib.append(4)
+        elif len(p) >= 4 and p[3] >= 0.35: y_calib.append(3)
+        elif len(p) >= 3 and p[2] >= 0.40: y_calib.append(2)
+        elif len(p) >= 2 and p[1] >= 0.45: y_calib.append(1)
+        else: y_calib.append(int(np.argmax(p)))
+    y_calib = np.array(y_calib)
+    macro_f1_calib = f1_score(y_test, y_calib, average="macro")
+    acc_calib = accuracy_score(y_test, y_calib)
+    print(f"[OK] Calibrated 2026 Macro F1-Score: {macro_f1_calib:.4f} | Accuracy: {acc_calib * 100:.2f}%")
+    print("\nClassification Report (2026 Kharif Calibrated Policy):")
+    print(classification_report(y_test, y_calib, labels=[0, 1, 2, 3, 4], target_names=LABELS_EN, zero_division=0))
 
     # Feature importance
     feat_imp = pd.Series(model.feature_importances_, index=FEATURE_COLS).sort_values(ascending=False)

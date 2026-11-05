@@ -157,9 +157,18 @@ class MahaRainRiskInference:
         X_diag_vals = [row.get(f, diag_medians.get(f, 0.0)) for f in diag_features]
         X_diag = pd.DataFrame([X_diag_vals], columns=diag_features).fillna(0.0)
 
-        # Single predict_proba call gives both probability and argmax prediction (50% speedup)
+        # Single predict_proba call gives both probability and calibrated prediction (ML-01)
         diag_proba = self.diag_model.predict_proba(X_diag)[0]
-        diag_pred = int(np.argmax(diag_proba))
+        if len(diag_proba) >= 5 and diag_proba[4] >= 0.20:
+            diag_pred = 4
+        elif len(diag_proba) >= 4 and diag_proba[3] >= 0.35:
+            diag_pred = 3
+        elif len(diag_proba) >= 3 and diag_proba[2] >= 0.40:
+            diag_pred = 2
+        elif len(diag_proba) >= 2 and diag_proba[1] >= 0.45:
+            diag_pred = 1
+        else:
+            diag_pred = int(np.argmax(diag_proba))
 
         # 2. Prepare Features for Model 2 (Forecaster - 31 features)
         fore_features = self.fore_artifact["feature_names"]
