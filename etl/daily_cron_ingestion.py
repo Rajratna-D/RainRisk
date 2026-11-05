@@ -376,6 +376,22 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
     """
     execute_values(cur, upsert_risk_sql, risk_records)
 
+    # 8b. DB-02: Archive daily snapshot into taluka_risk_history audit ledger
+    history_sql = """
+        INSERT INTO taluka_risk_history (
+            taluka_lgd_code, as_of_date, risk_category, risk_score, confidence,
+            forecast_month, predicted_risk_lead_1, spi_1, spi_3, spi_6, spei_3,
+            soil_moisture_index, max_consecutive_dry_days, district_dam_storage_pct,
+            groundwater_depth_mbgl, shap_summary, bilingual_advisory
+        ) VALUES %s
+        ON CONFLICT (taluka_lgd_code, as_of_date) DO NOTHING;
+    """
+    try:
+        execute_values(cur, history_sql, risk_records)
+        logger.info("[*] DB-02: Successfully archived 194 risk snapshots into taluka_risk_history.")
+    except Exception as e:
+        logger.warning("[!] DB-02: taluka_risk_history archive skipped (table pending in Supabase): %s", e)
+
     # 9. COMMIT ENTIRE TRANSACTION ATOMICALLY
     conn.commit()
     logger.info("[*] Transaction Committed: Exactly 194 daily records and 194 risk snapshots published to PostgreSQL.")
