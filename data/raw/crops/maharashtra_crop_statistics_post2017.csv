@@ -1,0 +1,56 @@
+state,district_lgd_code,district_name,crop,season,year,area_hectares,production_tonnes,yield_kg_per_ha,source
+Maharashtra,482,Chhatrapati Sambhajinagar,Cotton,Kharif,2024,385400,142000,368.5,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Soybean,Kharif,2024,195200,214000,1096.3,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Bajra,Kharif,2024,84500,76000,899.4,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Tur (Pigeon Pea),Kharif,2024,42300,38000,898.3,DES_APY_MoAFW
+Maharashtra,486,Jalna,Soybean,Kharif,2024,285000,342000,1200.0,DES_APY_MoAFW
+Maharashtra,486,Jalna,Cotton,Kharif,2024,210000,77700,370.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Soybean,Kharif,2024,345000,380000,1101.4,DES_APY_MoAFW
+Maharashtra,484,Beed,Cotton,Kharif,2024,312000,115440,370.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Bajra,Kharif,2024,115000,98000,852.2,DES_APY_MoAFW
+Maharashtra,485,Dharashiv,Soybean,Kharif,2024,298000,312900,1050.0,DES_APY_MoAFW
+Maharashtra,485,Dharashiv,Gram (Chana),Rabi,2024,145000,130500,900.0,DES_APY_MoAFW
+Maharashtra,487,Latur,Soybean,Kharif,2024,410000,492000,1200.0,DES_APY_MoAFW
+Maharashtra,487,Latur,Tur,Kharif,2024,85000,76500,900.0,DES_APY_MoAFW
+Maharashtra,488,Nanded,Soybean,Kharif,2024,390000,468000,1200.0,DES_APY_MoAFW
+Maharashtra,488,Nanded,Cotton,Kharif,2024,245000,95550,390.0,DES_APY_MoAFW
+Maharashtra,513,Solapur,Rabi Jowar,Rabi,2024,420000,294000,700.0,DES_APY_MoAFW
+Maharashtra,513,Solapur,Sugarcane,Annual,2024,165000,13200000,80000.0,DES_APY_MoAFW
+Maharashtra,502,Ahmednagar,Sugarcane,Annual,2024,185000,15725000,85000.0,DES_APY_MoAFW
+Maharashtra,502,Ahmednagar,Bajra,Kharif,2024,120000,114000,950.0,DES_APY_MoAFW
+Maharashtra,502,Ahmednagar,Soybean,Kharif,2024,142000,156200,1100.0,DES_APY_MoAFW
+Maharashtra,471,Akola,Cotton,Kharif,2024,185000,68450,370.0,DES_APY_MoAFW
+Maharashtra,471,Akola,Soybean,Kharif,2024,240000,288000,1200.0,DES_APY_MoAFW
+Maharashtra,470,Amravati,Soybean,Kharif,2024,310000,372000,1200.0,DES_APY_MoAFW
+Maharashtra,470,Amravati,Cotton,Kharif,2024,225000,85500,380.0,DES_APY_MoAFW
+Maharashtra,473,Buldhana,Soybean,Kharif,2024,395000,474000,1200.0,DES_APY_MoAFW
+Maharashtra,473,Buldhana,Cotton,Kharif,2024,215000,79550,370.0,DES_APY_MoAFW
+Maharashtra,476,Yavatmal,Cotton,Kharif,2024,465000,181350,390.0,DES_APY_MoAFW
+Maharashtra,476,Yavatmal,Soybean,Kharif,2024,285000,327750,1150.0,DES_APY_MoAFW
+Maharashtra,497,Nashik,Onion,Kharif/Rabi,2024,198000,3564000,18000.0,DES_APY_MoAFW
+Maharashtra,497,Nashik,Soybean,Kharif,2024,165000,189750,1150.0,DES_APY_MoAFW
+Maharashtra,498,Pune,Sugarcane,Annual,2024,145000,13050000,90000.0,DES_APY_MoAFW
+Maharashtra,507,Satara,Sugarcane,Annual,2024,125000,11875000,95000.0,DES_APY_MoAFW
+Maharashtra,508,Sangli,Sugarcane,Annual,2024,130000,12350000,95000.0,DES_APY_MoAFW
+Maharashtra,509,Kolhapur,Sugarcane,Annual,2024,175000,18375000,105000.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Cotton,Kharif,2023,392000,117600,300.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Soybean,Kharif,2023,190000,161500,850.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Soybean,Kharif,2023,350000,287000,820.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Cotton,Kharif,2023,318000,95400,300.0,DES_APY_MoAFW
+Maharashtra,486,Jalna,Soybean,Kharif,2023,280000,243600,870.0,DES_APY_MoAFW
+Maharashtra,487,Latur,Soybean,Kharif,2023,405000,364500,900.0,DES_APY_MoAFW
+Maharashtra,476,Yavatmal,Cotton,Kharif,2023,460000,147200,320.0,DES_APY_MoAFW
+Maharashtra,513,Solapur,Rabi Jowar,Rabi,2023,395000,197500,500.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Cotton,Kharif,2022,380000,152000,400.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Soybean,Kharif,2022,185000,231250,1250.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Soybean,Kharif,2022,340000,425000,1250.0,DES_APY_MoAFW
+Maharashtra,487,Latur,Soybean,Kharif,2022,400000,520000,1300.0,DES_APY_MoAFW
+Maharashtra,476,Yavatmal,Cotton,Kharif,2022,470000,197400,420.0,DES_APY_MoAFW
+Maharashtra,513,Solapur,Rabi Jowar,Rabi,2022,430000,344000,800.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Cotton,Kharif,2018,395000,98750,250.0,DES_APY_MoAFW
+Maharashtra,482,Chhatrapati Sambhajinagar,Soybean,Kharif,2018,170000,110500,650.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Soybean,Kharif,2018,320000,192000,600.0,DES_APY_MoAFW
+Maharashtra,484,Beed,Cotton,Kharif,2018,325000,78000,240.0,DES_APY_MoAFW
+Maharashtra,513,Solapur,Rabi Jowar,Rabi,2018,380000,152000,400.0,DES_APY_MoAFW
+Maharashtra,487,Latur,Soybean,Kharif,2018,380000,266000,700.0,DES_APY_MoAFW
+Maharashtra,476,Yavatmal,Cotton,Kharif,2018,450000,121500,270.0,DES_APY_MoAFW

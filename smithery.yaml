@@ -1,0 +1,31 @@
+# Smithery.ai MCP Server Registry Manifest
+# Enables 1-Click Install for Claude Desktop, Cursor, Windsurf, and Agent Directories
+# Specification: https://smithery.ai/docs/config
+
+startCommand:
+  type: stdio
+
+configSchema:
+  type: object
+  properties:
+    remoteUrl:
+      type: string
+      title: "Remote Cloud SSE Endpoint"
+      description: "Hosted Server-Sent Events endpoint URL on Render"
+      default: "https://maharainrisk-api.onrender.com/mcp/sse"
+
+commandFunction: |-
+  (config) => ({
+    command: "python",
+    args: [
+      "-m",
+      "backend.mcp_server"
+    ],
+    env: {
+      PYTHONIOENCODING: "utf-8"
+    }
+  })
+
+exampleConfig:
+  remoteUrl: "https://maharainrisk-api.onrender.com/mcp/sse"
+

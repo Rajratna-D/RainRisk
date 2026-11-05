@@ -1,0 +1,113 @@
+/* ==========================================================================
+   MahaRainRisk | Main Window & Left Floating Dock Layout
+   ========================================================================== */
+
+/* App Window (Fluid Responsive Auto-Resizing: Fits 100% Zoom & Mobile) */
+.app-window {
+  width: 100%;
+  max-width: 1780px;
+  min-height: calc(100vh - 24px);
+  height: auto;
+  background: var(--frame-bg);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: 1.5px solid var(--frame-border);
+  border-radius: var(--radius-outer);
+  box-shadow: var(--frame-shadow);
+  display: flex;
+  position: relative;
+  z-index: 10;
+  margin: 0 auto;
+}
+
+/* Left Floating Dock */
+.left-dock {
+  width: 68px;
+  background: var(--dock-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border-right: 1px solid var(--dock-border);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  gap: 16px;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.dock-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dock-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.dock-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: #FFFFFF;
+  color: #0F172A;
+  transform: translateY(-1.5px);
+  box-shadow: inset 0 1px 1.5px 0 rgba(255, 255, 255, 1), 0 6px 16px rgba(0, 0, 0, 0.07);
+}
+
+.dock-icon-btn.active {
+  background: var(--dock-active);
+  border-color: var(--dock-active);
+  color: #FFFFFF;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.35), 0 6px 16px rgba(94, 138, 66, 0.45);
+}
+
+.dock-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+/* Official Department of Agriculture Emblem Badge */
+.agri-dept-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 2px solid #F59E0B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.agri-dept-badge:hover {
+  transform: scale(1.08);
+}
+
+/* Workspace wrapper */
+.workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 0;
+}

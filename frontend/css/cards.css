@@ -1,0 +1,942 @@
+/* ==========================================================================
+   MahaRainRisk | Farmer Cards, Gauges, Hero Banner & Analytics Grids
+   ========================================================================== */
+
+/* Main Dashboard Canvas (Fluid Structured Grid) */
+.dashboard-canvas {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 10px;
+  padding: 8px 16px;
+}
+
+.left-main-section {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+/* Tab Bar: Farmer Essentials vs Detailed Analytics */
+.canvas-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
+}
+
+.canvas-tab-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.canvas-tab-pill:hover {
+  color: #0F172A;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.canvas-tab-pill.active {
+  background: var(--dock-active);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(94, 138, 66, 0.35);
+}
+
+.tab-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+}
+
+.tab-pill-icon svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.2;
+}
+
+.tab-content-panel {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tab-content-panel.active {
+  display: flex;
+}
+
+/* Hero Card: Greenhouse Photo vs Leaflet Map Switcher */
+.hero-visual-card {
+  height: 195px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: height 0.38s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+/* Option 1: Dynamic Expansion when Map View is active (spacious 480px GIS viewport) */
+.hero-visual-card.show-map {
+  height: 480px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.hero-crop-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/assets/greenhouse_bg.jpg');
+  background-size: cover;
+  background-position: center 65%;
+  transition: opacity 0.35s ease;
+}
+
+.hero-leaflet-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  background: #F1F5F9;
+}
+
+.hero-visual-card.show-map .hero-crop-bg {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.hero-visual-card.show-map .hero-leaflet-layer {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  z-index: 20 !important;
+}
+
+.hero-visual-card.show-map .floating-harvest-card {
+  display: none !important;
+}
+
+#leaflet-map-element {
+  width: 100%;
+  height: 100%;
+}
+
+/* Switcher pill & Taluka badge must NEVER be covered by Leaflet */
+.hero-view-switch-pill {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  z-index: 1200 !important; /* Higher than Leaflet controls */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.hero-switch-opt {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-switch-opt.active {
+  background: var(--dock-active);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(94, 138, 66, 0.35);
+}
+
+.hero-taluka-badge {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-pill);
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0F172A;
+  z-index: 1200 !important; /* Higher than Leaflet controls */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.status-dot-green {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dock-active);
+  box-shadow: 0 0 8px var(--dock-active);
+}
+
+/* Floating Drought Risk Gauge Card (Centered on Hero) */
+.floating-harvest-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 258px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  border-radius: 20px;
+  padding: 8px 14px;
+  box-shadow: 0 20px 48px -10px rgba(18, 48, 28, 0.16),
+              inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+              inset 0 -1px 2px rgba(94, 138, 66, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 40;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-harvest-card:hover {
+  transform: translate(-50%, -53%);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 26px 56px -10px rgba(18, 48, 28, 0.22),
+              inset 0 1.5px 2px rgba(255, 255, 255, 1);
+}
+
+.harvest-top-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.harvest-sparkle-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #0F172A;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.harvest-sparkle-title svg {
+  color: var(--dock-active);
+}
+
+.card-diagonal-arrow {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.card-diagonal-arrow svg {
+  width: 11px;
+  height: 11px;
+  stroke-width: 2.2;
+}
+
+/* Semi-Circle SVG Arc */
+.gauge-arc-wrapper {
+  width: 154px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-svg-element {
+  width: 100%;
+  height: 100%;
+}
+
+.arc-track-base {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.08);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+
+.arc-fill-active {
+  fill: none;
+  stroke: var(--dock-active);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-dasharray: 204.2;
+  stroke-dashoffset: 40;
+  transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+
+.gauge-inside-center {
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 145px;
+  text-align: center;
+}
+
+.gauge-crop-badge {
+  font-size: 13px;
+  margin-bottom: 1px;
+}
+
+.gauge-bold-num {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.gauge-sub-status {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--dock-active);
+  margin-top: 1px;
+  max-width: 140px;
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* Bottom Composite Row: 2x2 Metric Grid + 5-Year Monsoon Bar Chart */
+.bottom-composite-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* 2x2 Grid of 4 Farmer Action Cards */
+.sub-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mini-metric-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 6px 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mini-metric-card:hover {
+  background: var(--card-bg-hover);
+  transform: translateY(-2px);
+  border-color: rgba(94, 138, 66, 0.4);
+  box-shadow: 0 12px 28px -4px rgba(25, 55, 35, 0.1), inset 0 1px 1.5px rgba(255, 255, 255, 1);
+}
+
+.card-top-icon-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mini-icon-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dock-active);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.mini-icon-circle svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.2;
+}
+
+.mini-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.mini-card-bottom-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+
+.mini-big-number {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.mini-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.farmer-status-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  margin-top: 3px;
+  width: fit-content;
+}
+
+/* Bottom Center: Monsoon 5-Year History */
+.growth-rate-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.growth-rate-card:hover {
+  background: var(--card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(25, 55, 35, 0.1), inset 0 1px 1.5px rgba(255, 255, 255, 1);
+}
+
+.growth-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.growth-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.growth-val-bold {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.histogram-bars-row {
+  display: flex;
+  align-items: flex-end;
+  height: 80px;
+  gap: 5px;
+  padding: 6px 0;
+}
+
+.histo-bar-col {
+  flex: 1;
+  background: #CBD5E1;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.4s ease, background 0.2s ease;
+}
+
+.histo-bar-col.active-green {
+  background: var(--dock-active);
+}
+
+.histo-bar-col.deficit-red {
+  background: var(--accent-orange);
+}
+
+.histogram-dates-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748B;
+  margin-top: 4px;
+}
+
+/* Farmer Direct Agronomic Advisory Banner (Zero complex charts) */
+.farmer-direct-advisory-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 7px 12px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.advisory-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 4px;
+}
+
+.advisory-badge-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.tts-inline-btn,
+.tts-green-btn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  background: var(--dock-active);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 8px rgba(94, 138, 66, 0.3);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  user-select: none;
+}
+
+.tts-inline-btn:hover,
+.tts-green-btn:hover {
+  background: var(--dock-active-hover);
+  transform: translateY(-1px);
+}
+
+.tts-inline-btn.loading,
+.tts-green-btn.loading {
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
+  cursor: wait;
+  animation: pulse-mic 1s infinite ease-in-out;
+}
+
+.tts-inline-btn.speaking,
+.tts-green-btn.speaking {
+  background: #EA580C !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 3px 10px rgba(234, 88, 12, 0.45);
+  animation: pulse-mic 1.4s infinite;
+}
+
+.advisory-action-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.advisory-action-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: rgba(94, 138, 66, 0.06);
+  border-left: 3px solid var(--dock-active);
+  padding: 3px 8px;
+  border-radius: 0 8px 8px 0;
+}
+
+.action-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.action-icon-circle svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.2;
+}
+
+.action-text-group {
+  font-size: 11px;
+  color: #1E293B;
+  line-height: 1.35;
+}
+
+.action-text-group strong {
+  color: #0F172A;
+  margin-right: 4px;
+}
+
+/* 2-Column Analytics Cards Grid for Tab 2 */
+.analytics-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ==========================================================================
+   GPS 1-Tap Location Snapping Button & Animation
+   ========================================================================== */
+.gps-pill-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(94, 138, 66, 0.35);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--dock-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.gps-pill-btn:hover {
+  background: #FFFFFF;
+  border-color: var(--dock-active);
+  color: var(--dock-active-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(94, 138, 66, 0.2);
+}
+
+.gps-pill-btn.gps-locating-pulse {
+  animation: gps-pulse 1s infinite alternate;
+  background: var(--dock-active);
+  color: #FFFFFF;
+  border-color: var(--dock-active);
+}
+
+@keyframes gps-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(94, 138, 66, 0.5); }
+  100% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(94, 138, 66, 0); }
+}
+
+/* ==========================================================================
+   Stale Data Warning Banner
+   ========================================================================== */
+.stale-warning-banner {
+  background: linear-gradient(90deg, #FEF3C7 0%, #FDE68A 100%);
+  border: 1px solid #F59E0B;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin: 6px 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+  animation: slideDown 0.3s ease-out;
+}
+
+.stale-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400E;
+}
+
+/* ==========================================================================
+   TreeSHAP Explainable AI Card Components
+   ========================================================================== */
+.treeshap-narrative-banner {
+  background: rgba(94, 138, 66, 0.08);
+  border-left: 3.5px solid var(--dock-active);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  margin: 8px 0 10px;
+}
+
+.narrative-headline {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #065F46;
+  margin-bottom: 3px;
+}
+
+.narrative-body {
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.treeshap-section-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 6px;
+}
+
+.treeshap-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.treeshap-escalator-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.treeshap-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.treeshap-feature-name {
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.treeshap-impact-pct {
+  font-weight: 800;
+  color: #DC2626;
+  font-size: 11px;
+}
+
+.treeshap-bar-track {
+  height: 6px;
+  width: 100%;
+  background: rgba(226, 232, 240, 0.8);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.treeshap-bar-fill-escalator {
+  height: 100%;
+  background: linear-gradient(90deg, #F97316 0%, #EF4444 100%);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.treeshap-buffer-box {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.buffer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.buffer-desc {
+  font-size: 11px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Regional Drought Contagion & Spatial Adjacent Talukas Card
+   ========================================================================== */
+.contagion-summary-row {
+  margin: 6px 0 10px;
+}
+
+.contagion-badge-neutral {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+}
+
+.contagion-badge-safe {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.contagion-badge-warning {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.15);
+  color: #B45309;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.adjacent-talukas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.adjacent-chip {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.adjacent-chip:hover {
+  border-color: var(--dock-active);
+  background: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.adjacent-chip-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adjacent-chip-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #64748B;
+}
+
+/* ==========================================================================
+   MCP Connector Card Buttons in Tab 2
+   ========================================================================== */
+.mcp-open-modal-btn {
+  background: linear-gradient(135deg, #7C3AED 0%, #9333EA 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.mcp-open-modal-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(124, 58, 237, 0.35);
+  background: linear-gradient(135deg, #6D28D9 0%, #7E22CE 100%);
+}
+
+.mcp-docs-btn {
+  background: rgba(147, 51, 234, 0.08);
+  color: #7E22CE;
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.mcp-docs-btn:hover {
+  background: rgba(147, 51, 234, 0.15);
+  border-color: #7E22CE;
+}
+

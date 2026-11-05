@@ -1,0 +1,686 @@
+/* ==========================================================================
+   MahaRainRisk | Interactive Modals, Map Labels & Responsive Breakpoints
+   ========================================================================== */
+
+/* Interactive Modals & Drawers */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(14px) brightness(0.92);
+  -webkit-backdrop-filter: blur(14px) brightness(0.92);
+  z-index: 2100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 580px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18), inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: modal-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-card.ai-modal {
+  max-width: 680px;
+  max-height: 88vh;
+  padding: 20px 24px;
+  overflow: hidden;
+}
+
+.modal-card.mcp-modal {
+  max-width: 680px;
+  max-height: 88vh;
+  padding: 20px 24px;
+  overflow: hidden;
+}
+
+.mcp-modal-scroll {
+  overflow-y: auto;
+  max-height: calc(88vh - 80px);
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mcp-platforms-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcp-platform-box {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mcp-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #0F172A;
+}
+
+.mcp-box-icon {
+  font-size: 16px;
+}
+
+.mcp-copy-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.mcp-url-code {
+  flex: 1;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: all;
+}
+
+.mcp-copy-btn {
+  background: var(--dock-active);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.mcp-copy-btn:hover {
+  background: var(--dock-active-hover);
+}
+
+.mcp-copy-btn.copied {
+  background: #10B981 !important;
+}
+
+.mcp-helper-notes {
+  font-size: 11px;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Toast Notification System (GPS Feedback, Offline Alerts)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #FFFFFF;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  max-width: 380px;
+}
+
+.toast-item.success {
+  background: rgba(6, 95, 70, 0.95);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.toast-item.warning {
+  background: rgba(146, 64, 14, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.toast-item.info {
+  background: rgba(30, 58, 138, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+@keyframes toastSlideIn {
+  0% { transform: translateY(-16px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.modal-ai-scroll {
+  overflow-y: auto;
+  max-height: calc(88vh - 90px);
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@keyframes modal-pop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-title svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+  flex-shrink: 0;
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+}
+
+.modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+/* CartoDB High-Visibility Map Taluka Labels */
+.map-taluka-label {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1.5px solid var(--dock-active) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+  font-weight: 800 !important;
+  font-size: 11.5px !important;
+  color: #0F172A !important;
+  padding: 2px 7px !important;
+}
+
+.map-taluka-label::before {
+  border-top-color: var(--dock-active) !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE AUTO-RESIZING (Desktop 100% Zoom, Laptop, Tablet & Mobile)
+   ========================================================================== */
+@media (max-width: 1150px) {
+  .dashboard-canvas {
+    grid-template-columns: 1fr;
+  }
+  .analytics-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  body {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .app-window {
+    flex-direction: column-reverse !important;
+    border-radius: 0 !important;
+    border: none !important;
+    min-height: 100vh !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  /* Bottom Floating Dock: Always on display (Viewport Fixed on Mobile) */
+  .left-dock {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
+    border-right: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.85) !important;
+    flex-direction: row !important;
+    padding: 6px 12px max(8px, env(safe-area-inset-bottom, 8px)) !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 99999 !important; /* Always on display above all content */
+    background: rgba(255, 255, 255, 0.96) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    box-shadow: 0 -4px 25px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Hide decorative seal and secondary icons on mobile dock so 5 core buttons have maximum tap space */
+  .agri-dept-badge,
+  #dock-btn-calendar,
+  #dock-btn-sliders,
+  #dock-btn-settings {
+    display: none !important;
+  }
+
+  .left-dock > .dock-cluster:last-child {
+    display: none !important;
+  }
+
+  .left-dock > .dock-cluster:first-child {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    width: 100% !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+  }
+
+  .dock-icon-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Header Optimization: 2-Row Split Layout for Mobile */
+  .top-header {
+    position: relative !important;
+    z-index: 2000 !important;
+    height: auto !important;
+    min-height: 96px !important;
+    padding: 10px 12px 12px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    row-gap: 8px !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  /* Row 1 Left: Brand Logo & Title */
+  .brand-section {
+    order: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .brand-badge-icon {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    border-radius: 9px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-badge-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .brand-title-text {
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .exit-to-landing-btn {
+    display: none !important; /* Redundant on mobile - tapping brand or home dock icon returns to landing */
+  }
+
+  /* Row 1 Right: Language Switcher + AI Assistant */
+  .top-actions-cluster {
+    order: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Language Switcher Button on Mobile: Prominent, High-Priority Pill */
+  #btn-lang {
+    display: inline-flex !important;
+    width: auto !important;
+    height: 32px !important;
+    padding: 0 10px !important;
+    border-radius: var(--radius-pill) !important;
+    background: rgba(94, 138, 66, 0.12) !important;
+    border: 1.5px solid var(--dock-active) !important;
+    color: var(--dock-active) !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 2px 6px rgba(94, 138, 66, 0.15) !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .glowing-ai-btn {
+    display: inline-flex !important;
+    height: 32px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .glowing-ai-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Hide secondary desktop-only icon buttons on mobile so header NEVER overflows */
+  #btn-download,
+  #btn-alerts,
+  #btn-refresh,
+  #btn-tips {
+    display: none !important;
+  }
+
+  /* Row 2 (Full Width): Dedicated Search Bar Container */
+  .search-center-group {
+    order: 2 !important;
+    flex: 0 0 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    margin-top: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: relative !important;
+  }
+
+  .search-input-pill {
+    flex: 1 1 auto !important;
+    width: calc(100% - 96px) !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Search Icon: Explicitly positioned, clearly visible on mobile */
+  .search-icon-svg {
+    position: absolute !important;
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 17px !important;
+    height: 17px !important;
+    color: #64748B !important;
+    pointer-events: none !important;
+    z-index: 5 !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+  }
+
+  .search-input-pill input {
+    width: 100% !important;
+    height: 42px !important;
+    padding: 0 14px 0 40px !important; /* 40px left padding guarantees text never overlaps the search icon */
+    font-size: 14px !important;
+    border-radius: var(--radius-pill) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1.5px solid rgba(94, 138, 66, 0.28) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+    color: #0F172A !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+  }
+
+  .search-input-pill input:focus {
+    border-color: var(--dock-active) !important;
+    box-shadow: 0 0 0 3px rgba(94, 138, 66, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+  }
+
+  .gps-pill-btn,
+  .mic-pill-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1.5px solid rgba(94, 138, 66, 0.28) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  .toast-container {
+    top: 10px !important;
+    left: 12px !important;
+    right: 12px !important;
+    align-items: center !important;
+  }
+
+  .toast-item {
+    max-width: 100% !important;
+    font-size: 12px !important;
+    padding: 8px 14px !important;
+  }
+
+
+  .autocomplete-box {
+    position: absolute !important;
+    top: 48px !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 220px !important;
+    z-index: 3000 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .autocomplete-row {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    touch-action: manipulation;
+  }
+
+  /* Canvas & Cards Layout (Generous bottom padding so fixed dock never covers cards) */
+  .dashboard-canvas {
+    padding: 8px 10px calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 12px;
+  }
+
+  .hero-visual-card {
+    height: 220px;
+    border-radius: 14px;
+  }
+
+  .hero-visual-card.show-map {
+    height: 420px;
+  }
+
+  .hero-view-switch-pill {
+    top: 10px;
+    left: 10px;
+  }
+
+  .hero-switch-opt {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+
+  .hero-taluka-badge {
+    bottom: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .canvas-tab-bar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .canvas-tab-pill {
+    flex: 1;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  /* Farmer Direct Advisory Banner */
+  .farmer-direct-advisory-card {
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  .advisory-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tts-green-btn,
+  .tts-inline-btn {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13px;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  /* 1-Column Action Cards */
+  .sub-grid-2x2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .action-rec-card {
+    padding: 12px 14px;
+    border-radius: 14px;
+  }
+
+  .action-rec-title {
+    font-size: 13.5px;
+  }
+
+  .action-rec-body {
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+
+  /* Modals on Mobile: Above fixed bottom dock */
+  .modal-overlay {
+    z-index: 10000 !important;
+    padding: 12px !important;
+    align-items: flex-end !important;
+  }
+
+  .modal-card {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    max-height: 85vh !important;
+    padding: 18px 16px !important;
+  }
+
+  .modal-close-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+  }
+}

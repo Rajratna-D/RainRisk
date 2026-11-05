@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>MahaRainRisk — A3 Poster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&display=swap" rel="stylesheet"/>
+<!-- Fallback since SF Pro isn't on Google Fonts -->
+<style>
+/* ─── APPLE DESIGN SYSTEM ────────────────────────────────────────────────── */
+/* Purpose: every element earns its place.                                    */
+/* Simplicity: strip everything that doesn't serve the message.               */
+/* Craft: typography, spacing, and colour are deliberate — never random.      */
+/* Delight: the result of getting the other three right.                      */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* A3 portrait at 96 dpi: 1122.5 × 1587.4 px — we round to 1123 × 1588 */
+  --w: 1123px;
+  --h: 1588px;
+
+  /* ── Apple-calibrated palette ─────────────────────────────────────────── */
+  /* Background: pure white — because great design doesn't hide in darkness  */
+  --bg:          #ffffff;
+  --bg-wash:     #f5f5f7;   /* Apple's site background grey */
+  --bg-card:     #ffffff;
+  --bg-inset:    #f5f5f7;
+
+  /* Semantic colours — monsoon / drought spectrum                           */
+  --green:       #34c759;   /* iOS green — safe / healthy */
+  --teal:        #5ac8fa;   /* sky / water */
+  --blue:        #007aff;   /* Apple blue — primary accent */
+  --indigo:      #5856d6;   /* ML / AI */
+  --amber:       #ff9f0a;   /* watch / warning */
+  --orange:      #ff6b00;   /* alert */
+  --red:         #ff3b30;   /* severe drought */
+  --maroon:      #a30000;   /* extreme */
+
+  /* Typography */
+  --text-primary:   #1d1d1f;   /* Apple's near-black */
+  --text-secondary: #6e6e73;   /* Apple grey */
+  --text-tertiary:  #aeaeb2;
+  --text-invert:    #ffffff;
+
+  /* Strokes */
+  --sep:  rgba(0,0,0,0.08);
+  --sep2: rgba(0,0,0,0.14);
+
+  /* Spacing — 8-pt grid */
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --r:  12px;
+  --r-lg: 18px;
+}
+
+html, body {
+  background: var(--bg-wash);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── POSTER SHELL ───────────────────────────────────────────────────────── */
+.poster {
+  width: var(--w);
+  min-height: var(--h);
+  background: var(--bg);
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0;
+  position: relative;
+}
+
+/* ─── TOP ACCENT BAND ────────────────────────────────────────────────────── */
+/* One thin stripe of colour that anchors the entire composition             */
+.accent-band {
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--blue)   0%,
+    var(--teal)   33%,
+    var(--green)  55%,
+    var(--amber)  78%,
+    var(--red)    100%);
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────────────── */
+.header {
+  padding: 36px 48px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 32px;
+  border-bottom: 1px solid var(--sep);
+}
+
+.header-left { max-width: 640px; }
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.title .devanagari {
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0em;
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 4px;
+}
+
+.subtitle {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 560px;
+}
+.subtitle strong { color: var(--text-primary); font-weight: 600; }
+
+.meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.pill {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--sep2);
+  color: var(--text-secondary);
+  background: var(--bg-inset);
+  letter-spacing: 0.01em;
+}
+.pill.blue   { color: var(--blue);  border-color: rgba(0,122,255,0.25); background: rgba(0,122,255,0.06); }
+.pill.green  { color: #1e8a38;      border-color: rgba(52,199,89,0.3);  background: rgba(52,199,89,0.07); }
+.pill.indigo { color: var(--indigo);border-color: rgba(88,86,214,0.25); background: rgba(88,86,214,0.06); }
+
+/* Hero stat block (top-right) */
+.header-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+.stat-card {
+  background: var(--bg-inset);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 130px;
+}
+.stat-val {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: block;
+}
+.stat-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 5px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* ─── HERO INSIGHT BAR ───────────────────────────────────────────────────── */
+/* The single most important finding — displayed as if it owns the page      */
+.insight-bar {
+  background: var(--text-primary);
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.insight-bar .insight-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.insight-bar .insight-divider {
+  width: 1px; height: 28px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+.insight-bar .insight-text {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.insight-bar .insight-text strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+.insight-bar .insight-text em {
+  font-style: normal;
+  color: var(--teal);
+  font-weight: 500;
+}
+
+/* ─── MAIN BODY GRID ─────────────────────────────────────────────────────── */
+.body {
+  display: grid;
+  grid-template-columns: 296px 1fr 258px;
+  grid-template-rows: auto auto;
+  gap: 0;
+  border-top: 1px solid var(--sep);
+}
+
+/* Column separators via box-shadow / border */
+.col-left  { border-right: 1px solid var(--sep); padding: 28px 28px 24px 48px; display: flex; flex-direction: column; gap: 28px; }
+.col-mid   { padding: 28px 28px; display: flex; flex-direction: column; gap: 22px; border-right: 1px solid var(--sep); }
+.col-right { padding: 28px 28px 24px 24px; display: flex; flex-direction: column; gap: 22px; }
+
+/* ─── SECTION LABELS ─────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+/* ─── BODY COPY ──────────────────────────────────────────────────────────── */
+.body-copy {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.body-copy strong { color: var(--text-primary); font-weight: 600; }
+
+/* ─── DIVIDER ────────────────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--sep); }
+
+/* ─── DISPLAY NUMBERS ───────────────────────────────────────────────────── */
+/* Apple: weight + size + leading as a set — not size alone                  */
+.display-num {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+.display-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* ─── METRIC ROW ─────────────────────────────────────────────────────────── */
+.metric-row {
+  display: flex;
+  gap: 0;
+}
+.metric-cell {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: var(--r);
+  background: var(--bg-inset);
+  text-align: center;
+  margin: 0 4px;
+}
+.metric-cell:first-child { margin-left: 0; }
+.metric-cell:last-child  { margin-right: 0; }
+.metric-val {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: block;
+}
+.metric-lbl {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+/* ─── PILL LIST (features, bullets) ─────────────────────────────────────── */
+.pill-list { display: flex; flex-direction: column; gap: 6px; }
+.pill-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.pill-item .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.pill-item strong { color: var(--text-primary); font-weight: 600; }
+
+/* ─── PIPELINE (vertical flow) ──────────────────────────────────────────── */
+.pipeline { display: flex; flex-direction: column; }
+.pl-node {
+  background: var(--bg-inset);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.pl-node-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.pl-node-sub {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.pl-arrow {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  padding: 3px 0;
+  line-height: 1;
+}
+.pl-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.pl-node.accent-blue  { background: rgba(0,122,255,0.07);  border: 1px solid rgba(0,122,255,0.18); }
+.pl-node.accent-green { background: rgba(52,199,89,0.07);  border: 1px solid rgba(52,199,89,0.2); }
+
+/* ─── BAR CHART (horizontal) ────────────────────────────────────────────── */
+.bar-chart { display: flex; flex-direction: column; gap: 7px; }
+.bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 36px;
+  gap: 8px;
+  align-items: center;
+}
+.bar-row.compact { grid-template-columns: 60px 1fr 30px; gap: 6px; }
+.bar-name {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bar-track {
+  height: 7px;
+  background: var(--bg-inset);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.bar-fill { height: 100%; border-radius: 99px; }
+.bar-pct {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── RISK TABLE ─────────────────────────────────────────────────────────── */
+.risk-table { display: flex; flex-direction: column; gap: 5px; }
+.risk-row-item {
+  display: grid;
+  grid-template-columns: 10px 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 8px;
+}
+.risk-swatch { width: 10px; height: 10px; border-radius: 3px; }
+.risk-en { font-size: 10px; font-weight: 600; color: var(--text-primary); }
+.risk-mr { font-size: 9.5px; color: var(--text-secondary); }
+.risk-spi { font-size: 9px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+
+/* ─── MAP AREA ───────────────────────────────────────────────────────────── */
+.map-wrap {
+  background: #f0f4f8;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  position: relative;
+}
+.map-wrap svg { display: block; width: 100%; }
+
+/* ─── FEATURE IMPORTANCE ─────────────────────────────────────────────────── */
+.feat-chart { display: flex; flex-direction: column; gap: 8px; }
+.feat-row-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.feat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.feat-name { font-size: 10px; font-weight: 500; color: var(--text-primary); }
+.feat-pct  { font-size: 9px; font-weight: 600; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+
+/* ─── ADVISORY CARD ──────────────────────────────────────────────────────── */
+.advisory-card {
+  background: var(--text-primary);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  color: rgba(255,255,255,0.85);
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+.advisory-card .adv-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+.advisory-card .adv-en { color: #ffffff; font-weight: 500; margin-bottom: 6px; font-size: 11px; }
+.advisory-card .adv-mr { color: rgba(255,255,255,0.55); font-size: 10px; }
+
+/* ─── DATA SOURCE CHIPS ──────────────────────────────────────────────────── */
+.source-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.source-chip {
+  background: var(--bg-inset);
+  border-radius: 10px;
+  padding: 9px 10px;
+}
+.source-chip .sc-name  { font-size: 9.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 1px; }
+.source-chip .sc-count { font-size: 8.5px; color: var(--text-secondary); line-height: 1.4; }
+
+/* ─── UNI TABLE ──────────────────────────────────────────────────────────── */
+.uni-grid { display: flex; flex-direction: column; gap: 7px; }
+.uni-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.uni-name { font-size: 10px; font-weight: 600; color: var(--text-primary); }
+.uni-region { font-size: 9px; color: var(--text-secondary); }
+.uni-bar-wrap { display: flex; align-items: center; gap: 6px; }
+.uni-count { font-size: 9px; font-weight: 700; color: var(--text-primary); min-width: 22px; text-align: right; }
+.uni-track { width: 64px; height: 5px; background: var(--bg-inset); border-radius: 99px; overflow: hidden; }
+.uni-fill  { height: 100%; border-radius: 99px; }
+
+/* ─── TECH TAGS ──────────────────────────────────────────────────────────── */
+.tech-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tech-tag {
+  font-size: 9.5px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--bg-inset);
+  color: var(--text-secondary);
+  border: 1px solid var(--sep2);
+  letter-spacing: 0.01em;
+}
+
+/* ─── SPI SPARKLINE ──────────────────────────────────────────────────────── */
+.sparkline { display: flex; align-items: flex-end; height: 44px; gap: 3px; }
+.spark-bar { flex: 1; border-radius: 3px 3px 0 0; }
+
+/* ─── FOOTER ─────────────────────────────────────────────────────────────── */
+.footer {
+  padding: 18px 48px;
+  border-top: 1px solid var(--sep);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+.footer-brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.footer-sub {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  line-height: 1.5;
+}
+.footer-center { text-align: center; }
+.footer-center .sources-line {
+  font-size: 8.5px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.03em;
+}
+.footer-right { text-align: right; }
+.footer-right .inst { font-size: 10px; font-weight: 600; color: var(--text-primary); }
+.footer-right .dept { font-size: 9px; color: var(--text-secondary); margin-top: 1px; }
+
+/* ─── PRINT ──────────────────────────────────────────────────────────────── */
+@media print {
+  html, body { background: #fff; }
+  .poster { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A3 portrait; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="poster">
+
+<!-- ── TOP ACCENT ────────────────────────────────────────────────────────── -->
+<div class="accent-band"></div>
+
+<!-- ══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<header class="header">
+  <div class="header-left">
+    <div class="eyebrow">AI &amp; Data Science · PBL Project · AY 2026–27</div>
+
+    <h1 class="title">
+      MahaRainRisk
+      <span class="devanagari">महाराष्ट्र पर्जन्य जोखीम</span>
+    </h1>
+
+    <p class="subtitle">
+      A <strong>taluka-resolution drought early-warning &amp; bilingual farmer advisory platform</strong>
+      for Maharashtra's 36 districts and 358 talukas — built on 10 years of IMD climatology,
+      ERA5-Land reanalysis, ocean teleconnections, and a Random Forest ensemble
+      validated on the live 2026 Kharif drought event.
+    </p>
+
+    <div class="meta-pills">
+      <span class="pill blue">Rajratna Bipin Dhiwar · Roll 5005</span>
+      <span class="pill">Guide: Prof. Dr. Minakshi Atre</span>
+      <span class="pill">PVG's COETM, Pune — AI&amp;DS</span>
+      <span class="pill green">October 2026</span>
+    </div>
+  </div>
+
+  <div class="header-stat">
+    <div class="stat-card">
+      <span class="stat-val" style="color:var(--blue);">0.91</span>
+      <div class="stat-label">Macro F1-Score<br/>2026 Out-of-Time Test</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" style="color:var(--green);">194</span>
+      <div class="stat-label">Modeled talukas<br/>Zero missing values</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══ INSIGHT BAR ════════════════════════════════════════════════════════ -->
+<div class="insight-bar">
+  <span class="insight-label">Key Finding</span>
+  <div class="insight-divider"></div>
+  <p class="insight-text">
+    Maharashtra's monsoon gradient collapses from <em>3,500 mm</em> on the Konkan coast to
+    <em>550 mm</em> just 80 km east — MahaRainRisk resolves drought risk at the
+    <strong>sub-district level</strong>, delivering university-backed advisories in
+    <strong>Marathi &amp; English</strong> before crop loss, not after.
+  </p>
+</div>
+
+<!-- ══ BODY ══════════════════════════════════════════════════════════════ -->
+<div class="body">
+
+  <!-- ═══ LEFT COLUMN ═══════════════════════════════════════════════════ -->
+  <div class="col-left">
+
+    <!-- 01 · PROBLEM -->
+    <div>
+      <div class="section-label">01 · The Problem</div>
+      <p class="body-copy">
+        Over <strong>80% of Maharashtra's cropland is rainfed</strong>. National-scale models
+        aggregate rainfall across hundreds of kilometres, masking the extreme
+        sub-regional gradients that define whether a taluka faces
+        <strong>catastrophic loss or a normal harvest</strong>.
+      </p>
+      <p class="body-copy" style="margin-top:8px;">
+        A 30 % deficit in Solapur (normal 550 mm) is a disaster.
+        The same departure in Mahabaleshwar (normal 3,500 mm) is trivial.
+        Crop decisions are enacted at the <strong>taluka</strong> level.
+        Models must match.
+      </p>
+      <div class="metric-row" style="margin-top:14px;">
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--amber);">80%</span>
+          <div class="metric-lbl">Rainfed<br/>cropland</div>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--red);">18%</span>
+          <div class="metric-lbl">2026 Kharif<br/>statewide deficit</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 02 · DATA SOURCES -->
+    <div>
+      <div class="section-label">02 · Multi-Source Telemetry</div>
+      <div class="source-grid">
+        <div class="source-chip">
+          <div class="sc-name">IMD Gridded</div>
+          <div class="sc-count">0.25° daily · 10 yr<br/>708,488 obs.</div>
+        </div>
+        <div class="source-chip">
+          <div class="sc-name">ERA5-Land</div>
+          <div class="sc-count">2020–2026 · ET₀<br/>soil moisture · VPD</div>
+        </div>
+        <div class="source-chip">
+          <div class="sc-name">Ocean Teleconn.</div>
+          <div class="sc-count">NOAA Niño 3.4 + DMI<br/>1950–2026 (924 mo.)</div>
+        </div>
+        <div class="source-chip">
+          <div class="sc-name">WRD Reservoirs</div>
+          <div class="sc-count">12 major dams<br/>live storage curves</div>
+        </div>
+        <div class="source-chip">
+          <div class="sc-name">CGWB Groundwater</div>
+          <div class="sc-count">34 districts<br/>3,420+ wells</div>
+        </div>
+        <div class="source-chip">
+          <div class="sc-name">Crop Statistics</div>
+          <div class="sc-count">DES MoAFW · ICRISAT<br/>2017–2024</div>
+        </div>
+      </div>
+      <div class="metric-row" style="margin-top:10px;">
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--blue);font-size:18px;">1M+</span>
+          <div class="metric-lbl">Total records</div>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--indigo);font-size:18px;">62</span>
+          <div class="metric-lbl">ML features</div>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--green);font-size:18px;">0%</span>
+          <div class="metric-lbl">Null values</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 03 · SPI -->
+    <div>
+      <div class="section-label">03 · Drought Index — SPI</div>
+      <p class="body-copy">
+        McKee et al. (1993) <strong>Standardized Precipitation Index</strong>
+        via 2-parameter Gamma distribution fitting across
+        <strong>SPI-1, SPI-3, SPI-6</strong> time scales to capture
+        flash, seasonal, and multi-season droughts.
+      </p>
+      <!-- SPI sparkline — Marathwada 2026 Kharif -->
+      <div style="margin-top:12px;">
+        <div style="font-size:9px;color:var(--text-tertiary);margin-bottom:5px;letter-spacing:0.04em;">SPI-3 · MARATHWADA TALUKAS · JUN–OCT 2026</div>
+        <div class="sparkline">
+          <div class="spark-bar" style="height:72%;background:var(--green);opacity:0.8;"></div>
+          <div class="spark-bar" style="height:55%;background:var(--green);opacity:0.7;"></div>
+          <div class="spark-bar" style="height:38%;background:var(--amber);"></div>
+          <div class="spark-bar" style="height:24%;background:var(--amber);"></div>
+          <div class="spark-bar" style="height:14%;background:var(--orange);"></div>
+          <div class="spark-bar" style="height:8%;background:var(--red);"></div>
+          <div class="spark-bar" style="height:6%;background:var(--red);"></div>
+          <div class="spark-bar" style="height:5%;background:var(--maroon);"></div>
+          <div class="spark-bar" style="height:9%;background:var(--red);opacity:0.8;"></div>
+          <div class="spark-bar" style="height:16%;background:var(--orange);opacity:0.8;"></div>
+          <div class="spark-bar" style="height:28%;background:var(--amber);opacity:0.7;"></div>
+          <div class="spark-bar" style="height:42%;background:var(--green);opacity:0.65;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:8.5px;color:var(--text-tertiary);margin-top:4px;">
+          <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span>
+        </div>
+        <div style="margin-top:8px;font-size:9.5px;color:var(--text-secondary);">
+          Drought declared at <strong style="color:var(--red);">SPI ≤ −1.5</strong>
+          (MoAFW / IMD threshold)
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- ═══ MIDDLE COLUMN ══════════════════════════════════════════════════ -->
+  <div class="col-mid">
+
+    <!-- 04 · MAP — the centrepiece -->
+    <div>
+      <div class="section-label">04 · Maharashtra — Rainfall Gradient &amp; Division Map</div>
+      <div class="map-wrap">
+        <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" style="background:#e8f0f8;">
+          <defs>
+            <!-- Gradient for Konkan (lush deep green) to Vidarbha (dry red) -->
+            <linearGradient id="mhGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#0d5c2e" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#7f1d1d" stop-opacity="0.12"/>
+            </linearGradient>
+            <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+            <!-- District glow filters -->
+            <filter id="glow-green"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          <!-- ── background wash ────────────────────────────────────────── -->
+          <rect width="480" height="380" fill="#dce8f5"/>
+
+          <!-- ── Maharashtra schematic silhouette regions ────────────────── -->
+
+          <!-- KONKAN (narrow coastal strip, very high rain) -->
+          <polygon
+            points="52,52 75,42 88,58 95,82 98,110 93,140 87,168 80,195 73,220 66,245 60,268 55,288 50,305 58,318 52,328 40,322 34,300 36,270 38,240 36,210 38,178 36,148 38,118 42,88 46,65"
+            fill="#14532d" opacity="0.78"
+            stroke="#16a34a" stroke-width="1"/>
+
+          <!-- GHATS ridge -->
+          <polygon
+            points="75,42 100,34 112,50 116,75 114,105 108,138 102,168 96,195 88,222 80,248 70,275 62,300 55,318 50,305 55,288 60,268 66,245 73,220 80,195 87,168 93,140 98,110 95,82 88,58"
+            fill="#166534" opacity="0.55"
+            stroke="#22c55e" stroke-width="0.6"/>
+
+          <!-- WESTERN MAHARASHTRA (Pune, Nashik, Satara — moderate) -->
+          <polygon
+            points="100,34 148,26 185,28 205,38 212,58 210,85 206,118 198,148 188,175 176,198 162,214 145,222 125,226 105,222 90,215 80,210 80,248 88,222 96,195 102,168 108,138 114,105 116,75 112,50"
+            fill="#15803d" opacity="0.55"
+            stroke="#4ade80" stroke-width="0.7"/>
+
+          <!-- MARATHWADA (drought-prone — warm amber tones) -->
+          <polygon
+            points="188,175 198,148 206,118 210,85 212,58 228,50 258,48 285,52 310,62 328,78 335,102 332,132 320,158 305,178 286,192 265,200 242,206 220,208 200,205 188,200"
+            fill="#78350f" opacity="0.42"
+            stroke="#f59e0b" stroke-width="0.8"/>
+
+          <!-- VIDARBHA (northeast — variable, high-risk) -->
+          <polygon
+            points="310,62 335,52 362,44 392,48 418,56 440,72 450,98 445,128 432,152 415,168 394,178 370,182 345,180 325,172 305,160 320,158 332,132 335,102 328,78"
+            fill="#7f1d1d" opacity="0.40"
+            stroke="#ef4444" stroke-width="0.8"/>
+
+          <!-- NORTH MAHARASHTRA (Nashik, Jalgaon strip) -->
+          <polygon
+            points="148,26 185,28 228,50 258,48 285,52 310,62 328,78 310,68 285,44 258,38 228,38 205,28 185,22 148,20"
+            fill="#1d4ed8" opacity="0.12"
+            stroke="#60a5fa" stroke-width="0.5"/>
+
+          <!-- SCARCITY ZONE ellipse highlight -->
+          <ellipse cx="196" cy="195" rx="44" ry="32"
+            fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85"/>
+          <text x="174" y="194" font-family="Inter,-apple-system,sans-serif" font-size="7.5" font-weight="600" fill="#92400e">Scarcity Zone</text>
+          <text x="176" y="204" font-family="Inter,-apple-system,sans-serif" font-size="6.5" fill="#b45309">~550 mm/yr</text>
+
+          <!-- ── Reservoir dots ─────────────────────────────────────────── -->
+          <!-- Jayakwadi (Nathsagar) — severely stressed -->
+          <circle cx="265" cy="148" r="6" fill="none" stroke="#ef4444" stroke-width="1.8" opacity="0.9"/>
+          <circle cx="265" cy="148" r="2.5" fill="#ef4444" opacity="0.9"/>
+          <line x1="271" y1="142" x2="286" y2="132" stroke="#ef4444" stroke-width="0.8" opacity="0.6"/>
+          <text x="288" y="130" font-family="Inter,-apple-system,sans-serif" font-size="7" font-weight="600" fill="#991b1b">Jayakwadi</text>
+          <text x="288" y="139" font-family="Inter,-apple-system,sans-serif" font-size="6" fill="#991b1b">18.4% storage</text>
+
+          <!-- Ujjani -->
+          <circle cx="180" cy="218" r="5" fill="none" stroke="#ef4444" stroke-width="1.4" opacity="0.8"/>
+          <circle cx="180" cy="218" r="2" fill="#ef4444" opacity="0.8"/>
+          <text x="186" y="222" font-family="Inter,-apple-system,sans-serif" font-size="6.5" fill="#991b1b">Ujjani 24%</text>
+
+          <!-- Koyna — healthy -->
+          <circle cx="110" cy="185" r="5" fill="none" stroke="#16a34a" stroke-width="1.4" opacity="0.8"/>
+          <circle cx="110" cy="185" r="2" fill="#16a34a" opacity="0.8"/>
+          <text x="116" y="189" font-family="Inter,-apple-system,sans-serif" font-size="6.5" fill="#166534">Koyna 72%</text>
+
+          <!-- Upper Wardha -->
+          <circle cx="368" cy="145" r="4.5" fill="none" stroke="#f59e0b" stroke-width="1.2" opacity="0.8"/>
+          <circle cx="368" cy="145" r="1.8" fill="#f59e0b" opacity="0.8"/>
+          <text x="374" y="149" font-family="Inter,-apple-system,sans-serif" font-size="6" fill="#78350f">Wardha 44%</text>
+
+          <!-- ── Division labels ─────────────────────────────────────────── -->
+          <!-- Konkan -->
+          <text x="52" y="200"
+            font-family="Inter,-apple-system,sans-serif"
+            font-size="7.5" font-weight="700" fill="#14532d" opacity="0.9"
+            transform="rotate(-90 52 200)">KONKAN</text>
+
+          <!-- Western Maharashtra -->
+          <text x="140" y="105" font-family="Inter,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#14532d" opacity="0.85">Western</text>
+          <text x="138" y="116" font-family="Inter,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#14532d" opacity="0.85">Maharashtra</text>
+          <text x="142" y="127" font-family="Inter,-apple-system,sans-serif" font-size="7" fill="#166534" opacity="0.7">Pune · Nashik</text>
+
+          <!-- Marathwada -->
+          <text x="238" y="118" font-family="Inter,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#78350f" opacity="0.9">Marathwada</text>
+          <text x="240" y="130" font-family="Inter,-apple-system,sans-serif" font-size="7" fill="#92400e" opacity="0.8">700–900 mm</text>
+
+          <!-- Vidarbha -->
+          <text x="370" y="95" font-family="Inter,-apple-system,sans-serif" font-size="9" font-weight="700" fill="#7f1d1d" opacity="0.9">Vidarbha</text>
+          <text x="366" y="108" font-family="Inter,-apple-system,sans-serif" font-size="7" fill="#991b1b" opacity="0.75">900–1,100 mm</text>
+
+          <!-- ── Taluka centroid dots (representative 194 points) ────────── -->
+          <g opacity="0.5">
+            <!-- Western cluster -->
+            <circle cx="138" cy="68"  r="1.8" fill="#22c55e"/>
+            <circle cx="158" cy="75"  r="1.8" fill="#22c55e"/>
+            <circle cx="175" cy="65"  r="1.8" fill="#22c55e"/>
+            <circle cx="148" cy="90"  r="1.8" fill="#22c55e"/>
+            <circle cx="165" cy="100" r="1.8" fill="#22c55e"/>
+            <circle cx="183" cy="90"  r="1.8" fill="#22c55e"/>
+            <circle cx="142" cy="115" r="1.8" fill="#22c55e"/>
+            <circle cx="162" cy="125" r="1.8" fill="#22c55e"/>
+            <circle cx="178" cy="138" r="1.8" fill="#22c55e"/>
+            <circle cx="148" cy="142" r="1.8" fill="#22c55e"/>
+            <circle cx="135" cy="158" r="1.8" fill="#22c55e"/>
+            <circle cx="155" cy="160" r="1.8" fill="#22c55e"/>
+            <circle cx="168" cy="170" r="1.8" fill="#22c55e"/>
+            <!-- Marathwada cluster -->
+            <circle cx="228" cy="72"  r="1.8" fill="#f59e0b"/>
+            <circle cx="248" cy="68"  r="1.8" fill="#f59e0b"/>
+            <circle cx="268" cy="75"  r="1.8" fill="#f59e0b"/>
+            <circle cx="290" cy="80"  r="1.8" fill="#f59e0b"/>
+            <circle cx="235" cy="92"  r="1.8" fill="#f59e0b"/>
+            <circle cx="255" cy="100" r="1.8" fill="#f59e0b"/>
+            <circle cx="275" cy="108" r="1.8" fill="#f59e0b"/>
+            <circle cx="295" cy="115" r="1.8" fill="#f59e0b"/>
+            <circle cx="245" cy="125" r="1.8" fill="#f59e0b"/>
+            <circle cx="268" cy="135" r="1.8" fill="#f59e0b"/>
+            <circle cx="285" cy="148" r="1.8" fill="#f59e0b"/>
+            <circle cx="252" cy="158" r="1.8" fill="#f59e0b"/>
+            <circle cx="272" cy="168" r="1.8" fill="#f59e0b"/>
+            <circle cx="290" cy="175" r="1.8" fill="#f59e0b"/>
+            <!-- Vidarbha cluster -->
+            <circle cx="335" cy="65"  r="1.8" fill="#ef4444"/>
+            <circle cx="358" cy="60"  r="1.8" fill="#ef4444"/>
+            <circle cx="380" cy="68"  r="1.8" fill="#ef4444"/>
+            <circle cx="405" cy="72"  r="1.8" fill="#ef4444"/>
+            <circle cx="428" cy="82"  r="1.8" fill="#ef4444"/>
+            <circle cx="345" cy="88"  r="1.8" fill="#ef4444"/>
+            <circle cx="368" cy="95"  r="1.8" fill="#ef4444"/>
+            <circle cx="392" cy="100" r="1.8" fill="#ef4444"/>
+            <circle cx="415" cy="112" r="1.8" fill="#ef4444"/>
+            <circle cx="355" cy="118" r="1.8" fill="#ef4444"/>
+            <circle cx="378" cy="128" r="1.8" fill="#ef4444"/>
+            <circle cx="402" cy="135" r="1.8" fill="#ef4444"/>
+            <circle cx="360" cy="148" r="1.8" fill="#ef4444"/>
+            <circle cx="385" cy="158" r="1.8" fill="#ef4444"/>
+            <circle cx="408" cy="150" r="1.8" fill="#ef4444"/>
+            <!-- Konkan cluster -->
+            <circle cx="68" cy="92"   r="1.5" fill="#14532d"/>
+            <circle cx="72" cy="118"  r="1.5" fill="#14532d"/>
+            <circle cx="68" cy="142"  r="1.5" fill="#14532d"/>
+            <circle cx="70" cy="165"  r="1.5" fill="#14532d"/>
+            <circle cx="66" cy="188"  r="1.5" fill="#14532d"/>
+            <circle cx="65" cy="212"  r="1.5" fill="#14532d"/>
+            <circle cx="62" cy="238"  r="1.5" fill="#14532d"/>
+          </g>
+
+          <!-- ── Gradient direction arrow ─────────────────────────────────── -->
+          <defs>
+            <marker id="arr" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+              <polygon points="0,1 7,3.5 0,6" fill="#94a3b8"/>
+            </marker>
+          </defs>
+          <line x1="60" y1="355" x2="445" y2="355"
+            stroke="#94a3b8" stroke-width="1"
+            stroke-dasharray="4,3" marker-end="url(#arr)" opacity="0.7"/>
+          <text x="60"  y="368" font-family="Inter,-apple-system,sans-serif" font-size="7.5" font-weight="600" fill="#15803d">3,500 mm</text>
+          <text x="188" y="368" font-family="Inter,-apple-system,sans-serif" font-size="7" fill="#94a3b8">Rainfall gradient (West → East)</text>
+          <text x="412" y="368" font-family="Inter,-apple-system,sans-serif" font-size="7.5" font-weight="600" fill="#dc2626">550 mm</text>
+        </svg>
+      </div>
+
+      <!-- Map legend -->
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:9px;align-items:center;">
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:10px;height:10px;border-radius:3px;background:#14532d;"></div>Konkan
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:10px;height:10px;border-radius:3px;background:#15803d;opacity:0.7;"></div>W. Maharashtra
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:10px;height:10px;border-radius:3px;background:#78350f;opacity:0.7;"></div>Marathwada
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:10px;height:10px;border-radius:3px;background:#7f1d1d;opacity:0.7;"></div>Vidarbha
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:8px;height:8px;border-radius:50%;border:1.5px solid var(--green);"></div>Healthy dam
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:8px;height:8px;border-radius:50%;border:1.5px solid var(--red);"></div>Critical dam
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text-secondary);">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--green);opacity:0.5;"></div>194 talukas
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 05 · PIPELINE -->
+    <div>
+      <div class="section-label">05 · Data Pipeline Architecture</div>
+      <div class="pipeline">
+        <div class="pl-node">
+          <div class="pl-node-title">Tier 1 — Raw Ingestion</div>
+          <div class="pl-node-sub">IMD .GRD binaries · Open-Meteo JSON batches · NOAA/JAMSTEC teleconnections · WRD dam bulletins · CGWB aquifer wells</div>
+        </div>
+        <div class="pl-arrow">↓</div>
+        <div class="pl-node">
+          <div class="pl-node-title">Tier 2 — Interim Parquets</div>
+          <div class="pl-node-sub">Taluka-aligned · SPI-1/3/6 Gamma fit · Teleconnection phases · Reservoir curves</div>
+        </div>
+        <div class="pl-arrow">↓</div>
+        <div class="pl-node" style="background:rgba(0,122,255,0.06);border:1px solid rgba(0,122,255,0.18);">
+          <div class="pl-node-title" style="color:var(--blue);">Tier 3 — Master Feature Store</div>
+          <div class="pl-node-sub"><strong>master_panel.parquet — 8,612 rows × 62 columns · Zero nulls</strong></div>
+        </div>
+        <div class="pl-arrow">↓</div>
+        <div class="pl-split">
+          <div class="pl-node" style="background:rgba(88,86,214,0.07);border:1px solid rgba(88,86,214,0.18);">
+            <div class="pl-node-title" style="color:var(--indigo);">ML Engine</div>
+            <div class="pl-node-sub">RandomForest 250 trees · Temporal split · Zero leakage</div>
+          </div>
+          <div class="pl-node" style="background:rgba(52,199,89,0.07);border:1px solid rgba(52,199,89,0.2);">
+            <div class="pl-node-title" style="color:#15803d;">Backend + UI</div>
+            <div class="pl-node-sub">FastAPI · Leaflet GIS · Bilingual TTS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 06 · RESERVOIR -->
+    <div>
+      <div class="section-label">06 · Reservoir Storage — Kharif 2026 Crisis</div>
+      <p class="body-copy" style="margin-bottom:10px;">
+        When <strong>Jayakwadi dropped to 18.4%</strong> live storage in mid-August 2026,
+        canal releases were suspended — 400,000+ ha of cotton &amp; soybean lost
+        their only protective irrigation backup.
+      </p>
+      <div class="bar-chart">
+        <div class="bar-row compact">
+          <div class="bar-name" style="font-weight:600;color:var(--red);">Jayakwadi</div>
+          <div class="bar-track"><div class="bar-fill" style="width:18.4%;background:var(--red);"></div></div>
+          <div class="bar-pct" style="color:var(--red);">18%</div>
+        </div>
+        <div class="bar-row compact">
+          <div class="bar-name" style="color:var(--red);">Ujjani</div>
+          <div class="bar-track"><div class="bar-fill" style="width:24%;background:var(--red);"></div></div>
+          <div class="bar-pct" style="color:var(--red);">24%</div>
+        </div>
+        <div class="bar-row compact">
+          <div class="bar-name" style="color:var(--amber);">Majalgaon</div>
+          <div class="bar-track"><div class="bar-fill" style="width:31%;background:var(--amber);"></div></div>
+          <div class="bar-pct" style="color:var(--amber);">31%</div>
+        </div>
+        <div class="bar-row compact">
+          <div class="bar-name" style="color:var(--amber);">Upper Wardha</div>
+          <div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--amber);"></div></div>
+          <div class="bar-pct" style="color:var(--amber);">44%</div>
+        </div>
+        <div class="bar-row compact">
+          <div class="bar-name" style="color:#15803d;">Girna</div>
+          <div class="bar-track"><div class="bar-fill" style="width:56%;background:var(--green);"></div></div>
+          <div class="bar-pct" style="color:#15803d;">56%</div>
+        </div>
+        <div class="bar-row compact">
+          <div class="bar-name" style="color:#15803d;">Koyna</div>
+          <div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--green);"></div></div>
+          <div class="bar-pct" style="color:#15803d;">72%</div>
+        </div>
+      </div>
+      <div style="margin-top:7px;font-size:9px;color:var(--text-tertiary);">Critical threshold &lt;20% → agricultural canal gates locked</div>
+    </div>
+
+  </div><!-- /col-mid -->
+
+  <!-- ═══ RIGHT COLUMN ═══════════════════════════════════════════════════ -->
+  <div class="col-right">
+
+    <!-- 07 · ML MODEL -->
+    <div>
+      <div class="section-label">07 · Random Forest Ensemble</div>
+      <div class="metric-row" style="margin-bottom:14px;">
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--blue);">0.91</span>
+          <div class="metric-lbl">Macro F1</div>
+        </div>
+        <div class="metric-cell">
+          <span class="metric-val" style="color:var(--indigo);">250</span>
+          <div class="metric-lbl">Trees</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-bottom:8px;">Top Predictive Features</div>
+      <div class="feat-chart">
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">SPI-3 (3-month precip.)</span>
+            <span class="feat-pct">22.4%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:100%;background:var(--blue);"></div>
+          </div>
+        </div>
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">SPI-6 (6-month precip.)</span>
+            <span class="feat-pct">18.1%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:81%;background:var(--blue);opacity:0.8;"></div>
+          </div>
+        </div>
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">Soil Moisture Index</span>
+            <span class="feat-pct">14.6%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:65%;background:var(--teal);"></div>
+          </div>
+        </div>
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">Max Consecutive Dry Days</span>
+            <span class="feat-pct">11.8%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:53%;background:var(--amber);"></div>
+          </div>
+        </div>
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">ONI (Oceanic Niño Index)</span>
+            <span class="feat-pct">9.3%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:42%;background:var(--orange);"></div>
+          </div>
+        </div>
+        <div class="feat-row-item">
+          <div class="feat-head">
+            <span class="feat-name">Dam Storage %</span>
+            <span class="feat-pct">7.2%</span>
+          </div>
+          <div class="bar-track" style="height:6px;">
+            <div class="bar-fill" style="width:32%;background:var(--indigo);"></div>
+          </div>
+        </div>
+      </div>
+      <p class="body-copy" style="margin-top:10px;">
+        <strong>Zero-leakage design</strong> — temporal split training on years &lt;2026,
+        tested on 2026 Kharif season only. In-fold median imputation on training set exclusively.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 08 · RISK TIERS -->
+    <div>
+      <div class="section-label">08 · 5-Tier Risk Classification</div>
+      <div class="risk-table">
+        <div class="risk-row-item" style="background:rgba(52,199,89,0.07);">
+          <div class="risk-swatch" style="background:var(--green);"></div>
+          <div class="risk-en">Safe</div>
+          <div class="risk-mr">सुरक्षित</div>
+          <div class="risk-spi">SPI &gt; −0.5</div>
+        </div>
+        <div class="risk-row-item" style="background:rgba(163,230,53,0.07);">
+          <div class="risk-swatch" style="background:#84cc16;"></div>
+          <div class="risk-en">Watch</div>
+          <div class="risk-mr">लक्ष ठेवा</div>
+          <div class="risk-spi">−0.5 to −1.0</div>
+        </div>
+        <div class="risk-row-item" style="background:rgba(255,159,10,0.07);">
+          <div class="risk-swatch" style="background:var(--amber);"></div>
+          <div class="risk-en">Alert</div>
+          <div class="risk-mr">सतर्कता</div>
+          <div class="risk-spi">−1.0 to −1.5</div>
+        </div>
+        <div class="risk-row-item" style="background:rgba(255,59,48,0.07);">
+          <div class="risk-swatch" style="background:var(--red);"></div>
+          <div class="risk-en">Severe</div>
+          <div class="risk-mr">तीव्र दुष्काळ</div>
+          <div class="risk-spi">−1.5 to −2.0</div>
+        </div>
+        <div class="risk-row-item" style="background:rgba(127,29,29,0.07);">
+          <div class="risk-swatch" style="background:var(--maroon);"></div>
+          <div class="risk-en">Extreme</div>
+          <div class="risk-mr">अति तीव्र दुष्काळ</div>
+          <div class="risk-spi">SPI &lt; −2.0</div>
+        </div>
+      </div>
+
+      <!-- Advisory example -->
+      <div class="advisory-card" style="margin-top:12px;">
+        <div class="adv-title">Bilingual Advisory · Severe · VNMKV Parbhani</div>
+        <div class="adv-en">Apply protective irrigation (संरक्षित सिंचन) within 48 hrs. Sow drought-resistant Tur BDN-711. Defer NPK application.</div>
+        <div class="adv-mr">४८ तासांत संरक्षित सिंचन करा. BDN-711 तूर पेरा. NPK उशीर करा.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 09 · UNIVERSITIES -->
+    <div>
+      <div class="section-label">09 · State Agricultural Universities</div>
+      <div class="uni-grid">
+        <div class="uni-row">
+          <div>
+            <div class="uni-name">MPKV Rahuri</div>
+            <div class="uni-region">Western Maharashtra</div>
+          </div>
+          <div class="uni-bar-wrap">
+            <div class="uni-count">61</div>
+            <div class="uni-track"><div class="uni-fill" style="width:100%;background:var(--blue);"></div></div>
+          </div>
+        </div>
+        <div class="uni-row">
+          <div>
+            <div class="uni-name">VNMKV Parbhani</div>
+            <div class="uni-region">Marathwada</div>
+          </div>
+          <div class="uni-bar-wrap">
+            <div class="uni-count">55</div>
+            <div class="uni-track"><div class="uni-fill" style="width:90%;background:var(--amber);"></div></div>
+          </div>
+        </div>
+        <div class="uni-row">
+          <div>
+            <div class="uni-name">PDKV Akola</div>
+            <div class="uni-region">Vidarbha</div>
+          </div>
+          <div class="uni-bar-wrap">
+            <div class="uni-count">51</div>
+            <div class="uni-track"><div class="uni-fill" style="width:84%;background:var(--red);"></div></div>
+          </div>
+        </div>
+        <div class="uni-row">
+          <div>
+            <div class="uni-name">BSKKV Dapoli</div>
+            <div class="uni-region">Konkan</div>
+          </div>
+          <div class="uni-bar-wrap">
+            <div class="uni-count">27</div>
+            <div class="uni-track"><div class="uni-fill" style="width:44%;background:var(--teal);"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 10 · TECH STACK -->
+    <div>
+      <div class="section-label">10 · System &amp; Tech Stack</div>
+      <div class="pill-list" style="margin-bottom:10px;">
+        <div class="pill-item"><div class="dot" style="background:var(--indigo);"></div><div><strong>ML:</strong> scikit-learn RandomForest · joblib · zero-leakage pipeline</div></div>
+        <div class="pill-item"><div class="dot" style="background:var(--blue);"></div><div><strong>Backend:</strong> FastAPI · rate-limiting · CORS · IP security</div></div>
+        <div class="pill-item"><div class="dot" style="background:var(--green);"></div><div><strong>Frontend:</strong> Leaflet.js GIS · glassmorphism dashboard · i18n</div></div>
+        <div class="pill-item"><div class="dot" style="background:var(--amber);"></div><div><strong>ETL:</strong> imdlib · Open-Meteo resilient batching · Parquet</div></div>
+        <div class="pill-item"><div class="dot" style="background:var(--teal);"></div><div><strong>Audio:</strong> Marathi TTS engine (gTTS)</div></div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">Python 3.13</span>
+        <span class="tech-tag">FastAPI</span>
+        <span class="tech-tag">scikit-learn</span>
+        <span class="tech-tag">imdlib</span>
+        <span class="tech-tag">Leaflet.js</span>
+        <span class="tech-tag">Parquet</span>
+        <span class="tech-tag">gTTS</span>
+        <span class="tech-tag">Jupyter</span>
+        <span class="tech-tag">Pandas</span>
+        <span class="tech-tag">NumPy</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 11 · CONCLUSION -->
+    <div>
+      <div class="section-label">11 · Impact &amp; Next Steps</div>
+      <p class="body-copy">
+        First taluka-resolution, multi-hazard drought platform integrating
+        <strong>climatological SPI, ocean teleconnections, hydrological dam storage,
+        subsurface aquifer depth,</strong> and <strong>biophysical soil moisture</strong>
+        into a unified production ML pipeline — validated on a real drought event.
+      </p>
+      <p class="body-copy" style="margin-top:8px;">
+        <strong>Roadmap:</strong> Satellite NDVI integration · GEE live pipeline ·
+        State portal API for real-time advisory broadcasting to
+        <strong>8M+ farming households</strong> in Maharashtra.
+      </p>
+    </div>
+
+  </div><!-- /col-right -->
+</div><!-- /body -->
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div>
+    <div class="footer-brand">MahaRainRisk</div>
+    <div class="footer-sub">
+      Rajratna Bipin Dhiwar · Roll No 5005 · October 2026<br/>
+      महाराष्ट्र पर्जन्य जोखीम — AI-Powered Drought Early Warning
+    </div>
+  </div>
+  <div class="footer-center">
+    <div class="sources-line">
+      DATA SOURCES: IMD NDC Pune · NOAA CPC · JAMSTEC · Open-Meteo ERA5-Land · Maharashtra WRD · CGWB · DES MoAFW
+    </div>
+  </div>
+  <div class="footer-right">
+    <div class="inst">PVG's College of Engineering, Technology &amp; Management</div>
+    <div class="dept">Department of Artificial Intelligence &amp; Data Science, Pune</div>
+    <div class="dept" style="margin-top:2px;">Guide: Prof. Dr. Minakshi Atre · AY 2026–27</div>
+  </div>
+</footer>
+
+<!-- bottom accent mirror -->
+<div class="accent-band"></div>
+
+</div><!-- /poster -->
+</body>
+</html>

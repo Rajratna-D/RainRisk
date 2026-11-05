@@ -1,0 +1,35 @@
+district_name,monitored_stations,pre_monsoon_depth_m_bgl,post_monsoon_depth_m_bgl,water_level_rise_m,aquifer_category,source
+Chhatrapati Sambhajinagar,24,9.4,4.8,4.6,Semi-Critical / Critical,CGWB_India_WRIS
+Jalna,18,10.2,5.1,5.1,Semi-Critical,CGWB_India_WRIS
+Beed,22,11.8,6.3,5.5,Critical / Over-Exploited,CGWB_India_WRIS
+Dharashiv,16,10.5,5.6,4.9,Critical,CGWB_India_WRIS
+Latur,19,12.1,6.8,5.3,Critical,CGWB_India_WRIS
+Nanded,20,8.7,4.2,4.5,Safe,CGWB_India_WRIS
+Parbhani,15,8.9,4.5,4.4,Safe,CGWB_India_WRIS
+Hingoli,12,7.8,3.9,3.9,Safe,CGWB_India_WRIS
+Ahmednagar,32,12.8,6.9,5.9,Over-Exploited / Critical,CGWB_India_WRIS
+Solapur,28,11.4,6.1,5.3,Critical / Semi-Critical,CGWB_India_WRIS
+Pune,30,8.5,3.8,4.7,Semi-Critical (Eastern) / Safe,CGWB_India_WRIS
+Satara,20,7.6,3.2,4.4,Safe / Semi-Critical (Eastern),CGWB_India_WRIS
+Sangli,18,9.2,4.5,4.7,Semi-Critical / Critical,CGWB_India_WRIS
+Kolhapur,16,5.2,2.1,3.1,Safe,CGWB_India_WRIS
+Nashik,26,9.8,4.7,5.1,Semi-Critical,CGWB_India_WRIS
+Dhule,15,10.4,5.2,5.2,Semi-Critical,CGWB_India_WRIS
+Jalgaon,24,13.2,7.4,5.8,Over-Exploited (Tapi Alluvium),CGWB_India_WRIS
+Nandurbar,12,8.1,4.0,4.1,Safe,CGWB_India_WRIS
+Amravati,22,11.2,5.8,5.4,Critical / Saline Purna Basin,CGWB_India_WRIS
+Akola,18,10.9,5.5,5.4,Critical / Purna Alluvium,CGWB_India_WRIS
+Buldhana,19,9.7,4.9,4.8,Semi-Critical,CGWB_India_WRIS
+Yavatmal,21,8.4,3.9,4.5,Safe / Semi-Critical,CGWB_India_WRIS
+Washim,14,8.8,4.1,4.7,Safe,CGWB_India_WRIS
+Wardha,15,7.5,3.4,4.1,Safe,CGWB_India_WRIS
+Nagpur,20,6.8,3.1,3.7,Safe,CGWB_India_WRIS
+Chandrapur,16,6.2,2.8,3.4,Safe,CGWB_India_WRIS
+Bhandara,12,5.4,2.2,3.2,Safe,CGWB_India_WRIS
+Gondia,12,4.9,2.0,2.9,Safe,CGWB_India_WRIS
+Gadchiroli,14,5.1,2.1,3.0,Safe,CGWB_India_WRIS
+Thane,15,5.8,1.9,3.9,Safe,CGWB_India_WRIS
+Palghar,14,5.5,1.8,3.7,Safe,CGWB_India_WRIS
+Raigad,16,4.9,1.6,3.3,Safe,CGWB_India_WRIS
+Ratnagiri,15,4.6,1.5,3.1,Safe,CGWB_India_WRIS
+Sindhudurg,12,4.2,1.4,2.8,Safe,CGWB_India_WRIS

@@ -1,0 +1,77 @@
+
+# =============================================================================
+# MahaRainRisk: Production .gitignore
+# Prevents large binary datasets, scratch files, and caches from entering Git
+# =============================================================================
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python Bytecode & Testing Caches
+__pycache__/
+*/__pycache__/
+**/*.py[cod]
+.pytest_cache/
+*/.pytest_cache/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Environment Variables & Secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.token
+
+# IDE & OS Metadata
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Raw Climatological Binary Grid Files (>250MB, exceeds GitHub limits)
+*.grd
+data/raw/imd_rainfall/rain/*.grd
+
+# Large Raw / Interim CSV & Parquet Files
+data/processed/real_imd_taluka_rainfall_*.csv
+data/processed/master_panel.csv
+data/processed/imd_10yr_taluka_spi.csv
+data/interim/*.csv
+data/interim/*.parquet
+!data/interim/reservoirs.parquet
+
+# Dynamic Audio Cache (Generated at runtime by Edge-TTS)
+frontend/assets/audio/cache/*.mp3
+
+# Heavy Media Files & Raw Videos
+168313-838656609_medium.mp4
+Gemini_Generated_Image*.png
+
+# Academic Documents, Notes & Temp Files
+*.docx
+*.doc
+*.pptx
+*.pdf
+~$*
+*.tmp
+*.bak
+scratch_paragraphs.txt
+template_dump.txt
+notes.txt
+dom.txt
+
+# Category C: Personal Academic Reports & Legacy Drafts (Do Not Push)
+MAHARAINRISK_DATA_REPORT.md
+BACKEND_IMPROVEMENT_PLAN.md
+
+# Category C: Personal Academic Reports & Legacy Drafts (Do Not Push)
+MAHARAINRISK_DATA_REPORT.md
+BACKEND_IMPROVEMENT_PLAN.md

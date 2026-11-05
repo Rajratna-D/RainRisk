@@ -1,0 +1,17 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.git
+.gitignore
+.github
+tests/
+*.docx
+*.pdf
+*.mp4
+*.bak
+.env*
+data/raw/
+data/interim/ingest_checkpoints/
+

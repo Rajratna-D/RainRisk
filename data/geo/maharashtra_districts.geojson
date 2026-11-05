@@ -1,0 +1,1661 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 482,
+        "district_name": "Chhatrapati Sambhajinagar",
+        "district_name_mr": "छत्रपती संभाजीनगर",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 725.8,
+        "soil_type": "Medium Black Vertisol",
+        "major_crops": "Cotton, Soybean, Bajra, Maize, Sugarcane",
+        "major_crops_mr": "कापूस, सोयाबीन, बाजरी, मका, ऊस",
+        "latitude": 19.8762,
+        "longitude": 75.3433
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.9933,
+              19.5262
+            ],
+            [
+              75.6933,
+              19.5262
+            ],
+            [
+              75.6933,
+              20.2262
+            ],
+            [
+              74.9933,
+              20.2262
+            ],
+            [
+              74.9933,
+              19.5262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 486,
+        "district_name": "Jalna",
+        "district_name_mr": "जालना",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 688.0,
+        "soil_type": "Medium Deep Black Soil",
+        "major_crops": "Soybean, Cotton, Sweet Orange (Mosambi), Tur",
+        "major_crops_mr": "सोयाबीन, कापूस, मोसंबी, तूर",
+        "latitude": 19.841,
+        "longitude": 75.8864
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.5364,
+              19.491
+            ],
+            [
+              76.2364,
+              19.491
+            ],
+            [
+              76.2364,
+              20.191
+            ],
+            [
+              75.5364,
+              20.191
+            ],
+            [
+              75.5364,
+              19.491
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 484,
+        "district_name": "Beed",
+        "district_name_mr": "बीड",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Scarcity Zone",
+        "agro_climatic_zone_mr": "दुष्काळी अवर्षण प्रवण विभाग",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 666.2,
+        "soil_type": "Shallow to Medium Vertisol",
+        "major_crops": "Soybean, Cotton, Bajra, Tur, Sugarcane",
+        "major_crops_mr": "सोयाबीन, कापूस, बाजरी, तूर, ऊस",
+        "latitude": 18.9891,
+        "longitude": 75.7601
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.4101,
+              18.6391
+            ],
+            [
+              76.1101,
+              18.6391
+            ],
+            [
+              76.1101,
+              19.3391
+            ],
+            [
+              75.4101,
+              19.3391
+            ],
+            [
+              75.4101,
+              18.6391
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 485,
+        "district_name": "Dharashiv",
+        "district_name_mr": "धाराशिव",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Scarcity Zone",
+        "agro_climatic_zone_mr": "दुष्काळी अवर्षण प्रवण विभाग",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 730.0,
+        "soil_type": "Medium Black Soil",
+        "major_crops": "Soybean, Jowar, Tur, Gram, Sugarcane",
+        "major_crops_mr": "सोयाबीन, ज्वारी, तूर, हरभरा, ऊस",
+        "latitude": 18.1856,
+        "longitude": 76.0419
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.6919,
+              17.8356
+            ],
+            [
+              76.3919,
+              17.8356
+            ],
+            [
+              76.3919,
+              18.5356
+            ],
+            [
+              75.6919,
+              18.5356
+            ],
+            [
+              75.6919,
+              17.8356
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 487,
+        "district_name": "Latur",
+        "district_name_mr": "लातूर",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 790.0,
+        "soil_type": "Black Heavy to Medium Vertisol",
+        "major_crops": "Soybean, Tur, Urad, Moong, Sugarcane",
+        "major_crops_mr": "सोयाबीन, तूर, उडीद, मूग, ऊस",
+        "latitude": 18.4088,
+        "longitude": 76.5604
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.2104,
+              18.0588
+            ],
+            [
+              76.9104,
+              18.0588
+            ],
+            [
+              76.9104,
+              18.7588
+            ],
+            [
+              76.2104,
+              18.7588
+            ],
+            [
+              76.2104,
+              18.0588
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 488,
+        "district_name": "Nanded",
+        "district_name_mr": "नांदेड",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 915.0,
+        "soil_type": "Medium Black and Alluvial Soil",
+        "major_crops": "Cotton, Soybean, Banana, Tur, Sugarcane",
+        "major_crops_mr": "कापूस, सोयाबीन, केळी, तूर, ऊस",
+        "latitude": 19.1383,
+        "longitude": 77.321
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.971,
+              18.7883
+            ],
+            [
+              77.671,
+              18.7883
+            ],
+            [
+              77.671,
+              19.4883
+            ],
+            [
+              76.971,
+              19.4883
+            ],
+            [
+              76.971,
+              18.7883
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 489,
+        "district_name": "Parbhani",
+        "district_name_mr": "परभणी",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 830.0,
+        "soil_type": "Deep Black Vertisol",
+        "major_crops": "Cotton, Soybean, Tur, Jowar",
+        "major_crops_mr": "कापूस, सोयाबीन, तूर, ज्वारी",
+        "latitude": 19.2608,
+        "longitude": 76.7748
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.4248,
+              18.9108
+            ],
+            [
+              77.1248,
+              18.9108
+            ],
+            [
+              77.1248,
+              19.6108
+            ],
+            [
+              76.4248,
+              19.6108
+            ],
+            [
+              76.4248,
+              18.9108
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 490,
+        "district_name": "Hingoli",
+        "district_name_mr": "हिंगोली",
+        "division_name": "Chhatrapati Sambhajinagar",
+        "division_name_mr": "छत्रपती संभाजीनगर",
+        "agro_climatic_zone": "Central Maharashtra Plateau",
+        "agro_climatic_zone_mr": "मध्य महाराष्ट्र पठार",
+        "university_affiliation": "VNMKV Parbhani",
+        "normal_annual_rainfall_mm": 890.0,
+        "soil_type": "Medium Black Soil",
+        "major_crops": "Soybean, Turmeric (हळद), Cotton, Gram",
+        "major_crops_mr": "सोयाबीन, हळद, कापूस, हरभरा",
+        "latitude": 19.7173,
+        "longitude": 77.1478
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.7978,
+              19.3673
+            ],
+            [
+              77.4978,
+              19.3673
+            ],
+            [
+              77.4978,
+              20.0673
+            ],
+            [
+              76.7978,
+              20.0673
+            ],
+            [
+              76.7978,
+              19.3673
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 498,
+        "district_name": "Pune",
+        "district_name_mr": "पुणे",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Sub-montane & Scarcity Zone",
+        "agro_climatic_zone_mr": "उप-पर्वतीय व अवर्षण प्रवण",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 722.0,
+        "soil_type": "Medium Black to Red Loam",
+        "major_crops": "Sugarcane, Soybean, Bajra, Onion, Grapes",
+        "major_crops_mr": "ऊस, सोयाबीन, बाजरी, कांदा, द्राक्षे",
+        "latitude": 18.5204,
+        "longitude": 73.8567
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.5067,
+              18.1704
+            ],
+            [
+              74.2067,
+              18.1704
+            ],
+            [
+              74.2067,
+              18.8704
+            ],
+            [
+              73.5067,
+              18.8704
+            ],
+            [
+              73.5067,
+              18.1704
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 513,
+        "district_name": "Solapur",
+        "district_name_mr": "सोलापूर",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Scarcity Zone",
+        "agro_climatic_zone_mr": "दुष्काळी अवर्षण प्रवण विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 561.4,
+        "soil_type": "Shallow to Medium Vertisol",
+        "major_crops": "Rabi Jowar, Pomegranate (डाळिंब), Sugarcane, Bajra",
+        "major_crops_mr": "रब्बी ज्वारी, डाळिंब, ऊस, बाजरी",
+        "latitude": 17.6599,
+        "longitude": 75.9064
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.5564,
+              17.3099
+            ],
+            [
+              76.2564,
+              17.3099
+            ],
+            [
+              76.2564,
+              18.0099
+            ],
+            [
+              75.5564,
+              18.0099
+            ],
+            [
+              75.5564,
+              17.3099
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 502,
+        "district_name": "Ahmednagar",
+        "district_name_mr": "अहिल्यानगर (अहमदनगर)",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Scarcity Zone & Central Plateau",
+        "agro_climatic_zone_mr": "अवर्षण प्रवण व मध्य पठार",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 501.8,
+        "soil_type": "Medium Black to Calcareous Soil",
+        "major_crops": "Sugarcane, Bajra, Onion, Soybean, Pomegranate",
+        "major_crops_mr": "ऊस, बाजरी, कांदा, सोयाबीन, डाळिंब",
+        "latitude": 19.0952,
+        "longitude": 74.748
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.398,
+              18.7452
+            ],
+            [
+              75.098,
+              18.7452
+            ],
+            [
+              75.098,
+              19.4452
+            ],
+            [
+              74.398,
+              19.4452
+            ],
+            [
+              74.398,
+              18.7452
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 507,
+        "district_name": "Satara",
+        "district_name_mr": "सातारा",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Ghat & Scarcity Transitional",
+        "agro_climatic_zone_mr": "घाट व अवर्षण प्रवण संक्रमण",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 918.0,
+        "soil_type": "Laterite to Medium Black",
+        "major_crops": "Sugarcane, Soybean, Jowar, Turmeric, Ginger",
+        "major_crops_mr": "ऊस, सोयाबीन, ज्वारी, हळद, आले",
+        "latitude": 17.6805,
+        "longitude": 73.9933
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.6433,
+              17.3305
+            ],
+            [
+              74.3433,
+              17.3305
+            ],
+            [
+              74.3433,
+              18.0305
+            ],
+            [
+              73.6433,
+              18.0305
+            ],
+            [
+              73.6433,
+              17.3305
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 508,
+        "district_name": "Sangli",
+        "district_name_mr": "सांगली",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Krishna Basin & Scarcity Zone",
+        "agro_climatic_zone_mr": "कृष्णा खोरे व दुष्काळी विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 612.0,
+        "soil_type": "Rich Alluvial to Shallow Red",
+        "major_crops": "Sugarcane, Grapes (द्राक्षे), Turmeric, Soybean",
+        "major_crops_mr": "ऊस, द्राक्षे, हळद, सोयाबीन",
+        "latitude": 16.8524,
+        "longitude": 74.5815
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.2315,
+              16.5024
+            ],
+            [
+              74.9315,
+              16.5024
+            ],
+            [
+              74.9315,
+              17.2024
+            ],
+            [
+              74.2315,
+              17.2024
+            ],
+            [
+              74.2315,
+              16.5024
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 509,
+        "district_name": "Kolhapur",
+        "district_name_mr": "कोल्हापूर",
+        "division_name": "Pune",
+        "division_name_mr": "पुणे",
+        "agro_climatic_zone": "Sub-montane High Rainfall",
+        "agro_climatic_zone_mr": "उप-पर्वतीय अधिक पर्जन्य विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 1750.0,
+        "soil_type": "Deep Heavy Alluvial & Lateritic",
+        "major_crops": "Sugarcane, Paddy, Soybean, Groundnut",
+        "major_crops_mr": "ऊस, भात, सोयाबीन, भुईमूग",
+        "latitude": 16.705,
+        "longitude": 74.2433
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.8933,
+              16.355
+            ],
+            [
+              74.5933,
+              16.355
+            ],
+            [
+              74.5933,
+              17.055
+            ],
+            [
+              73.8933,
+              17.055
+            ],
+            [
+              73.8933,
+              16.355
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 497,
+        "district_name": "Nashik",
+        "district_name_mr": "नाशिक",
+        "division_name": "Nashik",
+        "division_name_mr": "नाशिक",
+        "agro_climatic_zone": "Sub-montane & Scarcity",
+        "agro_climatic_zone_mr": "उप-पर्वतीय व दुष्काळी विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 880.0,
+        "soil_type": "Medium Black to Red Loam",
+        "major_crops": "Grapes, Onion (कांदा), Tomato, Bajra, Soybean",
+        "major_crops_mr": "द्राक्षे, कांदा, टोमॅटो, बाजरी, सोयाबीन",
+        "latitude": 19.9975,
+        "longitude": 73.7898
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.4398,
+              19.6475
+            ],
+            [
+              74.1398,
+              19.6475
+            ],
+            [
+              74.1398,
+              20.3475
+            ],
+            [
+              73.4398,
+              20.3475
+            ],
+            [
+              73.4398,
+              19.6475
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 499,
+        "district_name": "Dhule",
+        "district_name_mr": "धुळे",
+        "division_name": "Nashik",
+        "division_name_mr": "नाशिक",
+        "agro_climatic_zone": "Scarcity / Tapi Valley",
+        "agro_climatic_zone_mr": "तापी खोरे दुष्काळी विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 590.0,
+        "soil_type": "Medium to Deep Tapi Alluvial",
+        "major_crops": "Cotton, Bajra, Maize, Jowar, Groundnut",
+        "major_crops_mr": "कापूस, बाजरी, मका, ज्वारी, भुईमूग",
+        "latitude": 20.9042,
+        "longitude": 74.7749
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              74.4249,
+              20.5542
+            ],
+            [
+              75.1249,
+              20.5542
+            ],
+            [
+              75.1249,
+              21.2542
+            ],
+            [
+              74.4249,
+              21.2542
+            ],
+            [
+              74.4249,
+              20.5542
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 501,
+        "district_name": "Jalgaon",
+        "district_name_mr": "जळगाव",
+        "division_name": "Nashik",
+        "division_name_mr": "नाशिक",
+        "agro_climatic_zone": "Central Plateau & Tapi Valley",
+        "agro_climatic_zone_mr": "तापी खोरे व मध्य पठार",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 740.0,
+        "soil_type": "Deep Black Tapi Alluvial",
+        "major_crops": "Banana (केळी), Cotton (कापूस), Maize, Pulses",
+        "major_crops_mr": "केळी, कापूस, मका, कडधान्ये",
+        "latitude": 21.0077,
+        "longitude": 75.5626
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.2126,
+              20.6577
+            ],
+            [
+              75.9126,
+              20.6577
+            ],
+            [
+              75.9126,
+              21.3577
+            ],
+            [
+              75.2126,
+              21.3577
+            ],
+            [
+              75.2126,
+              20.6577
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 500,
+        "district_name": "Nandurbar",
+        "district_name_mr": "नंदुरबार",
+        "division_name": "Nashik",
+        "division_name_mr": "नाशिक",
+        "agro_climatic_zone": "Satpuda Hill Tribal Zone",
+        "agro_climatic_zone_mr": "सातपुडा डोंगरी विभाग",
+        "university_affiliation": "MPKV Rahuri",
+        "normal_annual_rainfall_mm": 860.0,
+        "soil_type": "Shallow Red to Medium Vertisol",
+        "major_crops": "Cotton, Chilli, Maize, Jowar",
+        "major_crops_mr": "कापूस, मिरची, मका, ज्वारी",
+        "latitude": 21.3688,
+        "longitude": 74.2405
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.8905,
+              21.0188
+            ],
+            [
+              74.5905,
+              21.0188
+            ],
+            [
+              74.5905,
+              21.7188
+            ],
+            [
+              73.8905,
+              21.7188
+            ],
+            [
+              73.8905,
+              21.0188
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 471,
+        "district_name": "Akola",
+        "district_name_mr": "अकोला",
+        "division_name": "Amravati",
+        "division_name_mr": "अमरावती",
+        "agro_climatic_zone": "Central Vidarbha Zone",
+        "agro_climatic_zone_mr": "मध्य विदर्भ विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 795.0,
+        "soil_type": "Deep Black Vertisol (Purna Basin)",
+        "major_crops": "Cotton, Soybean, Tur, Gram",
+        "major_crops_mr": "कापूस, सोयाबीन, तूर, हरभरा",
+        "latitude": 20.7002,
+        "longitude": 77.0082
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.6582,
+              20.3502
+            ],
+            [
+              77.3582,
+              20.3502
+            ],
+            [
+              77.3582,
+              21.0502
+            ],
+            [
+              76.6582,
+              21.0502
+            ],
+            [
+              76.6582,
+              20.3502
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 470,
+        "district_name": "Amravati",
+        "district_name_mr": "अमरावती",
+        "division_name": "Amravati",
+        "division_name_mr": "अमरावती",
+        "agro_climatic_zone": "Central Vidarbha & Satpuda",
+        "agro_climatic_zone_mr": "मध्य विदर्भ व सातपुडा",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 870.0,
+        "soil_type": "Deep Vertisol & Loam",
+        "major_crops": "Soybean, Cotton, Orange (संत्रा), Tur",
+        "major_crops_mr": "सोयाबीन, कापूस, संत्रा, तूर",
+        "latitude": 20.9374,
+        "longitude": 77.7796
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.4296,
+              20.5874
+            ],
+            [
+              78.1296,
+              20.5874
+            ],
+            [
+              78.1296,
+              21.2874
+            ],
+            [
+              77.4296,
+              21.2874
+            ],
+            [
+              77.4296,
+              20.5874
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 473,
+        "district_name": "Buldhana",
+        "district_name_mr": "बुलढाणा",
+        "division_name": "Amravati",
+        "division_name_mr": "अमरावती",
+        "agro_climatic_zone": "Central Vidarbha & Ghat",
+        "agro_climatic_zone_mr": "मध्य विदर्भ व घाट",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 745.0,
+        "soil_type": "Medium Black to Calcareous",
+        "major_crops": "Soybean, Cotton, Maize, Jowar",
+        "major_crops_mr": "सोयाबीन, कापूस, मका, ज्वारी",
+        "latitude": 20.5292,
+        "longitude": 76.1843
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              75.8343,
+              20.1792
+            ],
+            [
+              76.5343,
+              20.1792
+            ],
+            [
+              76.5343,
+              20.8792
+            ],
+            [
+              75.8343,
+              20.8792
+            ],
+            [
+              75.8343,
+              20.1792
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 476,
+        "district_name": "Yavatmal",
+        "district_name_mr": "यवतमाळ",
+        "division_name": "Amravati",
+        "division_name_mr": "अमरावती",
+        "agro_climatic_zone": "Eastern Vidarbha Plateau",
+        "agro_climatic_zone_mr": "पूर्व विदर्भ पठार",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 911.0,
+        "soil_type": "Medium Black & Red Loam",
+        "major_crops": "Cotton (पांढरे सोने), Soybean, Tur, Gram",
+        "major_crops_mr": "कापूस, सोयाबीन, तूर, हरभरा",
+        "latitude": 20.3888,
+        "longitude": 78.1204
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.7704,
+              20.0388
+            ],
+            [
+              78.4704,
+              20.0388
+            ],
+            [
+              78.4704,
+              20.7388
+            ],
+            [
+              77.7704,
+              20.7388
+            ],
+            [
+              77.7704,
+              20.0388
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 472,
+        "district_name": "Washim",
+        "district_name_mr": "वाशीम",
+        "division_name": "Amravati",
+        "division_name_mr": "अमरावती",
+        "agro_climatic_zone": "Central Vidarbha Zone",
+        "agro_climatic_zone_mr": "मध्य विदर्भ विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 830.0,
+        "soil_type": "Medium Black Soil",
+        "major_crops": "Soybean, Cotton, Tur, Wheat",
+        "major_crops_mr": "सोयाबीन, कापूस, तूर, गहू",
+        "latitude": 20.1118,
+        "longitude": 77.1332
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.7832,
+              19.7618
+            ],
+            [
+              77.4832,
+              19.7618
+            ],
+            [
+              77.4832,
+              20.4618
+            ],
+            [
+              76.7832,
+              20.4618
+            ],
+            [
+              76.7832,
+              19.7618
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 475,
+        "district_name": "Wardha",
+        "district_name_mr": "वर्धा",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Central Vidarbha Zone",
+        "agro_climatic_zone_mr": "मध्य विदर्भ विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 965.0,
+        "soil_type": "Deep Black Vertisol",
+        "major_crops": "Cotton, Soybean, Tur, Wheat",
+        "major_crops_mr": "कापूस, सोयाबीन, तूर, गहू",
+        "latitude": 20.7453,
+        "longitude": 78.6022
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              78.2522,
+              20.3953
+            ],
+            [
+              78.9522,
+              20.3953
+            ],
+            [
+              78.9522,
+              21.0953
+            ],
+            [
+              78.2522,
+              21.0953
+            ],
+            [
+              78.2522,
+              20.3953
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 474,
+        "district_name": "Nagpur",
+        "district_name_mr": "नागपूर",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Eastern Vidarbha High Rainfall",
+        "agro_climatic_zone_mr": "पूर्व विदर्भ अधिक पर्जन्य",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 1050.0,
+        "soil_type": "Black Heavy to Red Loam",
+        "major_crops": "Nagpur Orange (संत्रा), Soybean, Cotton, Paddy",
+        "major_crops_mr": "नागपूर संत्रा, सोयाबीन, कापूस, भात",
+        "latitude": 21.1458,
+        "longitude": 79.0882
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              78.7382,
+              20.7958
+            ],
+            [
+              79.4382,
+              20.7958
+            ],
+            [
+              79.4382,
+              21.4958
+            ],
+            [
+              78.7382,
+              21.4958
+            ],
+            [
+              78.7382,
+              20.7958
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 469,
+        "district_name": "Bhandara",
+        "district_name_mr": "भंडारा",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Eastern Vidarbha Paddy & Lake Zone",
+        "agro_climatic_zone_mr": "पूर्व विदर्भ भात व तलाव विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 1280.0,
+        "soil_type": "Sandy Loam & Red Alluvial",
+        "major_crops": "Paddy (भात), Tur, Sugarcane",
+        "major_crops_mr": "भात, तूर, ऊस",
+        "latitude": 21.1667,
+        "longitude": 79.65
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.3,
+              20.8167
+            ],
+            [
+              80.0,
+              20.8167
+            ],
+            [
+              80.0,
+              21.5167
+            ],
+            [
+              79.3,
+              21.5167
+            ],
+            [
+              79.3,
+              20.8167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 468,
+        "district_name": "Gondia",
+        "district_name_mr": "गोंदिया",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Eastern Vidarbha High Rainfall Forest",
+        "agro_climatic_zone_mr": "पूर्व विदर्भ वन व भात विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 1330.0,
+        "soil_type": "Lateritic & Red Sandy Loam",
+        "major_crops": "Paddy (भात), Lathyrus, Tur",
+        "major_crops_mr": "भात, लाखाडी, तूर",
+        "latitude": 21.4597,
+        "longitude": 80.1961
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.8461,
+              21.1097
+            ],
+            [
+              80.5461,
+              21.1097
+            ],
+            [
+              80.5461,
+              21.8097
+            ],
+            [
+              79.8461,
+              21.8097
+            ],
+            [
+              79.8461,
+              21.1097
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 477,
+        "district_name": "Chandrapur",
+        "district_name_mr": "चंद्रपूर",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Eastern Vidarbha Forest & Mineral Zone",
+        "agro_climatic_zone_mr": "पूर्व विदर्भ पठार व भात",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 1180.0,
+        "soil_type": "Sandy Loam to Heavy Black",
+        "major_crops": "Soybean, Cotton, Paddy, Tur",
+        "major_crops_mr": "सोयाबीन, कापूस, भात, तूर",
+        "latitude": 19.9615,
+        "longitude": 79.2961
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              78.9461,
+              19.6115
+            ],
+            [
+              79.6461,
+              19.6115
+            ],
+            [
+              79.6461,
+              20.3115
+            ],
+            [
+              78.9461,
+              20.3115
+            ],
+            [
+              78.9461,
+              19.6115
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 478,
+        "district_name": "Gadchiroli",
+        "district_name_mr": "गडचिरोली",
+        "division_name": "Nagpur",
+        "division_name_mr": "नागपूर",
+        "agro_climatic_zone": "Eastern Heavy Rainfall Forest Zone",
+        "agro_climatic_zone_mr": "पूर्व अधिक पर्जन्य वन विभाग",
+        "university_affiliation": "PDKV Akola",
+        "normal_annual_rainfall_mm": 1420.0,
+        "soil_type": "Red Sandy & Forest Loam",
+        "major_crops": "Paddy, Minor Millets (नाचणी), Tur",
+        "major_crops_mr": "भात, नाचणी, तूर",
+        "latitude": 20.1809,
+        "longitude": 79.993
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.643,
+              19.8309
+            ],
+            [
+              80.343,
+              19.8309
+            ],
+            [
+              80.343,
+              20.5309
+            ],
+            [
+              79.643,
+              20.5309
+            ],
+            [
+              79.643,
+              19.8309
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 491,
+        "district_name": "Thane",
+        "district_name_mr": "ठाणे",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "North Konkan Coastal",
+        "agro_climatic_zone_mr": "उत्तर कोकण किनारपट्टी",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 2450.0,
+        "soil_type": "Coastal Alluvial & Red Loam",
+        "major_crops": "Paddy, Vegetables, Flowers",
+        "major_crops_mr": "भात, भाजीपाला, फुले",
+        "latitude": 19.2183,
+        "longitude": 72.9781
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.6281,
+              18.8683
+            ],
+            [
+              73.3281,
+              18.8683
+            ],
+            [
+              73.3281,
+              19.5683
+            ],
+            [
+              72.6281,
+              19.5683
+            ],
+            [
+              72.6281,
+              18.8683
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 492,
+        "district_name": "Palghar",
+        "district_name_mr": "पालघर",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "North Konkan Coastal & Tribal",
+        "agro_climatic_zone_mr": "उत्तर कोकण व आदिवासी विभाग",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 2350.0,
+        "soil_type": "Coastal Sandy & Laterite",
+        "major_crops": "Paddy, Chikoo (चीकू), Finger Millet (नाचणी)",
+        "major_crops_mr": "भात, चीकू, नाचणी",
+        "latitude": 19.6967,
+        "longitude": 72.7699
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.4199,
+              19.3467
+            ],
+            [
+              73.1199,
+              19.3467
+            ],
+            [
+              73.1199,
+              20.0467
+            ],
+            [
+              72.4199,
+              20.0467
+            ],
+            [
+              72.4199,
+              19.3467
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 493,
+        "district_name": "Raigad",
+        "district_name_mr": "रायगड",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "Central Konkan Coastal",
+        "agro_climatic_zone_mr": "मध्य कोकण किनारपट्टी",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 3100.0,
+        "soil_type": "Lateritic & Alluvial",
+        "major_crops": "Paddy, Betelnut (सुपारी), Coconut, Mango",
+        "major_crops_mr": "भात, सुपारी, नारळ, आंबा",
+        "latitude": 18.5158,
+        "longitude": 73.1822
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.8322,
+              18.1658
+            ],
+            [
+              73.5322,
+              18.1658
+            ],
+            [
+              73.5322,
+              18.8658
+            ],
+            [
+              72.8322,
+              18.8658
+            ],
+            [
+              72.8322,
+              18.1658
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 494,
+        "district_name": "Ratnagiri",
+        "district_name_mr": "रत्नागिरी",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "South Konkan Coastal",
+        "agro_climatic_zone_mr": "दक्षिण कोकण किनारपट्टी",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 3200.0,
+        "soil_type": "Lateritic Red Soil",
+        "major_crops": "Alphonso Mango (हापूस आंबा), Cashew (काजू), Paddy",
+        "major_crops_mr": "हापूस आंबा, काजू, भात",
+        "latitude": 16.9902,
+        "longitude": 73.312
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.962,
+              16.6402
+            ],
+            [
+              73.662,
+              16.6402
+            ],
+            [
+              73.662,
+              17.3402
+            ],
+            [
+              72.962,
+              17.3402
+            ],
+            [
+              72.962,
+              16.6402
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 495,
+        "district_name": "Sindhudurg",
+        "district_name_mr": "सिंधुदुर्ग",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "South Konkan High Rainfall",
+        "agro_climatic_zone_mr": "दक्षिण कोकण अधिक पर्जन्य",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 3350.0,
+        "soil_type": "Lateritic Heavy Red Soil",
+        "major_crops": "Cashew, Mango, Coconut, Spices, Paddy",
+        "major_crops_mr": "काजू, आंबा, नारळ, मसाल्याची पिके, भात",
+        "latitude": 16.1158,
+        "longitude": 73.6938
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              73.3438,
+              15.7658
+            ],
+            [
+              74.0438,
+              15.7658
+            ],
+            [
+              74.0438,
+              16.4658
+            ],
+            [
+              73.3438,
+              16.4658
+            ],
+            [
+              73.3438,
+              15.7658
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 496,
+        "district_name": "Mumbai City",
+        "district_name_mr": "मुंबई शहर",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "Coastal Urban",
+        "agro_climatic_zone_mr": "किनारपट्टी नागरी",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 2100.0,
+        "soil_type": "Urban Alluvial",
+        "major_crops": "Urban Horticulture",
+        "major_crops_mr": "शहरी फलोत्पादन",
+        "latitude": 18.9388,
+        "longitude": 72.8353
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.4853,
+              18.5888
+            ],
+            [
+              73.1853,
+              18.5888
+            ],
+            [
+              73.1853,
+              19.2888
+            ],
+            [
+              72.4853,
+              19.2888
+            ],
+            [
+              72.4853,
+              18.5888
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_lgd_code": 4901,
+        "district_name": "Mumbai Suburban",
+        "district_name_mr": "मुंबई उपनगर",
+        "division_name": "Konkan",
+        "division_name_mr": "कोकण",
+        "agro_climatic_zone": "Coastal Urban",
+        "agro_climatic_zone_mr": "किनारपट्टी नागरी",
+        "university_affiliation": "BSKKV Dapoli",
+        "normal_annual_rainfall_mm": 2200.0,
+        "soil_type": "Urban Alluvial",
+        "major_crops": "Urban Horticulture",
+        "major_crops_mr": "शहरी फलोत्पादन",
+        "latitude": 19.076,
+        "longitude": 72.8777
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              72.5277,
+              18.726
+            ],
+            [
+              73.2277,
+              18.726
+            ],
+            [
+              73.2277,
+              19.426
+            ],
+            [
+              72.5277,
+              19.426
+            ],
+            [
+              72.5277,
+              18.726
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

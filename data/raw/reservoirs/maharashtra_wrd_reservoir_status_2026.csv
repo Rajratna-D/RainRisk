@@ -1,0 +1,13 @@
+dam_name,dam_name_mr,river,district,taluka,latitude,longitude,gross_capacity_mcum,live_capacity_mcum,current_live_storage_mcum,current_storage_pct,historical_10yr_avg_pct,bulletin_date,command_districts,source
+Jayakwadi (Nathsagar),जायकवाडी (नाथसागर),Godavari,Chhatrapati Sambhajinagar,Paithan,19.4895,75.3789,2909.0,2170.9,2040.6,94.0,68.5,2026-10-12,"Chhatrapati Sambhajinagar, Jalna, Beed, Parbhani, Nanded",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Ujjani (Bhima),उजनी (भीमा),Bhima,Solapur,Madha,18.0747,75.1189,3320.0,1517.0,1517.0,100.0,74.2,2026-10-12,"Solapur, Pune, Ahmednagar",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Koyna,कोयना,Koyna,Satara,Patan,17.3994,73.7483,2980.0,2835.0,2721.6,96.0,89.1,2026-10-12,"Satara, Sangli, Kolhapur",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Mula,मुळा,Mula,Ahmednagar,Rahuri,19.3589,74.6133,736.0,608.8,541.8,89.0,65.4,2026-10-12,"Ahmednagar, Chhatrapati Sambhajinagar",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Bhandardara (Wilson Dam),भंडारदरा (विल्सन डॅम),Pravara,Ahmednagar,Akole,19.5469,73.7631,312.6,312.6,306.3,98.0,88.0,2026-10-12,Ahmednagar,WRD Maharashtra Pravah & CWC Weekly Bulletin
+Majalgaon,माजलगाव,Sindphana,Beed,Majalgaon,19.1436,76.2167,445.4,311.5,183.8,59.0,48.0,2026-10-12,"Beed, Parbhani, Nanded",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Yeldari,येळदरी,Purna,Parbhani,Jintur,19.7167,76.7333,934.4,807.0,540.7,67.0,55.0,2026-10-12,"Parbhani, Hingoli, Nanded",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Totladoh (Pench),तोतलाडोह (पेंच),Pench,Nagpur,Ramtek,21.5333,79.2333,1017.0,892.0,874.2,98.0,82.0,2026-10-12,"Nagpur, Bhandara",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Upper Wardha (Nal Damyanti),अपर वर्धा,Wardha,Amravati,Morshi,21.2667,78.0833,662.6,566.3,520.9,92.0,78.0,2026-10-12,"Amravati, Wardha",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Girna,गिरणा,Girna,Nashik,Malegaon,20.4833,74.6833,608.8,523.8,377.1,72.0,61.0,2026-10-12,"Nashik, Jalgaon",WRD Maharashtra Pravah & CWC Weekly Bulletin
+Khadakwasla Complex,खडकवासला संकुल,Mutha,Pune,Haveli,18.4417,73.7667,825.4,825.4,808.9,98.0,89.0,2026-10-12,Pune,WRD Maharashtra Pravah & CWC Weekly Bulletin
+Bhatsa,भातसा,Bhatsa,Thane,Shahapur,19.5167,73.2667,962.8,940.1,921.3,98.0,92.0,2026-10-12,"Thane, Mumbai",WRD Maharashtra Pravah & CWC Weekly Bulletin

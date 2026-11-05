@@ -1,0 +1,13 @@
+dam_name,dam_name_mr,river,district,taluka,lat,lon,gross_capacity_tmc,live_capacity_tmc,command_districts,critical_storage_pct
+Jayakwadi (Nathsagar),जायकवाडी (नाथसागर),Godavari,Chhatrapati Sambhajinagar,Paithan,19.4895,75.3789,102.73,76.67,"Chhatrapati Sambhajinagar, Jalna, Beed, Parbhani, Nanded",20.0
+Ujjani (Bhima),उजनी (भीमा),Bhima,Solapur,Madha,18.0747,75.1189,117.24,53.57,"Solapur, Pune, Ahmednagar",15.0
+Koyna,कोयना,Koyna,Satara,Patan,17.3994,73.7483,105.25,100.12,"Satara, Sangli, Kolhapur",25.0
+Mula,मुळा,Mula,Ahmednagar,Rahuri,19.3589,74.6133,26.0,21.5,"Ahmednagar, Chhatrapati Sambhajinagar",20.0
+Bhandardara (Wilson Dam),भंडारदरा (विल्सन डॅम),Pravara,Ahmednagar,Akole,19.5469,73.7631,11.04,11.04,Ahmednagar,20.0
+Majalgaon,माजलगाव,Sindphana,Beed,Majalgaon,19.1436,76.2167,15.73,11.0,"Beed, Parbhani, Nanded",15.0
+Yeldari,येळदरी,Purna,Parbhani,Jintur,19.7167,76.7333,33.0,28.5,"Parbhani, Hingoli, Nanded",18.0
+Totladoh (Pench),तोतलाडोह (पेंच),Pench,Nagpur,Ramtek,21.5333,79.2333,36.0,31.5,"Nagpur, Bhandara",20.0
+Upper Wardha (Nal Damyanti),अपर वर्धा,Wardha,Amravati,Morshi,21.2667,78.0833,23.4,20.0,"Amravati, Wardha",20.0
+Girna,गिरणा,Girna,Nashik,Malegaon,20.4833,74.6833,21.5,18.5,"Nashik, Jalgaon",20.0
+Khadakwasla Complex (4 Dams),खडकवासला संकुल,Mutha,Pune,Haveli,18.4417,73.7667,29.15,29.15,Pune,25.0
+Bhatsa,भातसा,Bhatsa,Thane,Shahapur,19.5167,73.2667,34.0,33.2,"Thane, Mumbai",30.0

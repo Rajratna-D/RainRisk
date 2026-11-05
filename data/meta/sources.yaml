@@ -1,0 +1,102 @@
+# Climatological and Agronomic Data Sources Catalog
+# MahaRainRisk: Maharashtra Taluka-Level Drought Early Warning System
+# Reference: Data Sources and Data Plan (October 2026)
+
+tier_1_mandatory:
+  imd_gridded_rainfall:
+    description: "Daily rainfall at 0.25° grid across India/Maharashtra (1901–present)"
+    source_url: "https://www.imdpune.gov.in/Clim_Pred_LRF_New/Grided_Data_Download.html"
+    access_method: "Python package 'imdlib' (automated binary grid download & extraction)"
+    units: "mm/day"
+    licence: "Open Government Data (OGD) / IMD Free for Research"
+    destination: "data/raw/imd_rainfall/"
+    interim: "data/interim/imd_rainfall.parquet"
+
+  imd_gridded_temperature:
+    description: "Daily maximum and minimum 2m surface temperature at 1.0° grid (1951–present)"
+    source_url: "https://www.imdpune.gov.in/Clim_Pred_LRF_New/Grided_Data_Download.html"
+    access_method: "Python package 'imdlib'"
+    units: "degrees Celsius"
+    licence: "IMD Free Research"
+    destination: "data/raw/imd_temperature/"
+    interim: "data/interim/imd_temperature.parquet"
+
+  chirps_satellite_rainfall:
+    description: "Climate Hazards Group InfraRed Precipitation with Station data (0.05° daily, 1981–present)"
+    source_url: "https://data.chc.ucsb.edu/products/CHIRPS-2.0/"
+    access_method: "Google Earth Engine collection 'UCSB-CHG/CHIRPS/DAILY' or CHC HTTP download"
+    units: "mm/day"
+    licence: "Public Domain / CC-BY"
+    destination: "data/raw/chirps/"
+    interim: "data/interim/chirps.parquet"
+
+  era5_land:
+    description: "ECMWF high-resolution reanalysis: 2m temperature, evapotranspiration, and volumetric soil moisture"
+    source_url: "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land"
+    access_method: "Copernicus Climate Data Store (CDS API) or Google Earth Engine 'ECMWF/ERA5_LAND/MONTHLY_RAW'"
+    units: "m³/m³ (soil moisture), m (evapotranspiration), K (temperature)"
+    licence: "Copernicus Free Open Data"
+    destination: "data/raw/era5_land/"
+    interim: "data/interim/era5_land.parquet"
+
+  modis_ndvi_vci:
+    description: "Normalized Difference Vegetation Index (NDVI) & Vegetation Condition Index (VCI) at 250m/500m 16-day (2000–present)"
+    source_url: "https://lpdaac.usgs.gov/products/mod13q1v061/"
+    access_method: "Google Earth Engine 'MODIS/061/MOD13Q1' or NASA LAADS DAAC"
+    units: "unitless index (-0.2 to 1.0)"
+    licence: "NASA Open Data Policy"
+    destination: "data/raw/modis_ndvi/"
+    interim: "data/interim/modis_ndvi.parquet"
+
+  smap_soil_moisture:
+    description: "NASA-USDA enhanced SMAP global surface and root-zone soil moisture (0.25° every 3 days, 2015–present)"
+    source_url: "https://earthdata.nasa.gov/"
+    access_method: "Google Earth Engine 'NASA_USDA/HSL/SMAP10KM_soil_moisture' or NASA Earthdata"
+    units: "mm / percentile"
+    licence: "NASA Open Data Policy"
+    destination: "data/raw/smap/"
+    interim: "data/interim/smap.parquet"
+
+tier_2_boosters:
+  ocean_teleconnections:
+    description: "NOAA CPC Oceanic Niño Index (ONI/RONI) & JAMSTEC Dipole Mode Index (DMI) (1900–present)"
+    source_url: "https://psl.noaa.gov/gcos_wgsp/Timeseries/Nino34/ and https://psl.noaa.gov/gcos_wgsp/Timeseries/DMI/"
+    access_method: "Automated HTTP text download via scripts/fetch_teleconnections.py"
+    units: "degrees Celsius anomaly"
+    licence: "NOAA PSL Open Data"
+    destination: "data/raw/teleconnections/"
+    interim: "data/interim/teleconnections.parquet"
+
+  maharashtra_wrd_reservoirs:
+    description: "Water Resources Department (WRD) Maharashtra live reservoir storage across major/medium dams"
+    source_url: "https://wrd.maharashtra.gov.in/ or Dataful Weekly State-wise Storage"
+    access_method: "PDF scraping / Dataful CSV portal"
+    units: "Percentage live storage (TMC / MCM)"
+    licence: "Government of Maharashtra Public Bulletin"
+    destination: "data/raw/reservoirs/"
+    interim: "data/interim/reservoirs.parquet"
+
+  cgwb_groundwater:
+    description: "Central Ground Water Board (CGWB) monitoring well depth-to-water levels"
+    source_url: "https://indiawris.gov.in/wris/"
+    access_method: "India-WRIS portal station export"
+    units: "meters below ground level (m bgl)"
+    licence: "Government of India / NDSAP"
+    destination: "data/raw/groundwater/"
+    interim: "data/interim/groundwater.parquet"
+
+  crop_statistics:
+    description: "ICRISAT District Level Database (1966–2017) & MoAFW Dataful statistics (through 2024–25) with LGD codes"
+    source_url: "http://data.icrisat.org/dld/ and https://dataful.in/"
+    access_method: "CSV downloads matched by LGD District Code"
+    units: "Area (Hectares), Production (Tonnes), Yield (Tonnes/Ha)"
+    licence: "ICRISAT Open Access / Open Government Data"
+    destination: "data/raw/crops/"
+    interim: "data/interim/crop_stats.parquet"
+
+administrative_geography:
+  maharashtra_lgd_boundaries:
+    description: "Local Government Directory (LGD) official boundaries for Maharashtra: 36 Districts & 358 Talukas"
+    source_url: "https://lgdirectory.gov.in/ and OpenCity India LGD shapefiles"
+    access_method: "GeoJSON / Shapefile parsing via Geopandas"
+    destination: "data/geo/maharashtra_districts.geojson & data/geo/maharashtra_talukas.geojson"

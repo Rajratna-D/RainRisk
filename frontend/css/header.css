@@ -1,0 +1,264 @@
+/* ==========================================================================
+   MahaRainRisk | Top Command Header Bar, Brand, Search & Actions
+   ========================================================================== */
+
+.top-header {
+  height: 54px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top-left-radius: var(--radius-outer);
+  border-top-right-radius: var(--radius-outer);
+  gap: 14px;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-badge-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(94, 138, 66, 0.15);
+  border: 1px solid rgba(94, 138, 66, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dock-active);
+}
+
+.brand-title-text {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+}
+
+.brand-sub-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(94, 138, 66, 0.14);
+  color: var(--dock-active);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Search Bar & Voice Input */
+.search-center-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+}
+
+.search-input-pill {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-pill input {
+  width: 100%;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  padding: 0 16px 0 38px;
+  font-size: 13.5px;
+  color: #0F172A;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-input-pill input:focus {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--dock-active);
+  box-shadow: 0 0 0 3px rgba(94, 138, 66, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.search-icon-svg {
+  position: absolute;
+  left: 12px;
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.autocomplete-box {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 1500;
+  display: none;
+}
+
+.autocomplete-row {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  transition: background 0.15s ease;
+}
+
+.autocomplete-row:hover {
+  background: rgba(94, 138, 66, 0.12);
+}
+
+/* Mic Button with Visual Feedback */
+.mic-pill-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #334155;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.mic-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #FFFFFF;
+  color: var(--dock-active);
+  transform: translateY(-1.5px);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 1), 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.mic-pill-btn.listening {
+  background: #EF4444 !important;
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  animation: pulse-mic 1.5s infinite;
+}
+
+@keyframes pulse-mic {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Top Action Cluster */
+.top-actions-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.glowing-ai-btn {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #B5F03A 0%, #7DE044 100%);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #143516;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(125, 224, 68, 0.45);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+}
+
+.glowing-ai-btn:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  box-shadow: 0 6px 24px rgba(125, 224, 68, 0.7);
+}
+
+.glowing-ai-btn .ai-sparkle-icon {
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(20, 53, 22, 0.25));
+  animation: ai-sparkle-float 3s infinite ease-in-out;
+}
+
+@keyframes ai-sparkle-float {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(4deg);
+  }
+}
+
+.top-round-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.top-round-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #FFFFFF;
+  color: #0F172A;
+  transform: translateY(-1.5px);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 1), 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.btn-badge-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #EF4444;
+}
+
+#btn-lang {
+  width: auto;
+  min-width: 42px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  gap: 4px;
+  font-weight: 700;
+}

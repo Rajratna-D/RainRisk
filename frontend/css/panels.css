@@ -1,0 +1,454 @@
+/* ==========================================================================
+   MahaRainRisk | Right Column Telemetry & AI Advisory Panels
+   ========================================================================== */
+
+.right-column-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.right-tab-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
+}
+
+.right-tab-pill {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-family: inherit;
+}
+
+.right-tab-pill:hover {
+  color: #0F172A;
+}
+
+.right-tab-pill.active {
+  background: var(--dock-active);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(94, 138, 66, 0.3);
+}
+
+.right-view-panel {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.right-view-panel.active {
+  display: flex;
+}
+
+/* Permanent Dedicated Right Sidebar: Live Telemetry Header */
+.sidebar-telemetry-header {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 10px 14px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: live-pulse 2s infinite;
+}
+
+@keyframes live-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.telemetry-live-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  letter-spacing: 0.5px;
+}
+
+.side-stat-meter-bar {
+  width: 100%;
+  height: 7px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.side-meter-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}
+
+/* AI Executive Header Bar in Right Panel */
+.advisory-side-header-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 12px 14px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-side-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--dock-active);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ai-side-taluka {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.ai-side-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  white-space: nowrap;
+}
+
+.ai-side-status-pill.mild {
+  background: rgba(245, 158, 11, 0.12);
+  color: #B45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.ai-side-status-pill.distress {
+  background: rgba(239, 68, 68, 0.12);
+  color: #B91C1C;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.status-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* AI Smart Advisory Cards */
+.ai-action-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 12px 14px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ai-action-card:hover {
+  background: var(--card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(25, 55, 35, 0.1), inset 0 1px 1.5px rgba(255, 255, 255, 1);
+}
+
+.ai-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-card-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.ai-card-chip {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(94, 138, 66, 0.12);
+  color: var(--dock-active);
+  white-space: nowrap;
+}
+
+/* Climate Tags Cluster */
+.ai-climate-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.climate-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #334155;
+  background: rgba(148, 163, 184, 0.12);
+  padding: 2.5px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.climate-pill svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.2;
+  flex-shrink: 0;
+}
+
+.ai-diagnostic-summary {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #334155;
+  background: rgba(94, 138, 66, 0.06);
+  border-left: 3px solid var(--dock-active);
+  padding: 6px 10px;
+  border-radius: 0 6px 6px 0;
+}
+
+/* 7-Day Timeline Container */
+.ai-timeline-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  position: relative;
+}
+
+.timeline-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+}
+
+.timeline-step-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.timeline-day-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.timeline-day-badge.phase1 {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.timeline-day-badge.phase2 {
+  background: rgba(245, 158, 11, 0.15);
+  color: #B45309;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.timeline-day-badge.phase3 {
+  background: rgba(59, 130, 246, 0.15);
+  color: #1D4ED8;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.timeline-step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.timeline-step-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.timeline-step-desc {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+/* Contingency & Scheme Boxes */
+.ai-alert-box {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: #334155;
+  background: rgba(249, 115, 22, 0.08);
+  border-left: 3px solid #F97316;
+  padding: 6px 10px;
+  border-radius: 0 6px 6px 0;
+}
+
+.ai-scheme-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #334155;
+  background: rgba(59, 130, 246, 0.06);
+  border-left: 3px solid #3B82F6;
+  padding: 6px 10px;
+  border-radius: 0 6px 6px 0;
+}
+
+.advisory-side-scroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 520px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.right-panel-card {
+  flex: 1;
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-blur-md);
+  -webkit-backdrop-filter: var(--glass-blur-md);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 9px 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.right-panel-card:hover {
+  background: var(--card-bg-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -4px rgba(25, 55, 35, 0.1), inset 0 1px 1.5px rgba(255, 255, 255, 1);
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.panel-big-number {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin-top: 2px;
+}
+
+/* 18 Rounded Capsule Bars */
+.capsule-bars-cluster {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 48px;
+  margin-top: 8px;
+}
+
+.capsule-pill-bar {
+  flex: 1;
+  height: 100%;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  transition: all 0.3s ease;
+}
+
+.capsule-pill-bar.green-fill {
+  background: var(--dock-active);
+}
+
+/* Multi-Color Timeline Bars */
+.power-bars-container {
+  display: flex;
+  align-items: flex-end;
+  height: 52px;
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.power-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.4s ease;
+}
+
+.power-bar.gray { background: #CBD5E1; }
+.power-bar.orange { background: var(--accent-orange); }
+.power-bar.green { background: var(--dock-active); }
+
+/* Stepped Area Chart */
+.stepped-chart-container {
+  height: 54px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  margin-top: 6px;
+}
+
+.stepped-svg {
+  width: 100%;
+  height: 100%;
+}
