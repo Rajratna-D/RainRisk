@@ -133,8 +133,19 @@ class DatabasePool:
         conn = self._pool.getconn()
         try:
             yield conn
+        except Exception:
+            if conn and not getattr(conn, "closed", True):
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
+            raise
         finally:
-            if self._pool:
+            if self._pool and conn and not getattr(conn, "closed", True):
+                try:
+                    conn.rollback()
+                except Exception:
+                    pass
                 self._pool.putconn(conn)
 
     def close(self):
@@ -158,9 +169,13 @@ def execute_query(query: str, params: Optional[Union[tuple, list, dict]] = None,
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(query, params)
             if fetch_one:
-                return cur.fetchone()
+                result = cur.fetchone()
+                conn.commit()
+                return result
             if fetch_all:
-                return cur.fetchall()
+                result = cur.fetchall()
+                conn.commit()
+                return result
             conn.commit()
             return None
 

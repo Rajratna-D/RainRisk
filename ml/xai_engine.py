@@ -248,6 +248,14 @@ class MahaRainRiskXAI:
             })
             val = raw_dict.get(feat_name, None)
 
+            # ML-05: For Class 0 (Safe), positive SHAP keeps it safe (protective buffer),
+            # while negative SHAP pulls toward higher drought tiers (risk escalator).
+            # For Classes 1-4 (Drought), positive SHAP escalates risk.
+            if predicted_class == 0:
+                is_escalator = bool(sv < 0)
+            else:
+                is_escalator = bool(sv > 0)
+
             all_drivers.append({
                 "feature_key": feat_name,
                 "name_en": meta["name_en"],
@@ -257,7 +265,7 @@ class MahaRainRiskXAI:
                 "unit": meta["unit"],
                 "shap_value": round(float(sv), 4),
                 "impact_pct": round(float(pct), 1),
-                "is_escalator": bool(sv > 0)
+                "is_escalator": is_escalator
             })
 
         # Categorize escalators (positive SHAP pushing towards predicted tier)

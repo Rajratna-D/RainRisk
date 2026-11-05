@@ -177,7 +177,18 @@ class MahaRainRiskInference:
 
         X_fore = pd.DataFrame([X_fore_vals], columns=fore_features).fillna(0.0)
         fore_proba = self.fore_model.predict_proba(X_fore)[0]
-        fore_pred = int(np.argmax(fore_proba))
+
+        # ML-01: Cost-sensitive decision policy to prevent catastrophic recall collapse on severe/extreme droughts
+        if len(fore_proba) >= 5 and fore_proba[4] >= 0.15:
+            fore_pred = 4
+        elif len(fore_proba) >= 4 and fore_proba[3] >= 0.25:
+            fore_pred = 3
+        elif len(fore_proba) >= 3 and fore_proba[2] >= 0.35:
+            fore_pred = 2
+        elif len(fore_proba) >= 2 and fore_proba[1] >= 0.40:
+            fore_pred = 1
+        else:
+            fore_pred = int(np.argmax(fore_proba))
 
         # 3. Advisory Lookup
         advisory = get_farmer_advisory(

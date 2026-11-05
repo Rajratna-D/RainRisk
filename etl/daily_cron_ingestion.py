@@ -21,6 +21,7 @@ import logging
 import argparse
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, List, Optional, Tuple
+from collections import defaultdict
 import requests
 import psycopg2
 from psycopg2.extras import execute_values
@@ -273,18 +274,28 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
     risk_records = []
     forecast_month_str = (datetime.strptime(target_date, "%Y-%m-%d") + timedelta(days=30)).strftime("%Y-%m")
 
+    # PERF-01: Fetch dynamic dry spells for all talukas in a single partitioned window query
+    cur.execute("""
+        SELECT taluka_lgd_code, rainfall_mm
+        FROM (
+            SELECT taluka_lgd_code, rainfall_mm,
+                   ROW_NUMBER() OVER (PARTITION BY taluka_lgd_code ORDER BY record_date DESC) as rn
+            FROM daily_weather
+            WHERE record_date <= %s AND record_date >= (%s::date - interval '45 days')
+        ) sub
+        WHERE rn <= 30
+        ORDER BY taluka_lgd_code, rn ASC;
+    """, (target_date, target_date))
+
+    recent_rain_by_taluka = defaultdict(list)
+    for row in cur.fetchall():
+        recent_rain_by_taluka[int(row[0])].append(float(row[1]))
+
     for _, taluka in df_talukas.iterrows():
         code = int(taluka["taluka_lgd_code"])
 
-        # Compute dynamic dry spell leading up to target_date
-        cur.execute("""
-            SELECT rainfall_mm 
-            FROM daily_weather 
-            WHERE taluka_lgd_code = %s AND record_date <= %s
-            ORDER BY record_date DESC 
-            LIMIT 30;
-        """, (code, target_date))
-        recent_rain = [row[0] for row in cur.fetchall()]
+        # Compute dynamic dry spell leading up to target_date from pre-fetched map
+        recent_rain = recent_rain_by_taluka.get(code, [])
 
         dry_days = 0
         for r in recent_rain:
@@ -293,24 +304,24 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
             else:
                 break
 
-        # ML Inference
+        # ML Inference (BUG-01 / ML-02: Map matching keys from analyze_taluka)
         analysis = inference.analyze_taluka(str(code))
-        diag = analysis.get("diagnostic", {})
-        fore = analysis.get("forecaster", {})
+        diag = analysis.get("live_diagnosis", {})
+        fore = analysis.get("30_day_forecast", {})
+        telemetry = analysis.get("telemetry_gauges", {})
         advisory = analysis.get("advisory", {})
-        telemetry = analysis.get("telemetry", {})
 
-        risk_cat = diag.get("risk_category", "Safe")
-        risk_score = float(diag.get("risk_score", 0.15))
-        confidence = float(diag.get("confidence", 0.94))
-        pred_lead_1 = fore.get("predicted_risk_tier", "Safe")
+        risk_cat = diag.get("label_en", "Safe")
+        confidence = float(diag.get("confidence_pct", 85.0)) / 100.0
+        risk_score = round(float(diag.get("category_code", 0)) / 4.0, 3)
+        pred_lead_1 = fore.get("label_en", "Safe")
         
         spi_1 = float(telemetry.get("spi_1", 0.0))
         spi_3 = float(telemetry.get("spi_3", 0.0))
         spi_6 = float(telemetry.get("spi_6", 0.0))
         spei_3 = spi_3
-        smi = float(telemetry.get("soil_moisture_index", 50.0))
-        dam_pct = float(telemetry.get("district_dam_storage_pct", 75.0))
+        smi = float(telemetry.get("soil_moisture_index_pct", telemetry.get("soil_moisture_index", 50.0)))
+        dam_pct = float(telemetry.get("dam_storage_pct", telemetry.get("district_dam_storage_pct", 75.0)))
         gw_depth = float(telemetry.get("groundwater_depth_mbgl", 6.5))
 
         shap_summary = {
@@ -322,8 +333,8 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
         }
 
         bilingual_advisory = {
-            "en": advisory.get("en", f"Taluka Risk: {risk_cat}. Maintain standard irrigation conservation."),
-            "mr": advisory.get("mr", f"तालुका जोखीम: {analysis.get('labels_mr', {}).get(risk_cat, 'सुरक्षित')}. जलसंधारण व्यवस्था चालू ठेवावी.")
+            "en": advisory.get("source_citation") or f"Taluka Risk: {risk_cat}. Maintain standard irrigation conservation.",
+            "mr": f"तालुका जोखीम: {diag.get('label_mr', 'सुरक्षित')}. जलसंधारण व्यवस्था चालू ठेवावी."
         }
 
         risk_records.append((

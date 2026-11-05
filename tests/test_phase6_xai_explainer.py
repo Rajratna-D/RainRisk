@@ -63,15 +63,22 @@ def test_phase6_local_instance_shap_attribution():
     total_pct = sum(d["impact_pct"] for d in result["all_drivers"])
     assert 98.0 <= total_pct <= 102.0, f"Total impact percentage sum was {total_pct}%"
 
-    # Escalators must have shap_value > 0
-    for esc in result["top_risk_escalators"]:
-        assert esc["is_escalator"] is True
-        assert esc["shap_value"] > 0
-
-    # Buffers must have shap_value <= 0
-    for buf in result["top_mitigating_buffers"]:
-        assert buf["is_escalator"] is False
-        assert buf["shap_value"] <= 0
+    # For Class 0 (Safe), positive SHAP buffers/protects; for drought tiers (>=1), positive SHAP escalates
+    tier_code = result["predicted_tier"]["code"]
+    if tier_code == 0:
+        for esc in result["top_risk_escalators"]:
+            assert esc["is_escalator"] is True
+            assert esc["shap_value"] < 0
+        for buf in result["top_mitigating_buffers"]:
+            assert buf["is_escalator"] is False
+            assert buf["shap_value"] >= 0
+    else:
+        for esc in result["top_risk_escalators"]:
+            assert esc["is_escalator"] is True
+            assert esc["shap_value"] > 0
+        for buf in result["top_mitigating_buffers"]:
+            assert buf["is_escalator"] is False
+            assert buf["shap_value"] <= 0
 
 
 def test_phase6_bilingual_farmer_narrative_integrity():

@@ -9,11 +9,12 @@ import os
 import sys
 import time
 import re
+import secrets
 from typing import Dict, Any, List, Optional, Tuple, Union
 from collections import defaultdict
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, HTTPException, status, BackgroundTasks, Query
+from fastapi import FastAPI, Request, HTTPException, status, BackgroundTasks, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -130,15 +131,12 @@ DEFAULT_ALLOWED_ORIGINS = [
 custom_origins_env = os.getenv("CORS_ORIGINS", "")
 if custom_origins_env:
     ALLOWED_ORIGINS = [o.strip() for o in custom_origins_env.split(",") if o.strip()]
-elif os.getenv("ENVIRONMENT") == "production":
-    ALLOWED_ORIGINS = DEFAULT_ALLOWED_ORIGINS
 else:
-    ALLOWED_ORIGINS = ["*"]
+    ALLOWED_ORIGINS = DEFAULT_ALLOWED_ORIGINS
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"^https:\/\/.*\.pages\.dev$",
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
@@ -405,12 +403,19 @@ async def get_major_reservoirs():
     """Returns live storage percentages and status for all 12 major Maharashtra dams."""
     return backend_service.get_reservoirs_list()
 
+ALLOWED_AUDIO_LANGS = {"mr", "en"}
+
 @app.get("/api/audio/advisory/{query:path}")
 async def get_taluka_audio_advisory(query: str, lang: str = "mr"):
     """
     Returns natural high-quality Marathi or Indian English neural MP3 audio
     for the specified taluka's crop advisory.
     """
+    if lang not in ALLOWED_AUDIO_LANGS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid language parameter. Allowed: 'mr', 'en'."
+        )
     clean_query = query.strip().strip("/")
     if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
         raise HTTPException(
@@ -513,8 +518,22 @@ async def get_cache_telemetry():
     return cache_manager.stats()
 
 @app.post("/api/v1/cache/clear", tags=["Observability"])
-async def clear_cache_manually():
-    """Manual in-memory cache purge hook (for admin or post-ingestion flush)."""
+async def clear_cache_manually(x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
+    """Manual in-memory cache purge hook (for admin or post-ingestion flush). Protected by ADMIN_API_KEY in production."""
+    expected_key = os.getenv("ADMIN_API_KEY", "")
+    is_prod = os.getenv("ENVIRONMENT") == "production"
+    
+    if expected_key:
+        if not x_admin_key or not secrets.compare_digest(x_admin_key, expected_key):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized: Valid administrative key required in X-Admin-Key header."
+            )
+    elif is_prod:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized: ADMIN_API_KEY must be set in production environment."
+        )
     cache_manager.clear()
     return {"status": "success", "message": "In-memory Tier 2 TTLCache cleared."}
 

@@ -35,7 +35,7 @@ jobs:
       - name: Install Ingestion Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests psycopg2-binary pandas numpy scikit-learn joblib pydantic python-dotenv
+          pip install requests psycopg2-binary pandas pyarrow numpy scikit-learn joblib pydantic python-dotenv
 
       - name: Execute Daily Ingestion Pipeline
         env:

@@ -75,14 +75,23 @@ class TTSService:
         Deduplicates concurrent in-flight requests and writes atomically.
         Returns the absolute filepath to the MP3.
         """
+        if lang not in {"mr", "en"}:
+            raise ValueError("Invalid audio language code. Only 'mr' and 'en' are permitted.")
+
         meta = taluka_data.get("meta", {})
-        taluka_name = meta.get("taluka", "general").lower()
+        raw_name = meta.get("taluka", "general").lower()
+        taluka_name = re.sub(r"[^a-zA-Z0-9_-]", "", raw_name)
         diag = taluka_data.get("live_diagnosis", {})
         cat_code = diag.get("category_code", 0)
         
         cache_key = f"{taluka_name}_{lang}_{cat_code}"
         filename = f"{cache_key}.mp3"
         filepath = os.path.join(CACHE_DIR, filename)
+
+        resolved_path = os.path.abspath(filepath)
+        cache_root = os.path.abspath(CACHE_DIR)
+        if os.path.commonpath([resolved_path, cache_root]) != cache_root:
+            raise ValueError("Illegal path traversal sequence detected.")
 
         # Return cached file if valid and complete
         if os.path.exists(filepath) and os.path.getsize(filepath) > 1000:
