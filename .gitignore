@@ -72,6 +72,5 @@ dom.txt
 MAHARAINRISK_DATA_REPORT.md
 BACKEND_IMPROVEMENT_PLAN.md
 
-# Category C: Personal Academic Reports & Legacy Drafts (Do Not Push)
-MAHARAINRISK_DATA_REPORT.md
-BACKEND_IMPROVEMENT_PLAN.md
+# Cloudflare Pages / Wrangler Cache
+.wrangler/

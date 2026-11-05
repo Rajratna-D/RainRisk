@@ -1071,4 +1071,105 @@ if mcp_sse_app:
    - Executed full test suite: **65 passed, 1 skipped in 15.39s (0 failures, 0 errors, 0 regressions)**.
 
 ---
+
+## 14. TreeSHAP Explainable AI Data-Binding Fix & Regional Contagion Card Telemetry Enrichment (Phase 10 Frontend Polish)
+
+### 14.1 What the Problem Was
+
+1. **TreeSHAP XAI 0% Impact & `undefined` Display:**
+   - In the frontend dashboard (Tab 2, Card 7: TreeSHAP Explainable AI), the top risk escalators rendered with blank labels, static `+0% Risk Impact`, and collapsed bar fills.
+   - The mitigating buffer box rendered `🛡️ undefined` with `-0% Risk Relief`.
+   - **Root Cause Analysis:** The backend endpoint `/api/v1/taluka/{taluka}/explain` returns structured `FeatureAttributionItem` objects with keys `name_en`, `name_mr`, `impact_pct`, `feature_key`, and `icon`. However, `frontend/js/dashboard.js` accessed outdated property names (`esc.feature_name_en`, `esc.relative_impact_pct`, `buf.feature_name_en`), causing values to evaluate to `undefined` and fallback to `0%` and literal `"undefined"` text. Furthermore, `farmer_summary` strings (`en` and `mr`) were mapped to non-existent `headline_en`/`narrative_en` sub-objects.
+
+2. **Regional Contagion Card Height Void & Visual Imbalance:**
+   - In Card 8 (Regional Drought Contagion), located right next to Card 7, the CSS grid row height stretched to match TreeSHAP (~380px).
+   - Because Card 8 previously contained only a basic status badge and 4 plain chips (~160px of content), a large empty white rectangular void (~220px) appeared beneath the chips, creating visual asymmetry and underutilizing valuable spatial intelligence.
+
+---
+
+### 14.2 What Measures We Took to Fix It
+
+1. **Option 1 Architectural Decision:**
+   - Instead of artificially capping or collapsing the card heights, we enriched Card 8 with deep spatial corridor telemetry matching Card 7's height and density, giving farmers and field officers actionable regional insights at a glance.
+2. **Strict Property Binding in `dashboard.js`:**
+   - Updated `renderTreeShapExplain(xai)` to properly map `esc.name_en`, `esc.name_mr`, `esc.icon`, `esc.impact_pct`, and `buf.name_en`, `buf.name_mr`, `buf.impact_pct`.
+   - Formatted all percentages and numerals with Devanagari conversion (`formatNumber`) in Marathi mode.
+   - Re-linked `xai.farmer_summary.en` and `xai.farmer_summary.mr` to the narrative banner headline and body.
+3. **Corridor Telemetry & Rich Neighbor Card Architecture:**
+   - Built a corridor assessment narrative banner (`.contagion-narrative-banner`) mirroring TreeSHAP's narrative banner.
+   - Added a 3-stat spatial telemetry strip (`.corridor-telemetry-strip`) displaying:
+     - **Neighbors Analyzed**: Total evaluated talukas within spatial boundary.
+     - **Corridor Stress %**: Percentage of surrounding talukas under drought watch/alert.
+     - **Avg Proximity**: Average boundary distance in kilometers.
+   - Transformed simple chips into rich neighbor cards (`.adjacent-card`) featuring:
+     - Bilingual taluka name and parent district subtitle (e.g. `Khed`, `Pune Dist.`).
+     - Color-coded risk status pill (`Safe`, `Watch`, `Alert`, `Severe`).
+     - Proximity pill with distance in km.
+     - Micro-telemetry pills showing real-time root-zone soil moisture (`🌱 %`) and 3-month SPI (`🌧️`).
+     - Click-to-switch interactive navigation zooming straight into any neighboring taluka.
+4. **Bilingual i18n Synchronization:**
+   - Added Devanagari and English translations in `frontend/js/i18n.js` for all corridor titles, badges, and micro-metrics.
+
+---
+
+### 14.3 How We Fixed It (Code Implementation)
+
+#### Frontend Data Binding (`frontend/js/dashboard.js`)
+```javascript
+// TreeSHAP Feature Attribution Binding
+const escName = isMr 
+  ? (esc.name_mr || esc.feature_name_mr || esc.feature || esc.feature_key) 
+  : (esc.name_en || esc.feature_name_en || esc.feature || esc.feature_key);
+const rawPct = Math.round(esc.impact_pct !== undefined ? esc.impact_pct : (esc.relative_impact_pct || 0));
+const formattedPct = typeof formatNumber === "function" ? formatNumber(rawPct, isMr) : rawPct;
+impactSpan.textContent = `+${formattedPct}% ${isMr ? 'जोखीम वाढ' : 'Risk Impact'}`;
+fill.style.width = `${Math.min(100, Math.max(12, rawPct))}%`;
+
+// Mitigating Buffer Binding
+const bufNameStr = isMr 
+  ? (buf.name_mr || buf.feature_name_mr || buf.feature || buf.feature_key) 
+  : (buf.name_en || buf.feature_name_en || buf.feature || buf.feature_key);
+const rawBufPct = Math.round(buf.impact_pct !== undefined ? buf.impact_pct : (buf.relative_impact_pct || 0));
+const formattedBufPct = typeof formatNumber === "function" ? formatNumber(rawBufPct, isMr) : rawBufPct;
+bufImpact.textContent = `-${formattedBufPct}% ${isMr ? 'जोखीम निवारण' : 'Risk Relief'}`;
+```
+
+#### Spatial Corridor Telemetry & Rich Neighbor Cards (`frontend/index.html` & `frontend/css/cards.css`)
+```html
+<!-- Spatial Corridor Telemetry 3-Stat Strip -->
+<div class="corridor-telemetry-strip" id="corridor-telemetry-strip">
+  <div class="corridor-stat-box">
+    <span class="corridor-stat-label" id="lbl-corridor-count">शेजारील तालुके</span>
+    <span class="corridor-stat-val" id="val-corridor-count">--</span>
+  </div>
+  <div class="corridor-stat-box">
+    <span class="corridor-stat-label" id="lbl-corridor-stress">कॉरिडॉर ताण</span>
+    <span class="corridor-stat-val" id="val-corridor-stress">--%</span>
+  </div>
+  <div class="corridor-stat-box">
+    <span class="corridor-stat-label" id="lbl-corridor-dist">सरासरी अंतर</span>
+    <span class="corridor-stat-val" id="val-corridor-dist">-- km</span>
+  </div>
+</div>
+```
+
+---
+
+### 14.4 What Was the Result
+
+1. **TreeSHAP Explainable AI Fully Functional:**
+   - Real Shapley attribution percentages now render dynamically (e.g. `+28% Risk Impact` for SPI-3 deficit, `+23%` for seasonal rainfall).
+   - Dynamic animated bar fills scale proportionally to actual feature importance.
+   - Mitigating buffer correctly displays real factor name (e.g. `🌱 Root-Zone Soil Moisture Level` / `-34% Risk Relief`) with no `undefined` artifacts.
+2. **Balanced Symmetrical Layout (Zero Empty Voids):**
+   - Card 7 and Card 8 now match symmetrically in height and visual density (~370px).
+   - Rich spatial neighbor cards display soil moisture, rainfall index, proximity, and risk category with clear visual accents.
+3. **Automated Test Suite Verified:**
+   - Full test suite: **65 passed, 1 skipped in 15.53s**.
+4. **Live Production Deployment:**
+   - Deployed frontend to Cloudflare Pages via Wrangler (`https://maharainrisk.pages.dev`).
+   - Verified live across both Marathi and English bilingual modes.
+
+---
 *Log generated and verified autonomously. All tests passing (65/65).*
+

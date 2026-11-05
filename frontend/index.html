@@ -960,8 +960,39 @@
                   <span class="ai-card-chip" id="chip-contagion-status">Corridor Analysis</span>
                 </div>
 
-                <div class="contagion-summary-row" id="contagion-summary-row">
+                <div class="contagion-summary-row" id="contagion-summary-row" style="display: none;">
                   <span id="contagion-assessment-badge" class="contagion-badge-neutral">शेजारील तालुके तपासत आहे...</span>
+                </div>
+
+                <!-- Corridor Assessment Narrative Banner -->
+                <div class="contagion-narrative-banner" id="contagion-status-banner">
+                  <div class="contagion-badge-row">
+                    <span id="contagion-assessment-pill" class="contagion-badge-safe">🛡️ प्रादेशिक पट्टा सुरक्षित</span>
+                  </div>
+                  <div class="contagion-narrative-text" id="contagion-narrative-text">
+                    शेजारील तालुक्यांचा स्थानिक दुष्काळ ताण व कॉरिडॉर संसर्ग तपासला जात आहे.
+                  </div>
+                </div>
+
+                <!-- Spatial Corridor Telemetry 3-Stat Strip -->
+                <div class="corridor-telemetry-strip" id="corridor-telemetry-strip">
+                  <div class="corridor-stat-box">
+                    <span class="corridor-stat-label" id="lbl-corridor-count">शेजारील तालुके</span>
+                    <span class="corridor-stat-val" id="val-corridor-count">--</span>
+                  </div>
+                  <div class="corridor-stat-box">
+                    <span class="corridor-stat-label" id="lbl-corridor-stress">कॉरिडॉर ताण</span>
+                    <span class="corridor-stat-val" id="val-corridor-stress">--%</span>
+                  </div>
+                  <div class="corridor-stat-box">
+                    <span class="corridor-stat-label" id="lbl-corridor-dist">सरासरी अंतर</span>
+                    <span class="corridor-stat-val" id="val-corridor-dist">-- km</span>
+                  </div>
+                </div>
+
+                <!-- Section Title: Neighbors List -->
+                <div class="adjacent-section-header">
+                  <span id="lbl-adjacent-neighbors">📍 शेजारील तालुके व स्थिती (Adjacent Talukas)</span>
                 </div>
 
                 <div class="adjacent-talukas-grid" id="adjacent-talukas-grid">

@@ -282,10 +282,16 @@ function renderTreeShapExplain(xai) {
   const bodyEl = document.getElementById("xai-narrative-body");
 
   if (headlineEl && xai.farmer_summary) {
-    headlineEl.textContent = isMr ? xai.farmer_summary.headline_mr : xai.farmer_summary.headline_en;
+    const defaultHeadline = isMr ? "स्थानिक शेतकरी विश्लेषण (Agro-Driver Summary)" : "Agro-Driver Attribution Summary";
+    headlineEl.textContent = isMr 
+      ? (xai.farmer_summary.headline_mr || defaultHeadline)
+      : (xai.farmer_summary.headline_en || defaultHeadline);
   }
   if (bodyEl && xai.farmer_summary) {
-    bodyEl.textContent = isMr ? xai.farmer_summary.narrative_mr : xai.farmer_summary.narrative_en;
+    const narrativeText = isMr
+      ? (xai.farmer_summary.mr || xai.farmer_summary.narrative_mr)
+      : (xai.farmer_summary.en || xai.farmer_summary.narrative_en);
+    if (narrativeText) bodyEl.textContent = narrativeText;
   }
 
   // Top 3 Escalators List
@@ -301,11 +307,17 @@ function renderTreeShapExplain(xai) {
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "treeshap-feature-name";
-      nameSpan.textContent = isMr ? (esc.feature_name_mr || esc.feature) : (esc.feature_name_en || esc.feature);
+      const escName = isMr 
+        ? (esc.name_mr || esc.feature_name_mr || esc.feature || esc.feature_key) 
+        : (esc.name_en || esc.feature_name_en || esc.feature || esc.feature_key);
+      const icon = esc.icon ? `${esc.icon} ` : '';
+      nameSpan.textContent = `${icon}${escName}`;
 
+      const rawPct = Math.round(esc.impact_pct !== undefined ? esc.impact_pct : (esc.relative_impact_pct || 0));
+      const formattedPct = typeof formatNumber === "function" ? formatNumber(rawPct, isMr) : rawPct;
       const impactSpan = document.createElement("span");
       impactSpan.className = "treeshap-impact-pct";
-      impactSpan.textContent = `+${Math.round(esc.relative_impact_pct || 0)}% ${isMr ? 'जोखीम वाढ' : 'Risk Impact'}`;
+      impactSpan.textContent = `+${formattedPct}% ${isMr ? 'जोखीम वाढ' : 'Risk Impact'}`;
 
       row.appendChild(nameSpan);
       row.appendChild(impactSpan);
@@ -315,7 +327,7 @@ function renderTreeShapExplain(xai) {
 
       const fill = document.createElement("div");
       fill.className = "treeshap-bar-fill-escalator";
-      fill.style.width = `${Math.min(100, Math.max(12, Math.round(esc.relative_impact_pct || 0)))}%`;
+      fill.style.width = `${Math.min(100, Math.max(12, rawPct))}%`;
 
       track.appendChild(fill);
       item.appendChild(row);
@@ -335,11 +347,18 @@ function renderTreeShapExplain(xai) {
       bufRow.className = "buffer-row";
 
       const bufName = document.createElement("span");
-      bufName.textContent = `🛡️ ${isMr ? (buf.feature_name_mr || buf.feature) : (buf.feature_name_en || buf.feature)}`;
+      const bufNameStr = isMr 
+        ? (buf.name_mr || buf.feature_name_mr || buf.feature || buf.feature_key) 
+        : (buf.name_en || buf.feature_name_en || buf.feature || buf.feature_key);
+      const bufIcon = buf.icon || '🛡️';
+      bufName.textContent = `${bufIcon} ${bufNameStr}`;
 
+      const rawBufPct = Math.round(buf.impact_pct !== undefined ? buf.impact_pct : (buf.relative_impact_pct || 0));
+      const formattedBufPct = typeof formatNumber === "function" ? formatNumber(rawBufPct, isMr) : rawBufPct;
       const bufImpact = document.createElement("span");
       bufImpact.style.color = "#047857";
-      bufImpact.textContent = `-${Math.round(buf.relative_impact_pct || 0)}% ${isMr ? 'जोखीम निवारण' : 'Risk Relief'}`;
+      bufImpact.style.fontWeight = "700";
+      bufImpact.textContent = `-${formattedBufPct}% ${isMr ? 'जोखीम निवारण' : 'Risk Relief'}`;
 
       bufRow.appendChild(bufName);
       bufRow.appendChild(bufImpact);
@@ -383,59 +402,140 @@ function renderAdjacentTalukas(data) {
   if (!data) return;
   const isMr = state.currentLanguage === "mr";
 
-  // Assessment Badge
+  const ass = data.contagion_assessment || {};
+  const isAtRisk = ass.is_corridor_at_risk || (ass.alert_or_severe_count >= 2) || (ass.stressed_percentage >= 35);
+
+  // 1. Legacy & New Assessment Badges
   const badgeEl = document.getElementById("contagion-assessment-badge");
-  if (badgeEl && data.contagion_assessment) {
-    const ass = data.contagion_assessment;
+  if (badgeEl) {
     badgeEl.textContent = isMr 
-      ? (ass.corridor_status_mr || ass.risk_corridor_label_mr || "प्रादेशिक स्थिती सामान्य") 
-      : (ass.corridor_status_en || ass.risk_corridor_label_en || "Regional Corridor Normal");
-    const isAtRisk = ass.is_corridor_at_risk || (ass.alert_or_severe_count >= 2) || (ass.stressed_percentage >= 35);
-    if (isAtRisk) {
-      badgeEl.className = "contagion-badge-warning";
-    } else {
-      badgeEl.className = "contagion-badge-safe";
-    }
+      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित") 
+      : (isAtRisk ? "⚠️ Regional Corridor Alert" : "🛡️ Regional Buffer Intact");
+    badgeEl.className = isAtRisk ? "contagion-badge-warning" : "contagion-badge-safe";
   }
 
-  // Adjacent Neighbors Grid
+  const pillEl = document.getElementById("contagion-assessment-pill");
+  if (pillEl) {
+    pillEl.textContent = isMr 
+      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित") 
+      : (isAtRisk ? "⚠️ Regional Corridor Alert" : "🛡️ Regional Buffer Intact");
+    pillEl.className = isAtRisk ? "contagion-badge-warning" : "contagion-badge-safe";
+  }
+
+  // 2. Narrative text inside the corridor banner
+  const narrativeEl = document.getElementById("contagion-narrative-text");
+  if (narrativeEl) {
+    const defaultText = isAtRisk
+      ? (isMr ? "शेजारील तालुक्यांमध्ये तीव्र कोरडा खंड व ओलावा तूट आढळली आहे." : "Nearby talukas exhibit active soil moisture deficit and dry spell conditions.")
+      : (isMr ? "शेजारील तालुक्यांमध्ये ओलावा व पाणीसाठा समाधानकारक पातळीवर स्थिर आहे." : "Adjacent talukas maintain healthy root-zone moisture and stable reservoir storage.");
+    narrativeEl.textContent = isMr 
+      ? (ass.corridor_status_mr || defaultText) 
+      : (ass.corridor_status_en || defaultText);
+  }
+
+  // 3. Spatial Telemetry Strip (Evaluated Count, Stress %, Avg Distance)
+  const neighbors = data.adjacent_neighbors || [];
+  const evalCount = data.neighbors_evaluated || neighbors.length || 0;
+  const stressedPct = Math.round(ass.stressed_percentage || 0);
+
+  let avgDist = 0;
+  if (neighbors.length > 0) {
+    const totalDist = neighbors.reduce((acc, n) => acc + (n.boundary_distance_km || 0), 0);
+    avgDist = Math.round(totalDist / neighbors.length);
+  }
+
+  const elCount = document.getElementById("val-corridor-count");
+  if (elCount) {
+    const formattedCount = typeof formatNumber === "function" ? formatNumber(evalCount, isMr) : evalCount;
+    elCount.textContent = `${formattedCount} ${isMr ? 'तालुके' : 'Talukas'}`;
+  }
+
+  const elStress = document.getElementById("val-corridor-stress");
+  if (elStress) {
+    const formattedStress = typeof formatNumber === "function" ? formatNumber(stressedPct, isMr) : stressedPct;
+    elStress.textContent = `${formattedStress}%`;
+    elStress.style.color = stressedPct >= 35 ? "#DC2626" : (stressedPct >= 20 ? "#D97706" : "#047857");
+  }
+
+  const elDist = document.getElementById("val-corridor-dist");
+  if (elDist) {
+    const formattedDist = typeof formatNumber === "function" ? formatNumber(avgDist, isMr) : avgDist;
+    elDist.textContent = `${formattedDist} km`;
+  }
+
+  // 4. Rich Neighbor Cards Grid
   const grid = document.getElementById("adjacent-talukas-grid");
-  if (grid && data.adjacent_neighbors) {
+  if (grid && neighbors.length > 0) {
     grid.innerHTML = "";
-    data.adjacent_neighbors.forEach((n) => {
-      const chip = document.createElement("div");
-      chip.className = "adjacent-chip";
-      chip.title = isMr ? `${n.taluka_name} वर जा` : `View ${n.taluka_name}`;
+    neighbors.forEach((n) => {
+      const card = document.createElement("div");
+      card.className = "adjacent-card";
+      card.title = isMr ? `${n.taluka_name} वर जा` : `Switch to ${n.taluka_name}`;
 
-      const title = document.createElement("div");
-      title.className = "adjacent-chip-title";
-      title.textContent = isMr ? (n.taluka_name_mr || n.taluka_name) : n.taluka_name;
+      // Top Row: Taluka Name + District Sub & Risk Pill
+      const topRow = document.createElement("div");
+      topRow.className = "adjacent-card-top";
 
-      const meta = document.createElement("div");
-      meta.className = "adjacent-chip-meta";
+      const nameWrap = document.createElement("div");
+      nameWrap.className = "adjacent-name-wrap";
 
-      const dist = document.createElement("span");
-      dist.textContent = `${Math.round(n.boundary_distance_km || 0)} km`;
+      const namePrimary = document.createElement("div");
+      namePrimary.className = "adjacent-primary-name";
+      namePrimary.textContent = isMr ? (n.taluka_name_mr || n.taluka_name) : n.taluka_name;
 
-      const risk = document.createElement("span");
-      risk.textContent = isMr ? (n.risk_tier_mr || n.risk_tier) : n.risk_tier;
-      risk.style.fontWeight = "700";
-      if (n.risk_tier === "Severe" || n.risk_tier === "Alert") {
-        risk.style.color = "#DC2626";
-      } else if (n.risk_tier === "Watch") {
-        risk.style.color = "#D97706";
-      } else {
-        risk.style.color = "#047857";
+      const districtSub = document.createElement("div");
+      districtSub.className = "adjacent-district-sub";
+      districtSub.textContent = isMr ? `${n.district_name} जिल्हा` : `${n.district_name} Dist.`;
+
+      nameWrap.appendChild(namePrimary);
+      nameWrap.appendChild(districtSub);
+
+      const riskPill = document.createElement("span");
+      const tierKey = (n.risk_tier || "safe").toLowerCase();
+      riskPill.className = `adjacent-risk-pill risk-${tierKey}`;
+      riskPill.textContent = isMr ? (n.risk_label_mr || n.risk_tier) : n.risk_tier;
+
+      topRow.appendChild(nameWrap);
+      topRow.appendChild(riskPill);
+
+      // Bottom Row: Distance & Soil Moisture / SPI
+      const bottomRow = document.createElement("div");
+      bottomRow.className = "adjacent-card-bottom";
+
+      const distBadge = document.createElement("span");
+      distBadge.className = "adjacent-dist-pill";
+      const rawDist = Math.round(n.boundary_distance_km || 0);
+      const formattedDist = typeof formatNumber === "function" ? formatNumber(rawDist, isMr) : rawDist;
+      distBadge.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10" style="margin-right:3px; vertical-align:-1px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${formattedDist} km`;
+
+      const metricsWrap = document.createElement("div");
+      metricsWrap.className = "adjacent-metrics-micro";
+
+      if (n.soil_moisture_pct !== undefined) {
+        const smiSpan = document.createElement("span");
+        smiSpan.className = "adjacent-micro-stat";
+        const smiVal = typeof formatNumber === "function" ? formatNumber(Math.round(n.soil_moisture_pct), isMr) : Math.round(n.soil_moisture_pct);
+        smiSpan.textContent = `🌱 ${smiVal}%`;
+        metricsWrap.appendChild(smiSpan);
       }
 
-      meta.appendChild(dist);
-      meta.appendChild(risk);
+      if (n.spi_3 !== undefined) {
+        const spiSpan = document.createElement("span");
+        spiSpan.className = "adjacent-micro-stat";
+        const spiSign = n.spi_3 >= 0 ? "+" : "";
+        const spiFormatted = typeof formatNumber === "function" ? formatNumber(n.spi_3.toFixed(1), isMr) : n.spi_3.toFixed(1);
+        spiSpan.textContent = `🌧️ ${spiSign}${spiFormatted}`;
+        metricsWrap.appendChild(spiSpan);
+      }
 
-      chip.appendChild(title);
-      chip.appendChild(meta);
+      bottomRow.appendChild(distBadge);
+      bottomRow.appendChild(metricsWrap);
+
+      card.appendChild(topRow);
+      card.appendChild(bottomRow);
 
       // Click to navigate to neighbor taluka
-      chip.addEventListener("click", () => {
+      card.addEventListener("click", () => {
         state.currentTaluka = n.taluka_name;
         const searchInput = document.getElementById("taluka-search-input");
         if (searchInput) {
@@ -446,7 +546,7 @@ function renderAdjacentTalukas(data) {
         }
       });
 
-      grid.appendChild(chip);
+      grid.appendChild(card);
     });
   }
 }

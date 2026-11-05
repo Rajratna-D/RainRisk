@@ -821,11 +821,34 @@
   margin: 6px 0 10px;
 }
 
+.contagion-narrative-banner {
+  background: rgba(37, 99, 235, 0.06);
+  border-left: 3.5px solid #2563EB;
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  margin: 8px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contagion-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contagion-narrative-text {
+  font-size: 11px;
+  color: #334155;
+  line-height: 1.45;
+}
+
 .contagion-badge-neutral {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   background: rgba(100, 116, 139, 0.12);
   color: #475569;
@@ -833,9 +856,9 @@
 
 .contagion-badge-safe {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   background: rgba(16, 185, 129, 0.15);
   color: #047857;
@@ -844,19 +867,164 @@
 
 .contagion-badge-warning {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  background: rgba(245, 158, 11, 0.15);
-  color: #B45309;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.corridor-telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.corridor-stat-box {
+  background: rgba(241, 245, 249, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 6px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.corridor-stat-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #64748B;
+  white-space: nowrap;
+}
+
+.corridor-stat-val {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0F172A;
+  margin-top: 2px;
+}
+
+.adjacent-section-header {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 6px;
 }
 
 .adjacent-talukas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 8px;
+}
+
+.adjacent-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.adjacent-card:hover {
+  border-color: #2563EB;
+  background: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.12);
+}
+
+.adjacent-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.adjacent-name-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adjacent-primary-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0F172A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adjacent-district-sub {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adjacent-risk-pill {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.adjacent-risk-pill.risk-safe {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+}
+
+.adjacent-risk-pill.risk-watch {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+}
+
+.adjacent-risk-pill.risk-alert,
+.adjacent-risk-pill.risk-severe,
+.adjacent-risk-pill.risk-extreme {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+.adjacent-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed #E2E8F0;
+  padding-top: 4px;
+}
+
+.adjacent-dist-pill {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #64748B;
+  display: inline-flex;
+  align-items: center;
+}
+
+.adjacent-metrics-micro {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.adjacent-micro-stat {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #475569;
 }
 
 .adjacent-chip {

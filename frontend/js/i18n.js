@@ -288,6 +288,34 @@ function applyLanguage(lang) {
   setAttr("btn-refresh", "title", isMr ? "माहिती ताजी करा" : "Refresh Telemetry Data");
   setAttr("voice-mic-btn", "title", isMr ? "बोलून शोधा (तालुक्याचे नाव बोला)" : "Voice Search (Speak taluka name)");
 
+  // Tab 2: TreeSHAP (Card 7) & Regional Contagion (Card 8) Labels
+  const titleTreeShap = document.getElementById("title-treeshap-xai");
+  if (titleTreeShap) titleTreeShap.textContent = isMr ? "TreeSHAP Explainable AI (दुष्काळ कारणे व घटक)" : "TreeSHAP Explainable AI (Drought Drivers)";
+
+  const lblEscalators = document.getElementById("lbl-risk-escalators");
+  if (lblEscalators) lblEscalators.textContent = isMr ? "🚨 जोखीम वाढवणारे मुख्य ३ घटक (Top 3 Risk Escalators)" : "🚨 Top 3 Risk Escalators (Primary Stress Triggers)";
+
+  const lblBuffer = document.getElementById("lbl-mitigating-buffer");
+  if (lblBuffer) lblBuffer.textContent = isMr ? "🛡️ दिलासा देणारा मुख्य घटक (Mitigating Buffer)" : "🛡️ Mitigating Resilience Buffer (Protective Factor)";
+
+  const titleContagion = document.getElementById("title-regional-contagion");
+  if (titleContagion) titleContagion.textContent = isMr ? "प्रादेशिक प्रभाव व शेजारील तालुके (Regional Contagion)" : "Regional Contagion & Adjacent Talukas";
+
+  const chipContagion = document.getElementById("chip-contagion-status");
+  if (chipContagion) chipContagion.textContent = isMr ? "कॉरिडॉर विश्लेषण" : "Corridor Analysis";
+
+  const lblCorridorCount = document.getElementById("lbl-corridor-count");
+  if (lblCorridorCount) lblCorridorCount.textContent = isMr ? "शेजारील तालुके" : "Analyzed Neighbors";
+
+  const lblCorridorStress = document.getElementById("lbl-corridor-stress");
+  if (lblCorridorStress) lblCorridorStress.textContent = isMr ? "कॉरिडॉर ताण" : "Corridor Stress";
+
+  const lblCorridorDist = document.getElementById("lbl-corridor-dist");
+  if (lblCorridorDist) lblCorridorDist.textContent = isMr ? "सरासरी अंतर" : "Avg Proximity";
+
+  const lblAdjacent = document.getElementById("lbl-adjacent-neighbors");
+  if (lblAdjacent) lblAdjacent.textContent = isMr ? "📍 शेजारील तालुके व स्थिती (Adjacent Talukas)" : "📍 Topologically Adjacent Neighbors";
+
   // Update map pin labels
   if (typeof updateMapPinLabels === "function") {
     updateMapPinLabels();
