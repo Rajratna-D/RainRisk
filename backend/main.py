@@ -106,15 +106,42 @@ app.add_middleware(
 # -------------------------------------------------------------------------
 # PHASE 7: MOUNT PRODUCTION CLOUD MODEL CONTEXT PROTOCOL (MCP) SSE APP
 # -------------------------------------------------------------------------
-# Support root /mcp redirecting to /mcp/sse for Claude, ChatGPT & Gemini Web Connectors
+# Support root /mcp: returns JSON status for browser users and redirects SSE clients to /mcp/sse
 @app.get("/mcp", include_in_schema=False)
-async def redirect_mcp_to_sse():
-    return RedirectResponse(url="/mcp/sse", status_code=307)
+async def handle_mcp_root(request: Request):
+    accept_header = request.headers.get("accept", "")
+    if "text/event-stream" in accept_header:
+        return RedirectResponse(url="/mcp/sse", status_code=307)
+    return {
+        "status": "operational",
+        "protocol": "Model Context Protocol (FastMCP 2.x)",
+        "transport": "Server-Sent Events (SSE)",
+        "sse_endpoint": "https://rainrisk-vcra.onrender.com/mcp/sse",
+        "tools_count": 6,
+        "tools": [
+            "get_taluka_risk",
+            "explain_drought_prediction",
+            "get_bilingual_advisory",
+            "get_state_drought_summary",
+            "get_adjacent_talukas",
+            "get_district_summary"
+        ],
+        "connectors": {
+            "claude_web": "Settings -> Connectors -> Add custom connector: https://rainrisk-vcra.onrender.com/mcp",
+            "chatgpt_web": "Plugins -> Add custom MCP server: https://rainrisk-vcra.onrender.com/mcp",
+            "gemini_web": "Customize -> Connectors -> Connect to MCP: https://rainrisk-vcra.onrender.com/mcp"
+        }
+    }
 
 try:
     from backend.mcp_server import mcp
-    app.mount("/mcp", mcp.sse_app())
-    print("[OK] Remote MCP Server mounted at /mcp (SSE transport).")
+    try:
+        from mcp.server.transport_security import TransportSecuritySettings
+        sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+        app.mount("/mcp", mcp.sse_app(transport_security=sec_settings))
+    except Exception:
+        app.mount("/mcp", mcp.sse_app())
+    print("[OK] Remote MCP Server mounted at /mcp (SSE transport, DNS rebinding disabled for cloud).")
 except Exception as e:
     print(f"[!] Warning: Could not mount MCP SSE app: {e}")
 
