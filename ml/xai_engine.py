@@ -154,7 +154,8 @@ class MahaRainRiskXAI:
             raise FileNotFoundError(f"Model artifact for XAI missing at {model_path}")
 
         logger.info("[*] Loading Diagnostic ML model for XAI from %s...", model_path)
-        artifact = joblib.load(model_path)
+        from ml.predict import verify_and_load_artifact
+        artifact = verify_and_load_artifact(model_path, "EXPECTED_HASH_DROUGHT_MODEL")
         self.model = artifact["model"]
         self.feature_names: List[str] = artifact["feature_names"]
         self.labels_en: List[str] = artifact.get("labels_en", ["Safe", "Watch", "Alert", "Severe", "Extreme"])

@@ -386,12 +386,14 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
     if retrain:
         logger.info("\n[*] Explicit Retraining Trigger Activated: Re-fitting ML models...")
         import subprocess
-        train_script = os.path.join(BASE_DIR, "ml", "train_dual_models.py")
-        res = subprocess.run([sys.executable, train_script], capture_output=True, text=True, encoding="utf-8")
-        if res.returncode == 0:
+        train_diag = os.path.join(BASE_DIR, "ml", "train.py")
+        train_fore = os.path.join(BASE_DIR, "ml", "train_forecaster.py")
+        res1 = subprocess.run([sys.executable, train_diag], capture_output=True, text=True, encoding="utf-8")
+        res2 = subprocess.run([sys.executable, train_fore], capture_output=True, text=True, encoding="utf-8")
+        if res1.returncode == 0 and res2.returncode == 0:
             logger.info("[OK] Models Retrained and Serialized Successfully!")
         else:
-            logger.error(f"[!] Model retraining failed:\n{res.stderr}")
+            logger.error(f"[!] Model retraining failed:\n{res1.stderr}\n{res2.stderr}")
 
     elapsed = time.time() - start_time
     logger.info("=" * 80)

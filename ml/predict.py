@@ -8,7 +8,10 @@ Combines:
 
 import os
 import sys
+import hashlib
+import secrets
 import joblib
+import cachetools
 import pandas as pd
 import numpy as np
 
@@ -28,20 +31,38 @@ ML_DIR = os.path.join(BASE_DIR, "ml")
 # Import Advisory Engine
 from ml.advisory_engine import get_farmer_advisory
 
+def verify_and_load_artifact(filepath: str, env_hash_key: str):
+    """
+    SEC-06: Computes SHA-256 before joblib.load() to prevent arbitrary code execution
+    via deserialization of tampered or untrusted model binaries.
+    """
+    expected_hash = os.getenv(env_hash_key)
+    KNOWN_HASHES = {
+        "EXPECTED_HASH_DROUGHT_MODEL": "fd79a8ab712fcf29dd71caad93ca48ec1f207b987255718d523fe7143c3799bc",
+        "EXPECTED_HASH_FORECASTER": "737f7bc54652c26abeb974d868bc5f52ef945f5c0bdbffca425d39b4a775136a"
+    }
+    expected = expected_hash or KNOWN_HASHES.get(env_hash_key)
+    if expected:
+        with open(filepath, "rb") as f:
+            actual_hash = hashlib.sha256(f.read()).hexdigest()
+        if not secrets.compare_digest(actual_hash.lower(), expected.lower()):
+            raise PermissionError(f"Security Alert: SHA-256 integrity check failed for model artifact {filepath}!")
+    return joblib.load(filepath)
+
 class MahaRainRiskInference:
     def __init__(self):
-        # Load Mode 1: Diagnostic Model
+        # Load Mode 1: Diagnostic Model with integrity verification
         diag_path = os.path.join(ML_DIR, "drought_model.joblib")
         if not os.path.exists(diag_path):
             raise FileNotFoundError(f"Diagnostic model artifact not found at {diag_path}")
-        self.diag_artifact = joblib.load(diag_path)
+        self.diag_artifact = verify_and_load_artifact(diag_path, "EXPECTED_HASH_DROUGHT_MODEL")
         self.diag_model = self.diag_artifact["model"]
 
-        # Load Mode 2: Forecaster Model
+        # Load Mode 2: Forecaster Model with integrity verification
         fore_path = os.path.join(ML_DIR, "drought_forecaster.joblib")
         if not os.path.exists(fore_path):
             raise FileNotFoundError(f"Forecaster model artifact not found at {fore_path}")
-        self.fore_artifact = joblib.load(fore_path)
+        self.fore_artifact = verify_and_load_artifact(fore_path, "EXPECTED_HASH_FORECASTER")
         self.fore_model = self.fore_artifact["model"]
 
         self.feature_names = self.diag_artifact["feature_names"]
@@ -54,11 +75,11 @@ class MahaRainRiskInference:
         self.panel_df = pd.read_parquet(panel_path)
         self.panel_df = self.panel_df.sort_values(["taluka_name", "year", "month"]).reset_index(drop=True)
 
-        # Pre-build fast O(1) indexed lookup dictionaries
+        # Pre-build fast O(1) indexed lookup dictionaries and bounded cache (BUG-06 / PERF-04)
         self._by_lgd: Dict[int, pd.DataFrame] = {}
         self._by_name: Dict[str, pd.DataFrame] = {}
         self._by_name_mr: Dict[str, pd.DataFrame] = {}
-        self._inference_cache: Dict[tuple, Dict[str, Any]] = {}
+        self._inference_cache: cachetools.TTLCache = cachetools.TTLCache(maxsize=500, ttl=21600)
 
         # Encoders for forecaster features
         self.zone_map = self.fore_artifact.get("zone_map", {})

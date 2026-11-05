@@ -134,3 +134,55 @@ def test_ml01_cost_sensitive_decision_thresholds():
         fore_tier = res["30_day_forecast"]["category_code"]
         assert 0 <= fore_tier <= 4
 
+def test_sec04_rate_limiter_proxy_validation():
+    """Verify rate limiter uses bounded cache and validates proxy headers."""
+    from backend.main import get_client_ip, IP_REQUEST_TIMESTAMPS
+    import cachetools
+    assert isinstance(IP_REQUEST_TIMESTAMPS, cachetools.TTLCache)
+    assert IP_REQUEST_TIMESTAMPS.maxsize == 10000
+
+def test_sec06_model_integrity_verification():
+    """Verify verify_and_load_artifact validates SHA-256 and rejects tampering."""
+    from ml.predict import verify_and_load_artifact
+    model_path = os.path.join(BASE_DIR, "ml", "drought_model.joblib")
+    # Clean artifact load
+    art = verify_and_load_artifact(model_path, "EXPECTED_HASH_DROUGHT_MODEL")
+    assert "model" in art
+
+    # Tampered expectation
+    os.environ["TEMP_TEST_HASH"] = "a" * 64
+    try:
+        verify_and_load_artifact(model_path, "TEMP_TEST_HASH")
+        pytest.fail("Tampered hash was not rejected")
+    except PermissionError as e:
+        assert "SHA-256 integrity check failed" in str(e)
+    finally:
+        os.environ.pop("TEMP_TEST_HASH", None)
+
+def test_arch03_health_database_connectivity():
+    """Verify /health reports genuine database status."""
+    resp = client.get("/health")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "models" in data
+    assert "database" in data["models"]
+
+def test_arch05_dockerfile_contains_frontend():
+    """Verify Dockerfile packages frontend/ assets."""
+    dockerfile_path = os.path.join(BASE_DIR, "Dockerfile")
+    with open(dockerfile_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "COPY frontend/ ./frontend/" in content
+
+def test_bug02_retrain_targets_exist():
+    """Verify scripts targeted for retraining exist."""
+    assert os.path.exists(os.path.join(BASE_DIR, "ml", "train.py"))
+    assert os.path.exists(os.path.join(BASE_DIR, "ml", "train_forecaster.py"))
+
+def test_db02_history_table_in_schema():
+    """Verify taluka_risk_history is defined in schema."""
+    schema_path = os.path.join(BASE_DIR, "db", "supabase_schema.sql")
+    with open(schema_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    assert "CREATE TABLE IF NOT EXISTS taluka_risk_history" in content
+

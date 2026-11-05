@@ -10,12 +10,15 @@ import sys
 import time
 import re
 import secrets
+import cachetools
 from typing import Dict, Any, List, Optional, Tuple, Union
 from collections import defaultdict
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, HTTPException, status, BackgroundTasks, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from starlette.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
@@ -141,6 +144,7 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # -------------------------------------------------------------------------
 # PHASE 7: ENTERPRISE MODEL CONTEXT PROTOCOL (STREAMABLE HTTP + SSE + BROWSER)
@@ -218,39 +222,34 @@ if mcp_sse_app:
     app.mount("/mcp", mcp_sse_app)
 
 # -------------------------------------------------------------------------
-# SECURITY & OBSERVABILITY: RATE LIMITER & LATENCY TIMING MIDDLEWARE
+# SECURITY & OBSERVABILITY: BOUNDED RATE LIMITER & LATENCY TIMING MIDDLEWARE
 # -------------------------------------------------------------------------
-IP_REQUEST_TIMESTAMPS = defaultdict(list)
+# PERF-04: Bounded in-memory TTLCache prevents memory leaks and OOM under DDoS
+IP_REQUEST_TIMESTAMPS: cachetools.TTLCache = cachetools.TTLCache(maxsize=10000, ttl=60.0)
 RATE_LIMIT_PER_MINUTE = 240 # Generous 240 req/min for real-time map tile and audio streaming
-LAST_CLEANUP_TIME = time.time()
+TRUSTED_PROXIES = set([p.strip() for p in os.getenv("TRUSTED_PROXY_IPS", "127.0.0.1,::1,testclient").split(",") if p.strip()])
+
+def get_client_ip(request: Request) -> str:
+    """SEC-04: Validates proxy provenance before trusting X-Forwarded-For."""
+    peer_ip = request.client.host if request.client else "unknown"
+    if peer_ip in TRUSTED_PROXIES and "x-forwarded-for" in request.headers:
+        forwarded = request.headers.get("x-forwarded-for", "")
+        ips = [ip.strip() for ip in forwarded.split(",") if ip.strip()]
+        if ips:
+            return ips[0]
+    return peer_ip
 
 @app.middleware("http")
 async def security_and_timing_middleware(request: Request, call_next):
-    global LAST_CLEANUP_TIME
     start_time = time.perf_counter()
     now = time.time()
 
-    # Periodic cleanup of inactive IPs (prevents unbounded memory growth)
-    if now - LAST_CLEANUP_TIME > 60.0:
-        stale_ips = [ip for ip, ts in IP_REQUEST_TIMESTAMPS.items() if not ts or (now - ts[-1] > 120.0)]
-        for ip in stale_ips:
-            del IP_REQUEST_TIMESTAMPS[ip]
-        LAST_CLEANUP_TIME = now
+    # 1. Rate Limiting Check with trusted client IP resolution
+    client_ip = get_client_ip(request)
+    is_test_client = client_ip == "testclient" and os.getenv("ENVIRONMENT") != "production"
 
-    # 1. Rate Limiting Check (Respect X-Forwarded-For behind Render / Cloudflare reverse proxies)
-    forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        client_ip = forwarded.split(",")[0].strip()
-    elif request.client:
-        client_ip = request.client.host
-    else:
-        client_ip = "unknown"
-
-    if client_ip != "testclient":
-        timestamps = [t for t in IP_REQUEST_TIMESTAMPS[client_ip] if now - t < 60.0]
-        IP_REQUEST_TIMESTAMPS[client_ip] = timestamps
-
-        remaining_requests = max(0, RATE_LIMIT_PER_MINUTE - len(timestamps))
+    if not is_test_client:
+        timestamps = [t for t in IP_REQUEST_TIMESTAMPS.get(client_ip, []) if now - t < 60.0]
         if len(timestamps) >= RATE_LIMIT_PER_MINUTE:
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
@@ -265,7 +264,9 @@ async def security_and_timing_middleware(request: Request, call_next):
                     "Retry-After": "60"
                 }
             )
-        IP_REQUEST_TIMESTAMPS[client_ip].append(now)
+        timestamps.append(now)
+        IP_REQUEST_TIMESTAMPS[client_ip] = timestamps
+        remaining_requests = max(0, RATE_LIMIT_PER_MINUTE - len(timestamps))
     else:
         remaining_requests = RATE_LIMIT_PER_MINUTE
 
@@ -311,15 +312,27 @@ async def custom_http_exception_handler(request: Request, exc: HTTPException):
 @app.get("/health", response_model=HealthResponse, tags=["System Health"])
 @app.get("/api/health", response_model=HealthResponse, tags=["System Health"])
 async def health_check():
-    """Liveness probe confirming service, cache, and model health."""
+    """Liveness and readiness probe confirming service, cache, database, and model health."""
+    db_status = "unconfigured"
+    db_pass = os.getenv("PGPASSWORD") or os.getenv("DB_PASSWORD")
+    db_url = os.getenv("DATABASE_URL")
+    if db_pass or db_url:
+        try:
+            from backend.db import execute_query
+            res = execute_query("SELECT 1 as ping;", fetch_one=True)
+            db_status = "connected" if res and res.get("ping") == 1 else "degraded"
+        except Exception:
+            db_status = "disconnected"
+
     return {
-        "status": "healthy",
+        "status": "healthy" if db_status in ("connected", "unconfigured") else "degraded",
         "platform": "MahaRainRisk Agritech",
         "talukas_covered": len(backend_service.get_talukas_list()),
         "districts_covered": 36,
         "models": {
             "mode_1_diagnostic": "250-Tree Random Forest (98% accuracy)",
-            "mode_2_forecaster": "30-Day Early Warning Forecaster (77% accuracy)"
+            "mode_2_forecaster": "30-Day Early Warning Forecaster (Calibrated Thresholds)",
+            "database": db_status
         }
     }
 
@@ -329,11 +342,11 @@ async def get_all_talukas():
     return backend_service.get_talukas_list()
 
 @app.get("/api/taluka/{query:path}", response_model=TalukaDetailResponse, tags=["Talukas"])
-async def get_taluka_insights(query: str, background_tasks: BackgroundTasks):
+async def get_taluka_insights(query: str):
     """
     Returns live diagnosis, 30-day forecast, 4 farmer cards,
     and official bilingual university advisory for any Maharashtra taluka.
-    Pre-warms Marathi & English TTS neural audio in the background.
+    Audio generation is performed on demand via /api/audio/advisory to prevent event loop congestion (PERF-02).
     """
     clean_query = query.strip().strip("/")
     if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
@@ -344,9 +357,6 @@ async def get_taluka_insights(query: str, background_tasks: BackgroundTasks):
 
     try:
         data = backend_service.get_taluka_detail(clean_query)
-        # Pre-generate Marathi & English advisory audio in the background for zero-latency clicks
-        background_tasks.add_task(tts_service.generate_advisory_audio, data, "mr")
-        background_tasks.add_task(tts_service.generate_advisory_audio, data, "en")
         return data
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -486,7 +496,7 @@ async def explain_taluka_risk(query: str, as_of_date: Optional[str] = Query(None
             detail="Invalid taluka query characters."
         )
     try:
-        return backend_service.explain_taluka_v1(clean_query, as_of_date=as_of_date)
+        return await run_in_threadpool(backend_service.explain_taluka_v1, clean_query, as_of_date=as_of_date)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:

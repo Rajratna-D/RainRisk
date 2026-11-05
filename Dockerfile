@@ -20,8 +20,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application code, pre-trained ML models, and geospatial data
+# Copy application code, frontend static assets, pre-trained ML models, and geospatial data
 COPY backend/ ./backend/
+COPY frontend/ ./frontend/
 COPY ml/ ./ml/
 COPY data/processed/ ./data/processed/
 COPY data/geo/ ./data/geo/
