@@ -203,12 +203,14 @@ def fetch_latest_risk(taluka_lgd_code: int) -> Optional[Dict[str, Any]]:
     TalukaCodeValidator(taluka_lgd_code=taluka_lgd_code)
     query = """
         SELECT 
-            taluka_lgd_code, as_of_date, risk_category, risk_score, confidence,
-            forecast_month, predicted_risk_lead_1, spi_1, spi_3, spi_6, spei_3,
-            soil_moisture_index, max_consecutive_dry_days, district_dam_storage_pct,
-            groundwater_depth_mbgl, shap_summary, bilingual_advisory, updated_at
-        FROM taluka_risk_latest
-        WHERE taluka_lgd_code = %s;
+            r.taluka_lgd_code, t.taluka_name, t.taluka_name_mr, t.district_name,
+            r.as_of_date, r.risk_category, r.risk_score, r.confidence,
+            r.forecast_month, r.predicted_risk_lead_1, r.spi_1, r.spi_3, r.spi_6, r.spei_3,
+            r.soil_moisture_index, r.max_consecutive_dry_days, r.district_dam_storage_pct,
+            r.groundwater_depth_mbgl, r.shap_summary, r.bilingual_advisory, r.updated_at
+        FROM taluka_risk_latest r
+        JOIN talukas t ON r.taluka_lgd_code = t.taluka_lgd_code
+        WHERE r.taluka_lgd_code = %s;
     """
     return execute_query(query, (taluka_lgd_code,), fetch_one=True)
 

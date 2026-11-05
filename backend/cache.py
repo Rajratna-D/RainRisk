@@ -289,6 +289,17 @@ class MultiTierCacheManager:
         if db_record is not None:
             # Parse JSONB string columns if returned as raw strings
             payload = dict(db_record)
+            if payload.get("as_of_date") is not None:
+                payload["as_of_date"] = str(payload["as_of_date"])
+            if payload.get("updated_at") is not None:
+                payload["updated_at"] = str(payload["updated_at"])
+            if "taluka_name" not in payload or not payload["taluka_name"]:
+                from backend.services import backend_service
+                row = backend_service._latest_by_code.get(code)
+                if row is not None:
+                    payload["taluka_name"] = str(row.get("taluka_name", ""))
+                    payload["taluka_name_mr"] = str(row.get("taluka_name_mr", ""))
+                    payload["district_name"] = str(row.get("district_name", ""))
             if isinstance(payload.get("shap_summary"), str):
                 try:
                     payload["shap_summary"] = json.loads(payload["shap_summary"])
