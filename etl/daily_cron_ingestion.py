@@ -53,15 +53,16 @@ def get_db_connection():
     db_user = os.getenv("PGUSER", "postgres")
     db_host = os.getenv("PGHOST", "localhost")
     db_port = int(os.getenv("PGPORT", "5432"))
-    db_pass = os.getenv("PGPASSWORD") or os.getenv("DB_PASSWORD")
+    db_pass = os.getenv("PGPASSWORD") or os.getenv("DB_PASSWORD", "")
     
-    if db_pass is None:
+    # Only prompt interactively if a real terminal (TTY) is attached
+    if not db_pass and sys.stdin and hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
         try:
             import getpass
             db_pass = getpass.getpass(f"Enter PostgreSQL password for {db_user} (keystrokes hidden): ")
         except Exception:
             db_pass = ""
-            
+
     return psycopg2.connect(
         dbname=db_name,
         user=db_user,
@@ -472,4 +473,7 @@ if __name__ == "__main__":
     parser.add_argument("--retrain", action="store_true", help="Trigger model retraining after ingestion")
     args = parser.parse_args()
 
-    run_ingestion_pipeline(target_date=args.date, force=args.force, retrain=args.retrain)
+    success = run_ingestion_pipeline(target_date=args.date, force=args.force, retrain=args.retrain)
+    if not success:
+        logger.error("[FATAL] Daily ingestion pipeline execution failed.")
+        sys.exit(1)

@@ -35,10 +35,22 @@ jobs:
       - name: Install Ingestion Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests psycopg2-binary pandas pyarrow numpy scikit-learn joblib pydantic python-dotenv
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          else
+            pip install -r MahaRainRisk/requirements.txt
+          fi
+
+      - name: Verify Database Credentials
+        run: |
+          if [ -z "${{ secrets.DATABASE_URL }}" ] && [ -z "${{ secrets.PGPASSWORD }}" ]; then
+            echo "::warning::Neither DATABASE_URL nor PGPASSWORD secret is set in GitHub Repository Secrets."
+            echo "::notice::Add DATABASE_URL under GitHub Repo Settings -> Secrets and variables -> Actions to allow live PostgreSQL ingestion."
+          fi
 
       - name: Execute Daily Ingestion Pipeline
         env:
+          PYTHONPATH: .
           PGHOST: ${{ secrets.PGHOST }}
           PGPORT: ${{ secrets.PGPORT || 5432 }}
           PGDATABASE: ${{ secrets.PGDATABASE }}

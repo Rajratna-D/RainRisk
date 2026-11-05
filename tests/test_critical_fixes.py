@@ -98,11 +98,16 @@ def test_bug01_ml02_inference_keys_match_etl():
     assert "soil_moisture_index_pct" in tele
 
 def test_bug03_ci_workflow_has_pyarrow():
-    """Verify .github/workflows/daily_ingest.yml contains pyarrow."""
+    """Verify .github/workflows/daily_ingest.yml installs requirements.txt which includes pyarrow."""
     workflow_path = os.path.join(BASE_DIR, ".github", "workflows", "daily_ingest.yml")
     with open(workflow_path, "r", encoding="utf-8") as f:
         content = f.read()
-    assert "pyarrow" in content, "daily_ingest.yml must include pyarrow to read Parquet files"
+    assert "requirements.txt" in content or "pyarrow" in content, "daily_ingest.yml must install requirements.txt"
+    # Verify pyarrow is declared in requirements.txt
+    req_path = os.path.join(BASE_DIR, "requirements.txt")
+    with open(req_path, "r", encoding="utf-8") as f:
+        req_content = f.read()
+    assert "pyarrow" in req_content
 
 def test_ml05_treeshap_safe_polarity_fixed():
     """Verify TreeSHAP semantic polarity for Class 0 Safe talukas."""
