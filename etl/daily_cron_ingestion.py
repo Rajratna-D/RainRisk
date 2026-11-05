@@ -44,6 +44,10 @@ BATCH_SIZE = 6
 TOTAL_EXPECTED_TALUKAS = 194
 
 def get_db_connection():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        return psycopg2.connect(db_url)
+
     db_name = os.getenv("PGDATABASE", "maharainrisk_db")
     db_user = os.getenv("PGUSER", "postgres")
     db_host = os.getenv("PGHOST", "localhost")
@@ -126,12 +130,8 @@ def fetch_weather_batch_resilient(
     logger.error(f"[!] Exhausted all {max_attempts} retry attempts for batch.")
     return []
 
-def run_ingestion_pipeline(target_date: Optional[str] = None, force: bool = False, retrain: bool = False):
+def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = False) -> bool:
     start_time = time.time()
-    
-    if not target_date:
-        ist_now = datetime.now(timezone(timedelta(hours=5, minutes=30)))
-        target_date = (ist_now.date() - timedelta(days=1)).strftime("%Y-%m-%d")
 
     logger.info("=" * 80)
     logger.info(f"MAHARAINRISK: BULLETPROOF LIVE INGESTION & XAI PIPELINE")
@@ -384,8 +384,72 @@ def run_ingestion_pipeline(target_date: Optional[str] = None, force: bool = Fals
 
     elapsed = time.time() - start_time
     logger.info("=" * 80)
-    logger.info(f"[SUCCESS] Pipeline Finished in {elapsed:.2f}s | Zero Data Loss Guaranteed.")
+    logger.info(f"[SUCCESS] Pipeline Finished for {target_date} in {elapsed:.2f}s | Zero Data Loss Guaranteed.")
     logger.info("=" * 80)
+    return True
+
+def run_ingestion_pipeline(target_date: Optional[str] = None, force: bool = False, retrain: bool = False) -> bool:
+    """
+    Orchestrates daily ingestion with automatic historical gap-detection.
+    - If target_date is explicitly supplied, ingests only that target date.
+    - If target_date is omitted (e.g. daily cron), queries MAX(record_date) from daily_weather.
+      If a gap is detected between the latest DB record and yesterday, backfills all missing
+      dates chronologically (up to 14 days), guaranteeing contiguous time-series telemetry.
+    """
+    if target_date:
+        return _ingest_single_date(target_date, force=force, retrain=retrain)
+
+    # Automated Daily Mode: Target is yesterday (finalized 24h observations)
+    ist_now = datetime.now(timezone(timedelta(hours=5, minutes=30)))
+    yesterday = (ist_now.date() - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    latest_db_date = None
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT MAX(record_date) FROM daily_weather;")
+        row = cur.fetchone()
+        if row and row[0]:
+            val = row[0]
+            latest_db_date = val.strftime("%Y-%m-%d") if hasattr(val, "strftime") else str(val)
+        cur.close()
+        conn.close()
+    except Exception as e:
+        logger.warning(f"[*] Note: Could not query MAX(record_date) from DB ({e}). Proceeding directly with yesterday ({yesterday}).")
+
+    if not latest_db_date or latest_db_date >= yesterday:
+        # No gap detected, ingest yesterday directly
+        return _ingest_single_date(yesterday, force=force, retrain=retrain)
+
+    # Gap detected between latest_db_date and yesterday
+    start_dt = datetime.strptime(latest_db_date, "%Y-%m-%d").date() + timedelta(days=1)
+    end_dt = datetime.strptime(yesterday, "%Y-%m-%d").date()
+
+    gap_dates = []
+    curr = start_dt
+    while curr <= end_dt:
+        gap_dates.append(curr.strftime("%Y-%m-%d"))
+        curr += timedelta(days=1)
+
+    MAX_BACKFILL_DAYS = 14
+    if len(gap_dates) > MAX_BACKFILL_DAYS:
+        logger.warning(f"[!] Large gap detected ({len(gap_dates)} days). Limiting automated backfill to the last {MAX_BACKFILL_DAYS} days.")
+        gap_dates = gap_dates[-MAX_BACKFILL_DAYS:]
+
+    logger.info("=" * 80)
+    logger.info(f"MAHARAINRISK: AUTOMATED GAP BACKFILL ACTIVATED")
+    logger.info(f"Latest in DB: {latest_db_date} | Target: {yesterday}")
+    logger.info(f"Detected {len(gap_dates)} missing dates to ingest: {gap_dates}")
+    logger.info("=" * 80)
+
+    for i, d in enumerate(gap_dates):
+        is_last = (i == len(gap_dates) - 1)
+        logger.info(f"\n---> Ingesting missing day [{i+1}/{len(gap_dates)}]: {d}")
+        success = _ingest_single_date(d, force=force, retrain=(retrain and is_last))
+        if not success:
+            logger.error(f"[!] Failed to ingest {d}. Halting gap backfill.")
+            return False
+
     return True
 
 if __name__ == "__main__":
