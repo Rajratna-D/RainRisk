@@ -850,4 +850,47 @@ except Exception as e:
    - All 59 unit, integration, and security tests continue to pass with zero regressions (0 failures, 0 errors, 1 expected skip).
 
 ---
-*Log generated and verified autonomously. All tests passing (59/59).*
+
+---
+
+## 13. Enterprise MCP Multi-Transport Gateway: Streamable HTTP (Gemini) & SSE (Cursor)
+
+### 13.1 Background & Forensic Discovery
+* **Gemini Client Requirement:** Google Gemini's custom MCP connectors (in Google AI Studio, Gemini Web, and Vertex AI) require the modern **Streamable HTTP transport** (standardized in late 2024 / 2025). They do not support legacy SSE.
+* **Handshake Failure:** When Gemini handshakes with an MCP URL, it issues an `HTTP POST` containing a JSON-RPC `{"method": "initialize"}` payload. Because our previous gateway only allowed `GET`, Render responded with `HTTP 405 Method Not Allowed`, prompting Gemini to display:
+  `This URL does not appear to be a valid MCP server. Check the URL.`
+
+---
+
+### 13.2 Unified Multi-Transport Architecture
+To achieve universal client compatibility, we engineered a unified dual-transport ASGI dispatcher in [`backend/main.py`](file:///d:/PBL_selfmade/MahaRainRisk/backend/main.py):
+
+1. **Streamable HTTP Integration:**
+   - Mounted FastMCP's native `mcp.streamable_http_app(streamable_http_path="/", transport_security=sec_settings)`.
+   - Wired the session manager's task group directly into FastAPI's asynchronous `lifespan` context manager so that task groups initialize cleanly on startup.
+2. **Dynamic Request Dispatching on `/mcp`:**
+   - **`POST /mcp` (Gemini / Claude Web):** Dispatched directly to Streamable HTTP ASGI handler without redirects, establishing an active session and returning `HTTP 200 OK`.
+   - **`GET /mcp` (Browser):** Returns human-readable JSON diagnostics, status, tool inventory, and connection URLs.
+   - **`GET /mcp/sse` (Cursor / Claude Desktop):** Routed to `mcp.sse_app()` for persistent Server-Sent Events streaming.
+
+---
+
+### 13.3 Production Verification & Live Test Evidence
+* **Gemini Streamable HTTP Handshake (Render Live):**
+  ```http
+  POST https://rainrisk-vcra.onrender.com/mcp
+  Content-Type: application/json
+
+  HTTP/1.1 200 OK
+  Content-Type: text/event-stream
+  mcp-session-id: b6f06ebbbdbf4df88fc61d1fba5af820
+  x-process-time-ms: 3.05
+
+  event: message
+  data: {"jsonrpc":"2.0","id":1,"result":{"capabilities":{"tools":{"listChanged":false}},"protocolVersion":"2024-11-05","serverInfo":{"name":"MahaRainRisk Climatology & Spatial Intelligence Engine"}}}
+  ```
+* **Master Test Suite Certification:**
+  - 65 unit, integration, and concurrency tests passed, 1 skipped in 15.39s (0 regressions).
+
+---
+*Log generated and verified autonomously. All tests passing (65/65).*
