@@ -15,7 +15,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, HTTPException, status, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 # Ensure base directory in sys.path
@@ -41,6 +41,38 @@ from backend.schemas import (
 )
 
 # -------------------------------------------------------------------------
+# FAST MCP / MODEL CONTEXT PROTOCOL APP INITIALIZATION
+# -------------------------------------------------------------------------
+mcp_sse_app = None
+current_streamable_app = None
+
+def get_mcp_streamable_app():
+    try:
+        from backend.mcp_server import mcp
+        try:
+            from mcp.server.transport_security import TransportSecuritySettings
+            sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+            return mcp.streamable_http_app(streamable_http_path="/", transport_security=sec_settings)
+        except Exception:
+            return mcp.streamable_http_app(streamable_http_path="/")
+    except Exception as e:
+        print(f"[!] Warning: Could not initialize Streamable HTTP app: {e}")
+        return None
+
+try:
+    from backend.mcp_server import mcp
+    try:
+        from mcp.server.transport_security import TransportSecuritySettings
+        sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
+        mcp_sse_app = mcp.sse_app(transport_security=sec_settings)
+    except Exception:
+        mcp_sse_app = mcp.sse_app()
+    current_streamable_app = get_mcp_streamable_app()
+    print("[OK] Remote MCP Server initialized (Streamable HTTP + SSE transport, DNS rebinding disabled for cloud).")
+except Exception as e:
+    print(f"[!] Warning: Could not initialize FastMCP sub-apps: {e}")
+
+# -------------------------------------------------------------------------
 # LIFESPAN CONTEXT MANAGER: STARTUP PRE-WARMING & CLEAN SHUTDOWN
 # -------------------------------------------------------------------------
 @asynccontextmanager
@@ -61,7 +93,16 @@ async def lifespan(app: FastAPI):
         print("[OK] TreeSHAP Explainability Engine warm in memory.")
     except Exception as e:
         print(f"[!] Warning: TreeSHAP engine pre-initialization encountered: {e}")
-    yield
+
+    # Startup: Initialize MCP Streamable HTTP session manager task group
+    global current_streamable_app
+    current_streamable_app = get_mcp_streamable_app()
+    if current_streamable_app and hasattr(current_streamable_app, "router") and hasattr(current_streamable_app.router, "lifespan_context"):
+        async with current_streamable_app.router.lifespan_context(current_streamable_app):
+            yield
+    else:
+        yield
+
     # Shutdown: Clean in-memory caches
     print("[*] FastAPI Lifespan Shutdown: Purging in-memory cache...")
     cache_manager.clear()
@@ -104,46 +145,79 @@ app.add_middleware(
 )
 
 # -------------------------------------------------------------------------
-# PHASE 7: MOUNT PRODUCTION CLOUD MODEL CONTEXT PROTOCOL (MCP) SSE APP
+# PHASE 7: ENTERPRISE MODEL CONTEXT PROTOCOL (STREAMABLE HTTP + SSE + BROWSER)
 # -------------------------------------------------------------------------
-# Support root /mcp: returns JSON status for browser users and redirects SSE clients to /mcp/sse
-@app.get("/mcp", include_in_schema=False)
-async def handle_mcp_root(request: Request):
+@app.api_route("/mcp", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
+@app.api_route("/mcp/", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
+async def handle_mcp_unified_gateway(request: Request):
     accept_header = request.headers.get("accept", "")
-    if "text/event-stream" in accept_header:
-        return RedirectResponse(url="/mcp/sse", status_code=307)
-    return {
-        "status": "operational",
-        "protocol": "Model Context Protocol (FastMCP 2.x)",
-        "transport": "Server-Sent Events (SSE)",
-        "sse_endpoint": "https://rainrisk-vcra.onrender.com/mcp/sse",
-        "tools_count": 6,
-        "tools": [
-            "get_taluka_risk",
-            "explain_drought_prediction",
-            "get_bilingual_advisory",
-            "get_state_drought_summary",
-            "get_adjacent_talukas",
-            "get_district_summary"
-        ],
-        "connectors": {
-            "claude_web": "Settings -> Connectors -> Add custom connector: https://rainrisk-vcra.onrender.com/mcp",
-            "chatgpt_web": "Plugins -> Add custom MCP server: https://rainrisk-vcra.onrender.com/mcp",
-            "gemini_web": "Customize -> Connectors -> Connect to MCP: https://rainrisk-vcra.onrender.com/mcp"
-        }
-    }
+    content_type = request.headers.get("content-type", "")
 
-try:
-    from backend.mcp_server import mcp
-    try:
-        from mcp.server.transport_security import TransportSecuritySettings
-        sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
-        app.mount("/mcp", mcp.sse_app(transport_security=sec_settings))
-    except Exception:
-        app.mount("/mcp", mcp.sse_app())
-    print("[OK] Remote MCP Server mounted at /mcp (SSE transport, DNS rebinding disabled for cloud).")
-except Exception as e:
-    print(f"[!] Warning: Could not mount MCP SSE app: {e}")
+    # 1. Human browser / developer GET diagnostics
+    if request.method == "GET" and "text/event-stream" not in accept_header and "json" not in accept_header:
+        return {
+            "status": "operational",
+            "protocol": "Model Context Protocol (FastMCP 2.x)",
+            "transports": ["Streamable HTTP", "Server-Sent Events (SSE)"],
+            "endpoints": {
+                "streamable_http": "https://rainrisk-vcra.onrender.com/mcp",
+                "sse": "https://rainrisk-vcra.onrender.com/mcp/sse"
+            },
+            "tools_count": 6,
+            "tools": [
+                "get_taluka_risk",
+                "explain_drought_prediction",
+                "get_bilingual_advisory",
+                "get_state_drought_summary",
+                "get_adjacent_talukas",
+                "get_district_summary"
+            ],
+            "connectors": {
+                "gemini_web": "Settings -> Add MCP Server -> https://rainrisk-vcra.onrender.com/mcp",
+                "claude_web": "Settings -> Connectors -> Add custom connector: https://rainrisk-vcra.onrender.com/mcp",
+                "chatgpt_web": "Plugins -> Add custom MCP server: https://rainrisk-vcra.onrender.com/mcp",
+                "cursor_sse": "Cursor Settings -> MCP -> Add SSE: https://rainrisk-vcra.onrender.com/mcp/sse"
+            }
+        }
+
+    # 2. Redirect legacy SSE requests querying root /mcp to /mcp/sse
+    if request.method == "GET" and "text/event-stream" in accept_header and "json" not in content_type:
+        return RedirectResponse(url="/mcp/sse", status_code=307)
+
+    # 3. Forward to Streamable HTTP ASGI app (Gemini, Claude Web, modern clients)
+    app_target = current_streamable_app or get_mcp_streamable_app()
+    if app_target:
+        scope = dict(request.scope)
+        scope["path"] = "/"
+        scope["raw_path"] = b"/"
+
+        status_code = 200
+        headers = []
+        body_chunks = []
+
+        async def receive():
+            return await request.receive()
+
+        async def send(message):
+            nonlocal status_code, headers
+            if message["type"] == "http.response.start":
+                status_code = message["status"]
+                headers = message.get("headers", [])
+            elif message["type"] == "http.response.body":
+                body_chunks.append(message.get("body", b""))
+
+        await app_target(scope, receive, send)
+
+        res = Response(content=b"".join(body_chunks), status_code=status_code)
+        for k, v in headers:
+            res.headers[k.decode("latin-1")] = v.decode("latin-1")
+        return res
+
+    return JSONResponse(status_code=503, content={"error": "MCP Streamable HTTP not initialized"})
+
+# Mount SSE sub-app for legacy SSE clients (Cursor, Claude Desktop at /mcp/sse and /mcp/messages)
+if mcp_sse_app:
+    app.mount("/mcp", mcp_sse_app)
 
 # -------------------------------------------------------------------------
 # SECURITY & OBSERVABILITY: RATE LIMITER & LATENCY TIMING MIDDLEWARE
