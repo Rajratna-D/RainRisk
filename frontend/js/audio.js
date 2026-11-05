@@ -75,7 +75,7 @@ async function toggleAudioSpeech() {
     return;
   }
 
-  const taluka = state.currentTaluka || "Paithan";
+  const taluka = state.currentData?.meta?.taluka || state.currentTaluka || "Paithan";
   const lang = state.currentLanguage || "mr";
 
   isAudioLoading = true;
@@ -85,12 +85,18 @@ async function toggleAudioSpeech() {
     const base = window.API_BASE || "";
     const audioUrl = `${base}/api/audio/advisory/${encodeURIComponent(taluka)}?lang=${lang}&t=${Date.now()}`;
     const player = new Audio();
+    player.crossOrigin = "anonymous";
     activeAudioPlayer = player;
 
     player.onplaying = () => {
       if (activeAudioPlayer !== player) return;
       isAudioLoading = false;
       setSpeakingUI(true);
+    };
+
+    player.oncanplay = () => {
+      if (activeAudioPlayer !== player) return;
+      isAudioLoading = false;
     };
 
     player.onended = () => {
@@ -107,7 +113,13 @@ async function toggleAudioSpeech() {
     };
 
     player.src = audioUrl;
-    await player.play();
+    await player.play().catch((playErr) => {
+      if (activeAudioPlayer === player) {
+        console.warn("Audio play() promise rejected:", playErr);
+        stopAudioSpeech();
+        fallbackBrowserSpeech();
+      }
+    });
   } catch (err) {
     if (err.name !== "AbortError") {
       console.warn("Audio play exception:", err);
@@ -139,11 +151,14 @@ function fallbackBrowserSpeech() {
   const isMr = state.currentLanguage === "mr";
   const voices = synth.getVoices() || [];
   const marathiVoice = voices.find(v => v.lang.includes("mr") || v.name.toLowerCase().includes("marathi"));
-  const indianVoice = voices.find(v => v.lang.includes("IN") || v.lang.includes("en-IN"));
+  const englishVoice = voices.find(v => v.lang.includes("IN") || v.lang.startsWith("en"));
 
   // Only use browser speech synthesis if a real matching voice exists
   if (isMr && !marathiVoice) {
     console.info("No native Marathi voice in browser speech synthesis. Neural backend is primary.");
+    if (typeof showToast === "function") {
+      showToast(isMr ? "ऑडिओ सर्व्हर तयार होत आहे, कृपया १-२ सेकंद थांबा..." : "Audio server warming up, please wait a moment...", "info");
+    }
     return;
   }
 
@@ -167,8 +182,8 @@ function fallbackBrowserSpeech() {
   if (isMr && marathiVoice) {
     utter.voice = marathiVoice;
     utter.lang = "mr-IN";
-  } else if (!isMr && indianVoice) {
-    utter.voice = indianVoice;
+  } else if (!isMr && englishVoice) {
+    utter.voice = englishVoice;
   } else if (isMr) {
     return;
   }

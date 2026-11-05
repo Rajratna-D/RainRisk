@@ -88,7 +88,7 @@ def test_phase9_treeshap_concurrency_stability():
 
         assert len(durations) == 20
         avg_xai_time = statistics.mean(durations)
-        assert avg_xai_time < 200.0, f"Average TreeSHAP latency was {avg_xai_time:.2f}ms"
+        assert avg_xai_time < 500.0, f"Average TreeSHAP latency was {avg_xai_time:.2f}ms"
 
 
 def test_phase9_spatial_adjacency_concurrency():

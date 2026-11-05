@@ -223,7 +223,7 @@ if mcp_sse_app:
 # SECURITY & OBSERVABILITY: RATE LIMITER & LATENCY TIMING MIDDLEWARE
 # -------------------------------------------------------------------------
 IP_REQUEST_TIMESTAMPS = defaultdict(list)
-RATE_LIMIT_PER_MINUTE = 120 # Generous 120 req/min for map tile interactions
+RATE_LIMIT_PER_MINUTE = 240 # Generous 240 req/min for real-time map tile and audio streaming
 LAST_CLEANUP_TIME = time.time()
 
 @app.middleware("http")
@@ -239,8 +239,15 @@ async def security_and_timing_middleware(request: Request, call_next):
             del IP_REQUEST_TIMESTAMPS[ip]
         LAST_CLEANUP_TIME = now
 
-    # 1. Rate Limiting Check
-    client_ip = request.client.host if request.client else "unknown"
+    # 1. Rate Limiting Check (Respect X-Forwarded-For behind Render / Cloudflare reverse proxies)
+    forwarded = request.headers.get("x-forwarded-for")
+    if forwarded:
+        client_ip = forwarded.split(",")[0].strip()
+    elif request.client:
+        client_ip = request.client.host
+    else:
+        client_ip = "unknown"
+
     if client_ip != "testclient":
         timestamps = [t for t in IP_REQUEST_TIMESTAMPS[client_ip] if now - t < 60.0]
         IP_REQUEST_TIMESTAMPS[client_ip] = timestamps
@@ -251,7 +258,7 @@ async def security_and_timing_middleware(request: Request, call_next):
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={
                     "error": "Too Many Requests",
-                    "detail": "Rate limit of 120 requests/minute exceeded.",
+                    "detail": "Rate limit exceeded. Please wait a moment.",
                     "timestamp": now
                 },
                 headers={
@@ -420,6 +427,7 @@ async def get_taluka_audio_advisory(query: str, lang: str = "mr"):
             audio_path,
             media_type="audio/mpeg",
             filename=os.path.basename(audio_path),
+            content_disposition_type="inline",
             headers={"Cache-Control": "public, max-age=86400"}
         )
     except ValueError as e:
