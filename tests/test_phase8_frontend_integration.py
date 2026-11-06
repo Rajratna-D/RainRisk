@@ -171,3 +171,37 @@ def test_phase8_mcp_modal_and_clipboard_targets():
     assert 'id="code-gemini-url"' in html
     assert 'https://rainrisk-vcra.onrender.com/mcp' in html
     assert 'https://rainrisk-vcra.onrender.com/openapi.json' in html
+
+
+def test_phase8_i18n_instant_language_switch_no_devanagari_leak():
+    """
+    Validates BUG-I18N fix:
+    1. DEFAULT_INITIAL_DATA is defined in state.js so currentData is never null.
+    2. Bidirectional Devanagari <-> ASCII numeral conversion in formatNumber.
+    3. sweepDomNumerals sweeps and cleans metric cards upon language toggle.
+    4. Cache-buster versions bumped to ensure fresh CDN delivery.
+    """
+    state_path = os.path.join(FRONTEND_DIR, "js", "state.js")
+    with open(state_path, "r", encoding="utf-8") as f:
+        state_code = f.read()
+
+    assert "DEFAULT_INITIAL_DATA" in state_code, "Missing DEFAULT_INITIAL_DATA in state.js"
+    assert "currentData: DEFAULT_INITIAL_DATA" in state_code, "state.currentData must default to DEFAULT_INITIAL_DATA"
+    assert "window.state = state" in state_code, "state must be attached to window.state"
+    assert "०-९" in state_code and "0-9" in state_code, "formatNumber must support bidirectional Devanagari/ASCII conversion"
+
+    i18n_path = os.path.join(FRONTEND_DIR, "js", "i18n.js")
+    with open(i18n_path, "r", encoding="utf-8") as f:
+        i18n_code = f.read()
+
+    assert "sweepDomNumerals" in i18n_code, "Missing sweepDomNumerals function in i18n.js"
+    assert "act-text-irrigation" in i18n_code, "Missing advisory texts in applyLanguage"
+    assert "histogram-dates-row" in i18n_code, "Missing histogram dates row in applyLanguage"
+
+    index_path = os.path.join(FRONTEND_DIR, "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert 'state.js?v=117' in html, "Script version must be bumped to ?v=117 for cache-busting"
+    assert 'i18n.js?v=117' in html, "Script version must be bumped to ?v=117 for cache-busting"
+

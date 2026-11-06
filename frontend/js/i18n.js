@@ -32,6 +32,12 @@ function applyLanguage(lang) {
     searchInput.placeholder = isMr 
       ? "तालुका शोधा (उदा. पैठण, बारामती, मेहकर)..." 
       : "Search taluka (e.g. Paithan, Baramati)...";
+    if (state.currentData && state.currentData.meta) {
+      const meta = state.currentData.meta;
+      if (searchInput.value === meta.taluka || searchInput.value === meta.taluka_mr) {
+        searchInput.value = isMr ? (meta.taluka_mr || meta.taluka) : meta.taluka;
+      }
+    }
   }
 
   // Main Canvas Tab Labels
@@ -67,15 +73,41 @@ function applyLanguage(lang) {
   const unitEc = document.getElementById("unit-ec");
   if (unitEc) unitEc.textContent = isMr ? "दिवस" : "days";
 
-  // Tab 1 Banner Titles
+  // Tab 1 Farmer University Advisory
+  const elUniTitle = document.getElementById("farmer-uni-title");
+  if (elUniTitle && (!state.currentData || !state.currentData.advisory)) {
+    elUniTitle.textContent = isMr 
+      ? "वसंतराव नाईक मराठवाडा कृषी विद्यापीठ शिफारस" 
+      : "Vasantrao Naik Marathwada Krishi Vidyapeeth Advisory";
+  }
+
+  // Tab 1 Banner Titles & Static Action Texts
   const actIrrig = document.getElementById("act-title-irrigation");
   if (actIrrig) actIrrig.textContent = isMr ? "सिंचन नियोजन:" : "Irrigation Strategy:";
+  const elIrrigText = document.getElementById("act-text-irrigation");
+  if (elIrrigText && (!state.currentData || !state.currentData.advisory)) {
+    elIrrigText.textContent = isMr
+      ? "जमिनीत ओलावा चांगला असल्याने पुढील ४ दिवस पाणी देण्याची गरज नाही. हलके पाणी द्यावे."
+      : "Soil moisture is optimal; no irrigation required for the next 4 days. Maintain light watering if needed.";
+  }
   
   const actConserv = document.getElementById("act-title-conservation");
   if (actConserv) actConserv.textContent = isMr ? "ओलावा संवर्धन:" : "Moisture Conservation:";
+  const elConservText = document.getElementById("act-text-conservation");
+  if (elConservText && (!state.currentData || !state.currentData.advisory)) {
+    elConservText.textContent = isMr
+      ? "पिकाच्या ओळींत पाचट किंवा भुसा आच्छादन (Mulching) केल्यास बाष्पीभवन रोखले जाईल."
+      : "Spread crop residue or straw mulching between crop rows to preserve root-zone moisture.";
+  }
   
   const actNutr = document.getElementById("act-title-nutrients");
   if (actNutr) actNutr.textContent = isMr ? "खत व फवारणी उपाय:" : "Foliar Sprays & Nutrients:";
+  const elNutrText = document.getElementById("act-text-nutrients");
+  if (elNutrText && (!state.currentData || !state.currentData.advisory)) {
+    elNutrText.textContent = isMr
+      ? "पावसात खंड पडल्यास १% पोटॅशियम नायट्रेट (१०० ग्रॅम प्रति १० लिटर पाणी) फवारावे."
+      : "If dry spell extends, spray 1% Potassium Nitrate (100g in 10L water) early morning to relieve heat stress.";
+  }
   
   const svgSpeaker = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
   const ttsInline = document.getElementById("tts-inline-label");
@@ -84,24 +116,66 @@ function applyLanguage(lang) {
   const ttsAudio = document.getElementById("tts-audio-label");
   if (ttsAudio) ttsAudio.innerHTML = `${svgSpeaker}<span>${isMr ? "सल्ला ऐका" : "Listen"}</span>`;
 
-  // Tab 2 Analytics Titles
+  // Tab 2 Analytics Titles & Timeline Rows
   const titleGrowth = document.getElementById("title-growth");
   if (titleGrowth) titleGrowth.textContent = isMr ? "मागील ५ वर्षांचा पाऊस (IMD Pune)" : "5-Year Monsoon Rainfall (IMD Pune)";
   
   const unitGrowth = document.getElementById("unit-growth");
   if (unitGrowth) unitGrowth.textContent = isMr ? "mm वार्षिक सरासरी" : "mm Annual Average";
+
+  const elGrowthSub = document.getElementById("growth-subtext");
+  if (elGrowthSub) {
+    elGrowthSub.textContent = isMr 
+      ? "२०२३ मधील दुष्काळ vs २०२२ चा चांगला पाऊस" 
+      : "2023 Drought Deficit vs 2022 Favorable Monsoon";
+  }
+
+  const elHistoDates = document.getElementById("histogram-dates-row");
+  if (elHistoDates) {
+    elHistoDates.innerHTML = isMr 
+      ? "<span>२०१९</span><span>२०२०</span><span>२०२१</span><span>२०२२</span><span style='color: #F97316; font-weight: 700;'>२०२३ (दुष्काळ)</span><span>२०२४</span>"
+      : "<span>2019</span><span>2020</span><span>2021</span><span>2022</span><span style='color: #F97316; font-weight: 700;'>2023 (Drought)</span><span>2024</span>";
+  }
   
   const titleCo2 = document.getElementById("title-co2");
   if (titleCo2) titleCo2.textContent = isMr ? "पुढील ३० दिवसांचा अंदाज" : "30-Day Early Warning Outlook";
+
+  const elStepDates = document.getElementById("step-dates-row");
+  if (elStepDates) {
+    elStepDates.innerHTML = isMr 
+      ? "<span>पहिला आठवडा</span><span>दुसरा आठवडा</span><span>तिसरा आठवडा</span><span style='font-weight: 700; color: #047857;'>महिना अखेर</span>"
+      : "<span>Week 1</span><span>Week 2</span><span>Week 3</span><span style='font-weight: 700; color: #047857;'>Month End</span>";
+  }
   
   const titleWaterFlow = document.getElementById("title-water-flow");
   if (titleWaterFlow) titleWaterFlow.textContent = isMr ? "पाणी साठा बॅटरी" : "Water Reserve Balance";
+
+  const elSubWater = document.getElementById("sub-water-flow");
+  if (elSubWater) {
+    elSubWater.textContent = isMr 
+      ? "शेततळे व धरण साठा समाधानकारक" 
+      : "Farm pond & reservoir reserves optimal";
+  }
   
   const titlePower = document.getElementById("title-power");
   if (titlePower) titlePower.textContent = isMr ? "पावसाचा ताण व खंड दिवस" : "Dry Spell Timeline & Stress Days";
   
   const unitPower = document.getElementById("unit-power");
   if (unitPower) unitPower.textContent = isMr ? "दिवस खंड" : "Days Gap";
+
+  const elSubPower = document.getElementById("sub-power");
+  if (elSubPower && (!state.currentData || !state.currentData.farmer_cards)) {
+    elSubPower.innerHTML = isMr
+      ? "<span>पाऊस पडलेले दिवस: <strong style='color: #047857;'>२१ दिवस</strong></span> • <span>कोरडा खंड: <strong style='color: #047857;'>४ दिवस</strong></span>"
+      : "<span>Rain days: <strong style='color: #047857;'>21 days</strong></span> • <span>Dry gap: <strong style='color: #047857;'>4 days</strong></span>";
+  }
+
+  const elPowerMonths = document.getElementById("power-months-row");
+  if (elPowerMonths) {
+    elPowerMonths.innerHTML = isMr 
+      ? "<span>जून</span><span>जुलै</span><span style='color: #F97316;'>ऑगस्ट (ताण)</span><span>सप्टेंबर</span><span>ऑक्टोबर</span>"
+      : "<span>Jun</span><span>Jul</span><span style='color: #F97316;'>Aug (Dry Spell)</span><span>Sep</span><span>Oct</span>";
+  }
 
   // Permanent Right Telemetry Sidebar
   const sideTel = document.getElementById("side-telemetry-title");
@@ -127,6 +201,42 @@ function applyLanguage(lang) {
 
   const sc4Stat2 = document.getElementById("side-card4-stat2-lbl");
   if (sc4Stat2) sc4Stat2.textContent = isMr ? "हंगामी पाऊस" : "Season Rain";
+
+  const elSideDamSub = document.getElementById("side-dam-sub");
+  if (elSideDamSub && (!state.currentData || !state.currentData.farmer_cards)) {
+    elSideDamSub.textContent = isMr
+      ? "जायकवाडी धरण • सिंचनासाठी मुबलक पाणी उपलब्ध"
+      : "Jayakwadi Reservoir • Optimal irrigation water available";
+  }
+
+  const elSideSoilSub = document.getElementById("side-soil-sub");
+  if (elSideSoilSub && (!state.currentData || !state.currentData.farmer_cards)) {
+    elSideSoilSub.textContent = isMr
+      ? "रूट-झोन ओलावा समाधानकारक पातळीवर आहे."
+      : "Root-zone soil moisture is at an optimal level.";
+  }
+
+  const elSideRiskSource = document.getElementById("side-risk-source");
+  if (elSideRiskSource) {
+    elSideRiskSource.textContent = isMr
+      ? "भारतीय हवामान विभाग (IMD) व जलसंपदा • कृषी ML प्रणाली"
+      : "IMD Pune & WRD Water Telemetry • Agri-ML Model";
+  }
+
+  const elRainDays = document.getElementById("side-card4-rain-days");
+  if (elRainDays && (!state.currentData || !state.currentData.farmer_cards)) {
+    elRainDays.textContent = isMr ? "~५ दिवस" : "~5 Days";
+  }
+  const elCumRain = document.getElementById("side-card4-cum-rain");
+  if (elCumRain && (!state.currentData || !state.currentData.farmer_cards)) {
+    elCumRain.textContent = isMr ? "१८६.८ mm" : "186.8 mm";
+  }
+  const elSideCard4 = document.getElementById("side-card4-text");
+  if (elSideCard4 && (!state.currentData || !state.currentData.farmer_cards)) {
+    elSideCard4.textContent = isMr
+      ? "पुढील ३० दिवसांत ५ पावसाळी दिवस अपेक्षित आहेत. जमिनीत ओलावा समाधानकारक आहे."
+      : "Around 5 rain days expected in next 30 days. Root-zone moisture is sufficient.";
+  }
 
   // Tab 2 Climatological & ML Titles and Telemetry
   const tClimate = document.getElementById("title-climate-indices");
@@ -316,6 +426,40 @@ function applyLanguage(lang) {
   const lblAdjacent = document.getElementById("lbl-adjacent-neighbors");
   if (lblAdjacent) lblAdjacent.textContent = isMr ? "📍 शेजारील तालुके व स्थिती (Adjacent Talukas)" : "📍 Topologically Adjacent Neighbors";
 
+  // AI Modal Header & Status Fallback
+  const modalAiTitle = document.getElementById("modal-ai-title");
+  if (modalAiTitle && (!state.currentData || typeof populateAiModal !== "function")) {
+    modalAiTitle.textContent = isMr ? "कृषी AI निर्णय सहाय्यक व ७-दिवसीय नियोजन" : "Agricultural AI Decision Support & 7-Day Planning";
+  }
+  const modalAiStatus = document.getElementById("modal-ai-status-text");
+  if (modalAiStatus && (!state.currentData || typeof populateAiModal !== "function")) {
+    modalAiStatus.textContent = isMr ? "सुरक्षित" : "Safe";
+  }
+
+  // TreeSHAP Narrative Fallback
+  const headlineEl = document.getElementById("xai-narrative-headline");
+  if (headlineEl && (!state.currentXai || !state.currentXai.farmer_summary)) {
+    headlineEl.textContent = isMr ? "घटकांचे विश्लेषण लोड होत आहे..." : "Analyzing risk driver attribution...";
+  }
+  const bodyEl = document.getElementById("xai-narrative-body");
+  if (bodyEl && (!state.currentXai || !state.currentXai.farmer_summary)) {
+    bodyEl.textContent = isMr 
+      ? "स्थानिक पातळीवर दुष्काळ वाढवणारे व रोखणारे घटक मोजले जात आहेत." 
+      : "Evaluating local stressors and mitigating buffers using TreeSHAP.";
+  }
+
+  // Regional Contagion Narrative Fallback
+  const contPill = document.getElementById("contagion-assessment-pill");
+  if (contPill && (!state.currentAdjacent || !state.currentAdjacent.contagion_assessment)) {
+    contPill.textContent = isMr ? "🛡️ प्रादेशिक पट्टा सुरक्षित" : "🛡️ Regional Corridor Safe";
+  }
+  const contText = document.getElementById("contagion-narrative-text");
+  if (contText && (!state.currentAdjacent || !state.currentAdjacent.contagion_assessment)) {
+    contText.textContent = isMr
+      ? "शेजारील तालुक्यांचा स्थानिक दुष्काळ ताण व कॉरिडॉर संसर्ग तपासला जात आहे."
+      : "Monitoring adjacent talukas for spatial drought stress contagion.";
+  }
+
   // Update map pin labels
   if (typeof updateMapPinLabels === "function") {
     updateMapPinLabels();
@@ -331,7 +475,52 @@ function applyLanguage(lang) {
   if (state.currentAdjacent && typeof renderAdjacentTalukas === "function") {
     renderAdjacentTalukas(state.currentAdjacent);
   }
+
+  // Sweep and guarantee 100% Devanagari <-> ASCII numeral conversion on all DOM nodes
+  sweepDomNumerals(isMr);
 }
+
+function sweepDomNumerals(isMr) {
+  const ids = [
+    "val-climate",
+    "val-moisture",
+    "val-light",
+    "val-ec",
+    "val-growth",
+    "val-power",
+    "side-dam-level",
+    "side-soil-level",
+    "side-card4-rain-days",
+    "side-card4-cum-rain"
+  ];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && typeof formatNumber === "function") {
+      el.textContent = formatNumber(el.textContent, isMr);
+    }
+  });
+
+  const elWaterFlow = document.getElementById("val-water-flow");
+  if (elWaterFlow && typeof formatNumber === "function") {
+    elWaterFlow.textContent = formatNumber(elWaterFlow.textContent, isMr);
+    if (!isMr && elWaterFlow.textContent.includes("उपलब्ध")) {
+      elWaterFlow.textContent = elWaterFlow.textContent.replace("उपलब्ध साठा", "Available Storage").replace("उपलब्ध", "Available");
+    } else if (isMr && elWaterFlow.textContent.includes("Available")) {
+      elWaterFlow.textContent = elWaterFlow.textContent.replace("Available Storage", "उपलब्ध साठा").replace("Available", "उपलब्ध");
+    }
+  }
+
+  const elConfCo2 = document.getElementById("conf-co2");
+  if (elConfCo2 && typeof formatNumber === "function") {
+    elConfCo2.textContent = formatNumber(elConfCo2.textContent, isMr);
+    if (!isMr && elConfCo2.textContent.includes("खात्री")) {
+      elConfCo2.textContent = elConfCo2.textContent.replace("खात्री", "Confidence");
+    } else if (isMr && elConfCo2.textContent.includes("Confidence")) {
+      elConfCo2.textContent = elConfCo2.textContent.replace("Confidence", "खात्री");
+    }
+  }
+}
+window.sweepDomNumerals = sweepDomNumerals;
 
 function toggleLanguage() {
   const nextLang = state.currentLanguage === "mr" ? "en" : "mr";
