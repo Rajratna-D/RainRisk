@@ -313,11 +313,18 @@ function renderTreeShapExplain(xai) {
       const icon = esc.icon ? `${esc.icon} ` : '';
       nameSpan.textContent = `${icon}${escName}`;
 
-      const rawPct = Math.round(esc.impact_pct !== undefined ? esc.impact_pct : (esc.relative_impact_pct || 0));
-      const formattedPct = typeof formatNumber === "function" ? formatNumber(rawPct, isMr) : rawPct;
+      const actualPct = esc.impact_pct !== undefined ? esc.impact_pct : (esc.relative_impact_pct || 0);
+      let pctStr = "";
+      if (actualPct > 0 && actualPct < 1.0) {
+        pctStr = isMr ? "+<१% (नगण्य)" : "+<1% (Negligible)";
+      } else {
+        const rounded = Math.round(actualPct);
+        const formatted = typeof formatNumber === "function" ? formatNumber(rounded, isMr) : rounded;
+        pctStr = `+${formatted}% ${isMr ? 'जोखीम वाढ' : 'Risk Impact'}`;
+      }
       const impactSpan = document.createElement("span");
       impactSpan.className = "treeshap-impact-pct";
-      impactSpan.textContent = `+${formattedPct}% ${isMr ? 'जोखीम वाढ' : 'Risk Impact'}`;
+      impactSpan.textContent = pctStr;
 
       row.appendChild(nameSpan);
       row.appendChild(impactSpan);
@@ -327,7 +334,7 @@ function renderTreeShapExplain(xai) {
 
       const fill = document.createElement("div");
       fill.className = "treeshap-bar-fill-escalator";
-      fill.style.width = `${Math.min(100, Math.max(12, rawPct))}%`;
+      fill.style.width = actualPct < 1.0 ? "4%" : `${Math.min(100, Math.max(12, Math.round(actualPct)))}%`;
 
       track.appendChild(fill);
       item.appendChild(row);
