@@ -92,7 +92,7 @@ function updateDashboard(data) {
   });
 
   document.getElementById("val-power").textContent = formatNumber(cards.dry_gap.value_days, isMr);
-  
+
   // Calculate dynamic 5-year monsoon average if IMD history exists
   let avgRain5Yr = 824;
   if (data.chart_history && data.chart_history.length > 0) {
@@ -105,14 +105,14 @@ function updateDashboard(data) {
 
   const elGrowthSub = document.getElementById("growth-subtext");
   if (elGrowthSub) {
-    elGrowthSub.textContent = isMr 
-      ? "मागील वर्षांतील सरासरी मान्सून पाऊस (IMD पुणे)" 
+    elGrowthSub.textContent = isMr
+      ? "मागील वर्षांतील सरासरी मान्सून पाऊस (IMD पुणे)"
       : "5-Year Monsoon Baseline Average (IMD Pune)";
   }
 
   const elHistoDates = document.getElementById("histogram-dates-row");
   if (elHistoDates) {
-    elHistoDates.innerHTML = isMr 
+    elHistoDates.innerHTML = isMr
       ? "<span>२०१९</span><span>२०२०</span><span>२०२१</span><span>२०२२</span><span style='color: #F97316; font-weight: 700;'>२०२३ (दुष्काळ)</span><span>२०२४</span>"
       : "<span>2019</span><span>2020</span><span>2021</span><span>2022</span><span style='color: #F97316; font-weight: 700;'>2023 (Drought)</span><span>2024</span>";
   }
@@ -123,22 +123,22 @@ function updateDashboard(data) {
 
   const elSubCo2 = document.getElementById("sub-co2");
   if (elSubCo2) {
-    elSubCo2.textContent = isMr 
-      ? `Mode 2 AI Forecaster • पुढील महिना: ${fore.label_mr}` 
+    elSubCo2.textContent = isMr
+      ? `Mode 2 AI Forecaster • पुढील महिना: ${fore.label_mr}`
       : `Mode 2 AI Forecaster • Next Month: ${fore.label_en} Outlook`;
   }
 
   const elStepDates = document.getElementById("step-dates-row");
   if (elStepDates) {
-    elStepDates.innerHTML = isMr 
+    elStepDates.innerHTML = isMr
       ? "<span>पहिला आठवडा</span><span>दुसरा आठवडा</span><span>तिसरा आठवडा</span><span style='font-weight: 700; color: #047857;'>महिना अखेर</span>"
       : "<span>Week 1</span><span>Week 2</span><span>Week 3</span><span style='font-weight: 700; color: #047857;'>Month End</span>";
   }
 
   const elSubWater = document.getElementById("sub-water-flow");
   if (elSubWater) {
-    elSubWater.textContent = isMr 
-      ? "शेततळे व धरण साठा स्थिती" 
+    elSubWater.textContent = isMr
+      ? "शेततळे व धरण साठा स्थिती"
       : "Farm pond & reservoir reserves status";
   }
 
@@ -148,14 +148,14 @@ function updateDashboard(data) {
     const stressLabelMr = isDrySpell ? "तीव्र" : (cards.dry_gap.value_days >= 7 ? "मध्यम" : "कमी");
     const stressLabelEn = isDrySpell ? "Severe" : (cards.dry_gap.value_days >= 7 ? "Moderate" : "Low");
     const stressColor = isDrySpell ? "#DC2626" : (cards.dry_gap.value_days >= 7 ? "#F59E0B" : "#047857");
-    elSubPower.innerHTML = isMr 
+    elSubPower.innerHTML = isMr
       ? `<span>पावसातील सलग खंड: <strong style="color: ${stressColor};">${formatNumber(cards.dry_gap.value_days, true)} दिवस</strong></span> • <span>ओलावा ताण: <strong style="color: ${stressColor};">${stressLabelMr}</strong></span>`
       : `<span>Consecutive dry days: <strong style="color: ${stressColor};">${cards.dry_gap.value_days} days</strong></span> • <span>Moisture Stress: <strong style="color: ${stressColor};">${stressLabelEn}</strong></span>`;
   }
 
   const elPowerMonths = document.getElementById("power-months-row");
   if (elPowerMonths) {
-    elPowerMonths.innerHTML = isMr 
+    elPowerMonths.innerHTML = isMr
       ? "<span>जून</span><span>जुलै</span><span style='color: #F97316;'>ऑगस्ट (ताण)</span><span>सप्टेंबर</span><span>ऑक्टोबर</span>"
       : "<span>Jun</span><span>Jul</span><span style='color: #F97316;'>Aug (Dry Spell)</span><span>Sep</span><span>Oct</span>";
   }
@@ -195,20 +195,20 @@ function updateDashboard(data) {
   const elSideDamSub = document.getElementById("side-dam-sub");
   if (elSideDamSub) {
     const damName = isMr ? (cards.dam_storage.dam_name_mr || "स्थानिक धरण") : (cards.dam_storage.dam_name || "Regional Reservoir");
-    elSideDamSub.textContent = isMr 
-      ? `${damName} • पाणीसाठा: ${formatNumber(Math.round(cards.dam_storage.value_pct), true)}%` 
+    elSideDamSub.textContent = isMr
+      ? `${damName} • पाणीसाठा: ${formatNumber(Math.round(cards.dam_storage.value_pct), true)}%`
       : `${damName} • Live Storage: ${Math.round(cards.dam_storage.value_pct)}%`;
   }
   const elSideSoilSub = document.getElementById("side-soil-sub");
   if (elSideSoilSub) {
-    elSideSoilSub.textContent = isMr 
-      ? "रूट-झोन ओलावा समाधानकारक पातळीवर आहे." 
+    elSideSoilSub.textContent = isMr
+      ? "रूट-झोन ओलावा समाधानकारक पातळीवर आहे."
       : "Root-zone soil moisture is at an optimal level.";
   }
   const elSideRiskSource = document.getElementById("side-risk-source");
   if (elSideRiskSource) {
-    elSideRiskSource.textContent = isMr 
-      ? "भारतीय हवामान विभाग (IMD) व जलसंपदा • कृषी ML प्रणाली" 
+    elSideRiskSource.textContent = isMr
+      ? "भारतीय हवामान विभाग (IMD) व जलसंपदा • कृषी ML प्रणाली"
       : "IMD Pune & WRD Water Telemetry • Agri-ML Model";
   }
 
@@ -240,13 +240,13 @@ function updateDashboard(data) {
   const staleBanner = document.getElementById("stale-data-banner");
   if (staleBanner) {
     const isStale = (data.data_age_hours && data.data_age_hours > 24) ||
-                    (data.is_stale === true);
+      (data.is_stale === true);
     if (isStale) {
       staleBanner.style.display = "flex";
       const bannerText = document.getElementById("stale-banner-text");
       if (bannerText) {
-        bannerText.textContent = isMr 
-          ? "⚠️ हवामान डेटा सिंक प्रलंबित आहे. उपलब्ध सर्वात नवीन निरीक्षण दाखवत आहोत." 
+        bannerText.textContent = isMr
+          ? "⚠️ हवामान डेटा सिंक प्रलंबित आहे. उपलब्ध सर्वात नवीन निरीक्षण दाखवत आहोत."
           : "⚠️ Weather telemetry sync delayed by provider. Displaying latest confirmed observation.";
       }
     } else {
@@ -283,7 +283,7 @@ function renderTreeShapExplain(xai) {
 
   if (headlineEl && xai.farmer_summary) {
     const defaultHeadline = isMr ? "स्थानिक शेतकरी विश्लेषण (Agro-Driver Summary)" : "Agro-Driver Attribution Summary";
-    headlineEl.textContent = isMr 
+    headlineEl.textContent = isMr
       ? (xai.farmer_summary.headline_mr || defaultHeadline)
       : (xai.farmer_summary.headline_en || defaultHeadline);
   }
@@ -307,8 +307,8 @@ function renderTreeShapExplain(xai) {
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "treeshap-feature-name";
-      const escName = isMr 
-        ? (esc.name_mr || esc.feature_name_mr || esc.feature || esc.feature_key) 
+      const escName = isMr
+        ? (esc.name_mr || esc.feature_name_mr || esc.feature || esc.feature_key)
         : (esc.name_en || esc.feature_name_en || esc.feature || esc.feature_key);
       const icon = esc.icon ? `${esc.icon} ` : '';
       nameSpan.textContent = `${icon}${escName}`;
@@ -354,8 +354,8 @@ function renderTreeShapExplain(xai) {
       bufRow.className = "buffer-row";
 
       const bufName = document.createElement("span");
-      const bufNameStr = isMr 
-        ? (buf.name_mr || buf.feature_name_mr || buf.feature || buf.feature_key) 
+      const bufNameStr = isMr
+        ? (buf.name_mr || buf.feature_name_mr || buf.feature || buf.feature_key)
         : (buf.name_en || buf.feature_name_en || buf.feature || buf.feature_key);
       const bufIcon = buf.icon || '🛡️';
       bufName.textContent = `${bufIcon} ${bufNameStr}`;
@@ -372,8 +372,8 @@ function renderTreeShapExplain(xai) {
 
       const bufDesc = document.createElement("div");
       bufDesc.className = "buffer-desc";
-      bufDesc.textContent = isMr 
-        ? "हा घटक सध्याच्या परिस्थितीत दुष्काळाची तीव्रता रोखण्यास मदत करत आहे." 
+      bufDesc.textContent = isMr
+        ? "हा घटक सध्याच्या परिस्थितीत दुष्काळाची तीव्रता रोखण्यास मदत करत आहे."
         : "This parameter is currently providing physical resilience against worsening drought.";
 
       bufferBox.appendChild(bufRow);
@@ -415,16 +415,16 @@ function renderAdjacentTalukas(data) {
   // 1. Legacy & New Assessment Badges
   const badgeEl = document.getElementById("contagion-assessment-badge");
   if (badgeEl) {
-    badgeEl.textContent = isMr 
-      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित") 
+    badgeEl.textContent = isMr
+      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित")
       : (isAtRisk ? "⚠️ Regional Corridor Alert" : "🛡️ Regional Buffer Intact");
     badgeEl.className = isAtRisk ? "contagion-badge-warning" : "contagion-badge-safe";
   }
 
   const pillEl = document.getElementById("contagion-assessment-pill");
   if (pillEl) {
-    pillEl.textContent = isMr 
-      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित") 
+    pillEl.textContent = isMr
+      ? (isAtRisk ? "⚠️ प्रादेशिक कॉरिडॉर सतर्कता" : "🛡️ प्रादेशिक पट्टा सुरक्षित")
       : (isAtRisk ? "⚠️ Regional Corridor Alert" : "🛡️ Regional Buffer Intact");
     pillEl.className = isAtRisk ? "contagion-badge-warning" : "contagion-badge-safe";
   }
@@ -435,8 +435,8 @@ function renderAdjacentTalukas(data) {
     const defaultText = isAtRisk
       ? (isMr ? "शेजारील तालुक्यांमध्ये तीव्र कोरडा खंड व ओलावा तूट आढळली आहे." : "Nearby talukas exhibit active soil moisture deficit and dry spell conditions.")
       : (isMr ? "शेजारील तालुक्यांमध्ये ओलावा व पाणीसाठा समाधानकारक पातळीवर स्थिर आहे." : "Adjacent talukas maintain healthy root-zone moisture and stable reservoir storage.");
-    narrativeEl.textContent = isMr 
-      ? (ass.corridor_status_mr || defaultText) 
+    narrativeEl.textContent = isMr
+      ? (ass.corridor_status_mr || defaultText)
       : (ass.corridor_status_en || defaultText);
   }
 

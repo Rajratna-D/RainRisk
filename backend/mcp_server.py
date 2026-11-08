@@ -146,13 +146,15 @@ def get_taluka_risk(
     service = LazyServiceManager.get_service()
 
     try:
-        y = year if year is not None else 2026
-        m = month if month is not None else 10
+        year_val = year if isinstance(year, int) else None
+        month_val = month if isinstance(month, int) else None
+        y = year_val if year_val is not None else 2026
+        m = month_val if month_val is not None else 10
         row = service.resolve_taluka_row(resolved_name)
         code = int(row["taluka_lgd_code"])
         
         # ML-08: If specific historical period requested, evaluate target period features
-        if year is not None or month is not None:
+        if year_val is not None or month_val is not None:
             analysis = service.inference_engine.analyze_taluka(resolved_name, year=y, month=m)
             diag = analysis["live_diagnosis"]
             fc = analysis["30_day_forecast"]
@@ -233,7 +235,8 @@ def explain_drought_prediction(
     service = LazyServiceManager.get_service()
 
     try:
-        res = service.explain_taluka_v1(resolved_name, as_of_date)
+        date_str = as_of_date if isinstance(as_of_date, str) else None
+        res = service.explain_taluka_v1(resolved_name, date_str)
         pred = res.get("predicted_tier", {})
         pred_code = pred.get("code", 0) if isinstance(pred, dict) else int(pred)
         pred_label = pred.get("label_en", "Safe") if isinstance(pred, dict) else str(pred)
@@ -315,7 +318,7 @@ def get_bilingual_advisory(
         u_anchor = adv["university_anchor"]
         actions = adv["prescriptive_actions"]
 
-        lang_filter = language.strip().lower()
+        lang_filter = language.strip().lower() if isinstance(language, str) else "both"
 
         def _filter_lang(item: Any) -> Union[str, Dict[str, str]]:
             if isinstance(item, dict):
@@ -411,7 +414,8 @@ def get_adjacent_talukas(
     service = LazyServiceManager.get_service()
 
     try:
-        adj = service.get_adjacent_talukas(resolved_name, max_neighbors=max_neighbors)
+        max_n = max_neighbors if isinstance(max_neighbors, int) else 6
+        adj = service.get_adjacent_talukas(resolved_name, max_neighbors=max_n)
         return {
             "status": "SUCCESS",
             **adj

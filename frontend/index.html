@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
@@ -9,7 +10,9 @@
   <!-- Google Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="/assets/leaflet/leaflet.css">
@@ -25,13 +28,11 @@
   <style id="liquid-glass-card-critical">
     /* High-Priority Inlined Liquid Glass Card Styling (Guaranteed Immediate Render) */
     .lp-card {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.22) 0%,
-        rgba(255, 255, 255, 0.08) 22%,
-        rgba(18, 24, 38, 0.36) 55%,
-        rgba(255, 255, 255, 0.14) 100%
-      ) !important;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.22) 0%,
+          rgba(255, 255, 255, 0.08) 22%,
+          rgba(18, 24, 38, 0.36) 55%,
+          rgba(255, 255, 255, 0.14) 100%) !important;
       backdrop-filter: blur(64px) saturate(220%) brightness(1.14) !important;
       -webkit-backdrop-filter: blur(64px) saturate(220%) brightness(1.14) !important;
       border: 1px solid rgba(255, 255, 255, 0.28) !important;
@@ -43,26 +44,32 @@
         inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.25),
         0 0 35px rgba(255, 255, 255, 0.10) !important;
     }
+
     .lp-card::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 42%;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 100%);
       border-radius: 20px 20px 0 0;
       pointer-events: none;
       z-index: 1;
     }
+
     .lp-card-title {
       color: #ffffff !important;
       text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.9) !important;
     }
+
     .lp-card-body {
       color: #ffffff !important;
       font-weight: 500 !important;
       line-height: 1.7 !important;
       text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 0.9) !important;
     }
+
     .lp-card-tag {
       background: rgba(255, 255, 255, 0.16) !important;
       border: 1px solid rgba(255, 255, 255, 0.32) !important;
@@ -71,6 +78,7 @@
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85) !important;
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 2px 8px rgba(0, 0, 0, 0.25) !important;
     }
+
     .lp-card-icon {
       background: rgba(255, 255, 255, 0.16) !important;
       border: 1px solid rgba(255, 255, 255, 0.32) !important;
@@ -78,6 +86,7 @@
     }
   </style>
 </head>
+
 <body class="landing-active">
 
   <!-- ====================================================================
@@ -98,7 +107,8 @@
         <div class="lp-hero-inner" id="lp-hero-inner">
           <h1 class="lp-title">MAHA RAIN RISK</h1>
           <p class="lp-subtitle">
-            Hyper-local agritech drought early warning & climatological telemetry intelligence across Maharashtra's 194 talukas & 36 districts.
+            Hyper-local agritech drought early warning & climatological telemetry intelligence across Maharashtra's 194
+            talukas & 36 districts.
           </p>
 
           <!-- LIQUID GLASS STATS -->
@@ -129,7 +139,10 @@
 
           <button class="lp-scroll-cue" id="lp-scroll-cue" aria-label="Scroll down">
             <span>Explore Architecture</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="18" height="18">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </button>
         </div>
       </section>
@@ -143,11 +156,18 @@
             <div class="lp-card-sheen"></div>
             <div class="lp-card-accent" style="--accent: var(--accent-amber);"></div>
             <div class="lp-card-icon" style="color: var(--accent-amber);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="20" height="20">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
             </div>
             <h3 class="lp-card-title">Hyper-Local Taluka Telemetry</h3>
             <p class="lp-card-body">
-              Official Local Government Directory (LGD) taluka telemetry spanning 194 talukas across all 6 administrative divisions. Real-time monitoring of root-zone soil moisture, monsoon dry-spell tracking, and 12 major state dam reservoirs.
+              Official Local Government Directory (LGD) taluka telemetry spanning 194 talukas across all 6
+              administrative divisions. Real-time monitoring of root-zone soil moisture, monsoon dry-spell tracking, and
+              12 major state dam reservoirs.
             </p>
             <span class="lp-card-tag">194 Talukas &bull; 36 Districts</span>
           </div>
@@ -157,11 +177,24 @@
             <div class="lp-card-sheen"></div>
             <div class="lp-card-accent" style="--accent: var(--accent-teal);"></div>
             <div class="lp-card-icon" style="color: var(--accent-teal);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="20" height="20">
+                <rect width="16" height="16" x="4" y="4" rx="2" />
+                <rect width="6" height="6" x="9" y="9" rx="1" />
+                <path d="M15 2v2" />
+                <path d="M15 20v2" />
+                <path d="M2 15h2" />
+                <path d="M2 9h2" />
+                <path d="M20 15h2" />
+                <path d="M20 9h2" />
+                <path d="M9 2v2" />
+                <path d="M9 20v2" />
+              </svg>
             </div>
             <h3 class="lp-card-title">Dual-Mode ML Intelligence</h3>
             <p class="lp-card-body">
-              250-tree Random Forest diagnostic classifier delivering 98.0% test accuracy across drought severity classes, coupled with a 30-day early warning forecaster for timely Kharif crop interventions.
+              250-tree Random Forest diagnostic classifier delivering 98.0% test accuracy across drought severity
+              classes, coupled with a 30-day early warning forecaster for timely Kharif crop interventions.
             </p>
             <span class="lp-card-tag">98.0% Diagnostic Accuracy</span>
           </div>
@@ -170,10 +203,21 @@
           <div class="lp-center" id="lp-center-cta">
             <button class="lp-launch" id="launch-dashboard-cta">
               <span>Launch Dashboard</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round" width="18" height="18">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
             </button>
-            <a href="https://github.com/Rajratna-D/RainRisk" target="_blank" rel="noopener noreferrer" class="lp-github">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            <a href="https://github.com/Rajratna-D/RainRisk" target="_blank" rel="noopener noreferrer"
+              class="lp-github">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="13" height="13">
+                <line x1="6" y1="3" x2="6" y2="15" />
+                <circle cx="18" cy="6" r="3" />
+                <circle cx="6" cy="18" r="3" />
+                <path d="M18 9a9 9 0 0 1-9 9" />
+              </svg>
               <span>View Code on GitHub</span>
             </a>
           </div>
@@ -183,11 +227,17 @@
             <div class="lp-card-sheen"></div>
             <div class="lp-card-accent" style="--accent: var(--accent-cyan);"></div>
             <div class="lp-card-icon" style="color: var(--accent-cyan);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="20" height="20">
+                <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+              </svg>
             </div>
             <h3 class="lp-card-title">Ocean & Climate Teleconnections</h3>
             <p class="lp-card-body">
-              McKee Standardized Precipitation Index (SPI-1, SPI-3, SPI-6) coupled with NOAA Pacific Niño 3.4 SST and JAMSTEC Dipole Mode Index (IOD) anomalies for physical planetary climate resonance.
+              McKee Standardized Precipitation Index (SPI-1, SPI-3, SPI-6) coupled with NOAA Pacific Niño 3.4 SST and
+              JAMSTEC Dipole Mode Index (IOD) anomalies for physical planetary climate resonance.
             </p>
             <span class="lp-card-tag">SPI-1/3/6 &bull; Niño 3.4 &bull; IOD</span>
           </div>
@@ -197,11 +247,16 @@
             <div class="lp-card-sheen"></div>
             <div class="lp-card-accent" style="--accent: var(--accent-sky);"></div>
             <div class="lp-card-icon" style="color: var(--accent-sky);">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="20" height="20">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
             </div>
             <h3 class="lp-card-title">State University Advisories</h3>
             <p class="lp-card-body">
-              Official agronomic recommendations tailored to Maharashtra's 4 state agricultural universities (MPKV Rahuri, VNMKV Parbhani, PDKV Akola, BSKKV Dapoli) with native Marathi and English neural audio narration.
+              Official agronomic recommendations tailored to Maharashtra's 4 state agricultural universities (MPKV
+              Rahuri, VNMKV Parbhani, PDKV Akola, BSKKV Dapoli) with native Marathi and English neural audio narration.
             </p>
             <span class="lp-card-tag">4 State Agri Universities</span>
           </div>
@@ -220,69 +275,72 @@
     <aside class="left-dock" aria-label="Quick Actions Dock">
       <div class="dock-cluster">
         <!-- Return to Landing Page -->
-        <button class="dock-icon-btn" id="dock-btn-landing" title="← Return to Landing Page" onclick="returnToLanding()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-            <polyline points="9 22 9 12 15 12 15 22"/>
+        <button class="dock-icon-btn" id="dock-btn-landing" title="← Return to Landing Page"
+          onclick="returnToLanding()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
         </button>
 
         <!-- Top: Greenhouse Crop View -->
         <button class="dock-icon-btn active" id="dock-btn-greenhouse" title="Crop View (पिक पाहणी)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a10 10 0 0 0-7.07 17.07L12 22l7.07-2.93A10 10 0 0 0 12 2z"/>
-            <path d="M12 6v8"/>
-            <path d="M8 10l4-4 4 4"/>
+            <path d="M12 2a10 10 0 0 0-7.07 17.07L12 22l7.07-2.93A10 10 0 0 0 12 2z" />
+            <path d="M12 6v8" />
+            <path d="M8 10l4-4 4 4" />
           </svg>
         </button>
 
         <!-- Soil & Water Telemetry -->
         <button class="dock-icon-btn" id="dock-btn-water" title="Soil Moisture (जमिनीतील ओलावा)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
           </svg>
         </button>
 
         <!-- Calendar / Monsoon Dry Spells -->
-        <button class="dock-icon-btn" id="dock-btn-calendar" title="Monsoon Calendar & Dry Spells (पावसातील खंड दिनदर्शिका)">
+        <button class="dock-icon-btn" id="dock-btn-calendar"
+          title="Monsoon Calendar & Dry Spells (पावसातील खंड दिनदर्शिका)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </button>
 
         <!-- Sliders: What-If Drought Simulator -->
         <button class="dock-icon-btn" id="dock-btn-sliders" title="What-If Drought Simulator (दुष्काळ सिम्युलेटर)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"/>
-            <line x1="4" y1="10" x2="4" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="12"/>
-            <line x1="12" y1="8" x2="12" y2="3"/>
-            <line x1="20" y1="21" x2="20" y2="16"/>
-            <line x1="20" y1="12" x2="20" y2="3"/>
-            <line x1="1" y1="14" x2="7" y2="14"/>
-            <line x1="9" y1="8" x2="15" y2="8"/>
-            <line x1="17" y1="16" x2="23" y2="16"/>
+            <line x1="4" y1="21" x2="4" y2="14" />
+            <line x1="4" y1="10" x2="4" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12" y2="3" />
+            <line x1="20" y1="21" x2="20" y2="16" />
+            <line x1="20" y1="12" x2="20" y2="3" />
+            <line x1="1" y1="14" x2="7" y2="14" />
+            <line x1="9" y1="8" x2="15" y2="8" />
+            <line x1="17" y1="16" x2="23" y2="16" />
           </svg>
         </button>
 
         <!-- Notebook: University Advisory Drawer -->
         <button class="dock-icon-btn" id="dock-btn-notes" title="Official University Advisory (कृषी विद्यापीठ सल्ला)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-            <path d="M6 6h10"/>
-            <path d="M6 10h10"/>
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+            <path d="M6 6h10" />
+            <path d="M6 10h10" />
           </svg>
         </button>
 
         <!-- Maharashtra 194-Talukas GIS Map Grid -->
         <button class="dock-icon-btn" id="dock-btn-grid" title="Maharashtra Talukas Map (महाराष्ट्र नकाशा)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
-            <line x1="9" x2="9" y1="3" y2="18"/>
-            <line x1="15" x2="15" y1="6" y2="21"/>
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+            <line x1="9" x2="9" y1="3" y2="18" />
+            <line x1="15" x2="15" y1="6" y2="21" />
           </svg>
         </button>
       </div>
@@ -291,17 +349,20 @@
         <!-- Settings & Data Sources -->
         <button class="dock-icon-btn" id="dock-btn-settings" title="Verified Data Sources (माहिती व स्रोत)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg>
         </button>
 
         <!-- Official Department of Agriculture Emblem Badge -->
-        <div class="agri-dept-badge" id="btn-agri-dept" title="महाराष्ट्र शासन कृषी विभाग (Department of Agriculture, GoM)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#2D5A27" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
-            <path d="M12 22v-9"/>
-            <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5"/>
-            <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5"/>
+        <div class="agri-dept-badge" id="btn-agri-dept"
+          title="महाराष्ट्र शासन कृषी विभाग (Department of Agriculture, GoM)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2D5A27" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="20" height="20">
+            <path d="M12 22v-9" />
+            <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5" />
+            <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5" />
           </svg>
         </div>
       </div>
@@ -312,18 +373,21 @@
 
       <!-- TOP COMMAND BAR -->
       <header class="top-header">
-        <div class="brand-section" onclick="returnToLanding()" style="cursor: pointer;" title="← Return to Landing Page">
+        <div class="brand-section" onclick="returnToLanding()" style="cursor: pointer;"
+          title="← Return to Landing Page">
           <div class="brand-badge-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
-              <path d="M12 2a10 10 0 0 0-7.07 17.07L12 22l7.07-2.93A10 10 0 0 0 12 2z"/>
-              <path d="M12 6v8"/>
-              <path d="M8 10l4-4 4 4"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round" width="22" height="22">
+              <path d="M12 2a10 10 0 0 0-7.07 17.07L12 22l7.07-2.93A10 10 0 0 0 12 2z" />
+              <path d="M12 6v8" />
+              <path d="M8 10l4-4 4 4" />
             </svg>
           </div>
           <div>
             <h1 class="brand-title-text" id="brand-title-text">महा-रेन-रिस्क</h1>
           </div>
-          <button class="exit-to-landing-btn" onclick="event.stopPropagation(); returnToLanding();" title="Return to Landing Page" style="margin-left: 8px;">
+          <button class="exit-to-landing-btn" onclick="event.stopPropagation(); returnToLanding();"
+            title="Return to Landing Page" style="margin-left: 8px;">
             <span>← Landing Page</span>
           </button>
           <span class="brand-sub-badge" id="brand-sub-badge" style="display: none;"></span>
@@ -332,34 +396,34 @@
         <!-- Search Bar + Voice Recognition Input -->
         <div class="search-center-group">
           <div class="search-input-pill">
-            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-              <circle cx="11" cy="11" r="8"/>
-              <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" x2="16.65" y1="21" y2="16.65" />
             </svg>
-            <input 
-              type="text" 
-              id="taluka-search-input" 
-              placeholder="तालुका शोधा (उदा. पैठण, बारामती, मेहकर)..." 
-              autocomplete="off"
-            >
+            <input type="text" id="taluka-search-input" placeholder="तालुका शोधा (उदा. पैठण, बारामती, मेहकर)..."
+              autocomplete="off">
             <div class="autocomplete-box" id="autocomplete-list"></div>
           </div>
 
           <!-- GPS 1-Tap Location Snapping Button (Desktop & Mobile) -->
-          <button class="gps-pill-btn" id="btn-gps-locate" title="माझा तालुका शोधा (Locate My Taluka via GPS)" onclick="locateUserTaluka()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-              <circle cx="12" cy="12" r="7"/>
+          <button class="gps-pill-btn" id="btn-gps-locate" title="माझा तालुका शोधा (Locate My Taluka via GPS)"
+            onclick="locateUserTaluka()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round" width="17" height="17">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+              <circle cx="12" cy="12" r="7" />
             </svg>
           </button>
 
           <!-- Web Speech API Voice Recognition Button -->
           <button class="mic-pill-btn" id="voice-mic-btn" title="बोलून शोधा (Speak Taluka Name)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
-              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-              <line x1="12" x2="12" y1="19" y2="22"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round" width="17" height="17">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
             </svg>
           </button>
         </div>
@@ -369,13 +433,14 @@
           <!-- Glowing Lime-Green AI Assistant Button with Modern Multi-Sparkle Icon -->
           <button class="glowing-ai-btn" id="open-advisory-btn" title="कृषी AI निर्णय प्लॅनर (AI Decision Support)">
             <svg class="ai-sparkle-icon" viewBox="0 0 24 24" fill="none" width="18" height="18">
-              <path d="M12 2L14.6 7.8L21 10.2L14.6 12.6L12 18.4L9.4 12.6L3 10.2L9.4 7.8L12 2Z" fill="url(#ai-grad-sparkle)" stroke="#0E3813" stroke-width="1.8" stroke-linejoin="round"/>
-              <path d="M19 14L20 16.2L22.5 17L20 17.8L19 20L18 17.8L15.5 17L18 16.2L19 14Z" fill="#143516"/>
-              <path d="M5.5 2.5L6.2 4L8 4.6L6.2 5.2L5.5 6.7L4.8 5.2L3 4.6L4.8 4L5.5 2.5Z" fill="#143516"/>
+              <path d="M12 2L14.6 7.8L21 10.2L14.6 12.6L12 18.4L9.4 12.6L3 10.2L9.4 7.8L12 2Z"
+                fill="url(#ai-grad-sparkle)" stroke="#0E3813" stroke-width="1.8" stroke-linejoin="round" />
+              <path d="M19 14L20 16.2L22.5 17L20 17.8L19 20L18 17.8L15.5 17L18 16.2L19 14Z" fill="#143516" />
+              <path d="M5.5 2.5L6.2 4L8 4.6L6.2 5.2L5.5 6.7L4.8 5.2L3 4.6L4.8 4L5.5 2.5Z" fill="#143516" />
               <defs>
                 <linearGradient id="ai-grad-sparkle" x1="12" y1="2" x2="12" y2="18.4" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#FFFFFF" stop-opacity="0.95"/>
-                  <stop offset="1" stop-color="#B5F03A" stop-opacity="0.55"/>
+                  <stop stop-color="#FFFFFF" stop-opacity="0.95" />
+                  <stop offset="1" stop-color="#B5F03A" stop-opacity="0.55" />
                 </linearGradient>
               </defs>
             </svg>
@@ -385,26 +450,27 @@
           <!-- 1. Lightbulb: Farmer Seasonal Tips -->
           <button class="top-round-icon-btn" id="btn-tips" title="शेतकरी हंगामी टिप्स (Farmer Tips)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/>
-              <path d="M9 18h6"/>
-              <path d="M10 22h4"/>
+              <path
+                d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
             </svg>
           </button>
 
           <!-- 2. Download: Export Taluka Telemetry Report -->
           <button class="top-round-icon-btn" id="btn-download" title="अहवाल डाउनलोड करा (Download Report)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
           </button>
 
           <!-- 3. Bell: Weather & Drought Alerts -->
           <button class="top-round-icon-btn" id="btn-alerts" title="दुष्काळ व हवामान सतर्कता (Active Alerts)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
             <span class="btn-badge-dot"></span>
           </button>
@@ -412,14 +478,15 @@
           <!-- 4. Refresh: Live Telemetry Sync -->
           <button class="top-round-icon-btn" id="btn-refresh" title="थेट डेटा रिफ्रेश (Live Refresh)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 4 23 10 17 10"/>
-              <polyline points="1 20 1 14 7 14"/>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
             </svg>
           </button>
 
           <!-- 5. Language Switcher (EN / मराठी) -->
-          <button class="top-round-icon-btn" id="btn-lang" title="Switch to English (इंग्रजीत पहा)" style="font-size: 11px; font-weight: 800;">
+          <button class="top-round-icon-btn" id="btn-lang" title="Switch to English (इंग्रजीत पहा)"
+            style="font-size: 11px; font-weight: 800;">
             <span id="lang-tag">🌐 English</span>
           </button>
         </div>
@@ -428,12 +495,14 @@
       <!-- STALE DATA WARNING BANNER -->
       <div class="stale-warning-banner" id="stale-data-banner" style="display: none;">
         <div class="stale-banner-content">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
-          <span id="stale-banner-text">हवामान डेटा सिंक प्रलंबित आहे. उपलब्ध सर्वात नवीन निरीक्षण दाखवत आहोत. (Telemetry sync delayed by provider. Displaying latest confirmed observation.)</span>
+          <span id="stale-banner-text">हवामान डेटा सिंक प्रलंबित आहे. उपलब्ध सर्वात नवीन निरीक्षण दाखवत आहोत. (Telemetry
+            sync delayed by provider. Displaying latest confirmed observation.)</span>
         </div>
       </div>
 
@@ -447,20 +516,22 @@
           <div class="canvas-tab-bar">
             <button class="canvas-tab-pill active" id="tab-btn-farmer" onclick="switchMainTab('farmer')">
               <span class="tab-pill-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-                  <path d="M12 22v-9"/>
-                  <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5"/>
-                  <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                  stroke-linejoin="round" width="13" height="13">
+                  <path d="M12 22v-9" />
+                  <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5" />
+                  <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5" />
                 </svg>
               </span>
               <span id="tab-label-farmer">शेतकरी माहिती</span>
             </button>
             <button class="canvas-tab-pill" id="tab-btn-analytics" onclick="switchMainTab('analytics')">
               <span class="tab-pill-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
-                  <line x1="18" y1="20" x2="18" y2="10"/>
-                  <line x1="12" y1="20" x2="12" y2="4"/>
-                  <line x1="6" y1="20" x2="6" y2="14"/>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                  stroke-linejoin="round" width="13" height="13">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
                 </svg>
               </span>
               <span id="tab-label-analytics">सविस्तर आलेख</span>
@@ -485,10 +556,19 @@
               <!-- Hero Top View Switcher (Z-INDEX PROTECTED: Never disappears) -->
               <div class="hero-view-switch-pill" id="hero-view-switch-pill">
                 <div class="hero-switch-opt active" id="switch-crop-view" onclick="toggleHeroView('crop')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" style="vertical-align: -1px; margin-right: 3px;"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg><span id="label-crop-view">पीक पाहणी</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round" width="12" height="12" style="vertical-align: -1px; margin-right: 3px;">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                  </svg><span id="label-crop-view">पीक पाहणी</span>
                 </div>
                 <div class="hero-switch-opt" id="switch-map-view" onclick="toggleHeroView('map')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12" style="vertical-align: -1px; margin-right: 3px;"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg><span id="label-map-view">महाराष्ट्र नकाशा</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round" width="12" height="12" style="vertical-align: -1px; margin-right: 3px;">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                    <line x1="9" y1="3" x2="9" y2="18" />
+                    <line x1="15" y1="6" x2="15" y2="21" />
+                  </svg><span id="label-map-view">महाराष्ट्र नकाशा</span>
                 </div>
               </div>
 
@@ -504,15 +584,19 @@
               <div class="floating-harvest-card" id="harvest-ai-card">
                 <div class="harvest-top-row">
                   <div class="harvest-sparkle-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                      stroke-linejoin="round" width="14" height="14">
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                     </svg>
                     <span id="harvest-card-title">दुष्काळ जोखीम मीटर</span>
                   </div>
-                  <div class="card-diagonal-arrow" id="open-gauge-advisory-btn" onclick="openAiModal()" style="cursor: pointer;" title="सल्ला पहा">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="7" x2="17" y1="17" y2="7"/>
-                      <polyline points="7 7 17 7 17 17"/>
+                  <div class="card-diagonal-arrow" id="open-gauge-advisory-btn" onclick="openAiModal()"
+                    style="cursor: pointer;" title="सल्ला पहा">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="7" x2="17" y1="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
                     </svg>
                   </div>
                 </div>
@@ -520,16 +604,17 @@
                 <!-- Semi-Circle Arc Risk Gauge -->
                 <div class="gauge-arc-wrapper">
                   <svg class="gauge-svg-element" viewBox="0 0 170 94">
-                    <path class="arc-track-base" d="M 15 82 A 70 70 0 0 1 155 82"/>
-                    <path class="arc-fill-active" id="hero-gauge-path" d="M 15 82 A 70 70 0 0 1 155 82"/>
+                    <path class="arc-track-base" d="M 15 82 A 70 70 0 0 1 155 82" />
+                    <path class="arc-fill-active" id="hero-gauge-path" d="M 15 82 A 70 70 0 0 1 155 82" />
                   </svg>
 
                   <div class="gauge-inside-center">
                     <div class="gauge-crop-badge">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#2D5A27" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
-                        <path d="M12 22v-9"/>
-                        <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5"/>
-                        <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#2D5A27" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round" width="15" height="15">
+                        <path d="M12 22v-9" />
+                        <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5" />
+                        <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5" />
                       </svg>
                     </div>
                     <div class="gauge-bold-num" id="hero-gauge-num">सुरक्षित</div>
@@ -547,9 +632,10 @@
               <div class="mini-metric-card" id="card-indoor-climate">
                 <div class="card-top-icon-title">
                   <div class="mini-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
-                      <path d="M16 14v6M8 14v6M12 16v6"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                      <path d="M16 14v6M8 14v6M12 16v6" />
                     </svg>
                   </div>
                   <span class="mini-card-title" id="title-climate">३ महिन्यांचा पाऊस</span>
@@ -560,7 +646,8 @@
                       <span id="val-climate">१८६.८</span>
                       <span class="mini-unit">mm</span>
                     </div>
-                    <div class="farmer-status-pill" id="pill-rain" style="background: rgba(16, 185, 129, 0.12); color: #047857;">
+                    <div class="farmer-status-pill" id="pill-rain"
+                      style="background: rgba(16, 185, 129, 0.12); color: #047857;">
                       पाऊस समाधानकारक
                     </div>
                   </div>
@@ -571,8 +658,9 @@
               <div class="mini-metric-card" id="card-air-moisture">
                 <div class="card-top-icon-title">
                   <div class="mini-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
                     </svg>
                   </div>
                   <span class="mini-card-title" id="title-moisture">जमिनीतील ओलावा</span>
@@ -583,7 +671,8 @@
                       <span id="val-moisture">६६.९</span>
                       <span class="mini-unit">%</span>
                     </div>
-                    <div class="farmer-status-pill" id="pill-soil" style="background: rgba(16, 185, 129, 0.12); color: #047857;">
+                    <div class="farmer-status-pill" id="pill-soil"
+                      style="background: rgba(16, 185, 129, 0.12); color: #047857;">
                       ओलावा पुरेसा आहे
                     </div>
                   </div>
@@ -594,10 +683,13 @@
               <div class="mini-metric-card" id="card-light-level">
                 <div class="card-top-icon-title">
                   <div class="mini-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                      <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
-                      <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                      <path
+                        d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                      <path
+                        d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
                     </svg>
                   </div>
                   <span class="mini-card-title" id="title-light">धरण पाणीसाठा</span>
@@ -608,7 +700,8 @@
                       <span id="val-light">७२.५</span>
                       <span class="mini-unit">%</span>
                     </div>
-                    <div class="farmer-status-pill" id="pill-dam" style="background: rgba(16, 185, 129, 0.12); color: #047857;">
+                    <div class="farmer-status-pill" id="pill-dam"
+                      style="background: rgba(16, 185, 129, 0.12); color: #047857;">
                       जायकवाडी धरण (मुबलक)
                     </div>
                   </div>
@@ -619,9 +712,11 @@
               <div class="mini-metric-card" id="card-ec-level">
                 <div class="card-top-icon-title">
                   <div class="mini-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="4"/>
-                      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="4" />
+                      <path
+                        d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                     </svg>
                   </div>
                   <span class="mini-card-title" id="title-ec">पावसातील खंड दिवस</span>
@@ -632,7 +727,8 @@
                       <span id="val-ec">४</span>
                       <span class="mini-unit" id="unit-ec">दिवस</span>
                     </div>
-                    <div class="farmer-status-pill" id="pill-dry" style="background: rgba(16, 185, 129, 0.12); color: #047857;">
+                    <div class="farmer-status-pill" id="pill-dry"
+                      style="background: rgba(16, 185, 129, 0.12); color: #047857;">
                       पावसात मोठा खंड नाही
                     </div>
                   </div>
@@ -645,12 +741,26 @@
             <div class="farmer-direct-advisory-card" id="farmer-direct-advisory">
               <div class="advisory-card-header">
                 <div class="advisory-badge-pill">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" style="vertical-align: -2px; margin-right: 4px;"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="15" height="15" style="vertical-align: -2px; margin-right: 4px;">
+                    <line x1="3" y1="22" x2="21" y2="22" />
+                    <line x1="6" y1="18" x2="6" y2="11" />
+                    <line x1="10" y1="18" x2="10" y2="11" />
+                    <line x1="14" y1="18" x2="14" y2="11" />
+                    <line x1="18" y1="18" x2="18" y2="11" />
+                    <polygon points="12 2 20 7 4 7" />
+                  </svg>
                   <span id="farmer-uni-title">वसंतराव नाईक मराठवाडा कृषी विद्यापीठ शिफारस</span>
                 </div>
-                <button class="tts-inline-btn" id="tts-inline-btn" onclick="toggleAudioSpeech()" aria-label="Listen to Audio Advisory">
+                <button class="tts-inline-btn" id="tts-inline-btn" onclick="toggleAudioSpeech()"
+                  aria-label="Listen to Audio Advisory">
                   <span id="tts-inline-label" style="display: inline-flex; align-items: center; gap: 5px;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" width="13" height="13">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
                     <span>सल्ला ऐका</span>
                   </span>
                 </button>
@@ -659,29 +769,42 @@
               <div class="advisory-action-rows" id="advisory-action-rows">
                 <div class="advisory-action-item">
                   <div class="action-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                    </svg>
                   </div>
                   <div class="action-text-group">
                     <strong id="act-title-irrigation">सिंचन नियोजन:</strong>
-                    <span id="act-text-irrigation">जमिनीत ओलावा चांगला असल्याने पुढील ४ दिवस पाणी देण्याची गरज नाही. हलके पाणी द्यावे.</span>
+                    <span id="act-text-irrigation">जमिनीत ओलावा चांगला असल्याने पुढील ४ दिवस पाणी देण्याची गरज नाही.
+                      हलके पाणी द्यावे.</span>
                   </div>
                 </div>
                 <div class="advisory-action-item">
                   <div class="action-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                    </svg>
                   </div>
                   <div class="action-text-group">
                     <strong id="act-title-conservation">ओलावा संवर्धन:</strong>
-                    <span id="act-text-conservation">पिकाच्या ओळींत पाचट किंवा भुसा आच्छादन (Mulching) केल्यास बाष्पीभवन रोखले जाईल.</span>
+                    <span id="act-text-conservation">पिकाच्या ओळींत पाचट किंवा भुसा आच्छादन (Mulching) केल्यास बाष्पीभवन
+                      रोखले जाईल.</span>
                   </div>
                 </div>
                 <div class="advisory-action-item">
                   <div class="action-icon-circle">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" />
+                    </svg>
                   </div>
                   <div class="action-text-group">
                     <strong id="act-title-nutrients">खत व फवारणी उपाय:</strong>
-                    <span id="act-text-nutrients">पावसात खंड पडल्यास १% पोटॅशियम नायट्रेट (१०० ग्रॅम प्रति १० लिटर पाणी) फवारावे.</span>
+                    <span id="act-text-nutrients">पावसात खंड पडल्यास १% पोटॅशियम नायट्रेट (१०० ग्रॅम प्रति १० लिटर पाणी)
+                      फवारावे.</span>
                   </div>
                 </div>
               </div>
@@ -700,10 +823,11 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" x2="18" y1="20" y2="10"/>
-                        <line x1="12" x2="12" y1="20" y2="4"/>
-                        <line x1="6" x2="6" y1="20" y2="14"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="18" x2="18" y1="20" y2="10" />
+                        <line x1="12" x2="12" y1="20" y2="4" />
+                        <line x1="6" x2="6" y1="20" y2="14" />
                       </svg>
                     </div>
                     <span id="title-growth">मागील ५ वर्षांचा पाऊस (IMD Pune)</span>
@@ -713,7 +837,8 @@
                 <div>
                   <div class="growth-val-bold">
                     <span id="val-growth">८२४</span>
-                    <span style="font-size: 13px; font-weight: 600; color: #64748B;" id="unit-growth">mm वार्षिक सरासरी</span>
+                    <span style="font-size: 13px; font-weight: 600; color: #64748B;" id="unit-growth">mm वार्षिक
+                      सरासरी</span>
                   </div>
                   <div style="font-size: 11px; color: #64748B; margin-top: 2px;" id="growth-subtext">
                     २०२३ मधील दुष्काळ vs २०२२ चा चांगला पाऊस
@@ -740,9 +865,10 @@
                 <div class="panel-header-row">
                   <div class="panel-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                        <polyline points="17 6 23 6 23 12"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                        <polyline points="17 6 23 6 23 12" />
                       </svg>
                     </div>
                     <span id="title-co2">पुढील ३० दिवसांचा अंदाज</span>
@@ -764,16 +890,22 @@
                   <svg class="stepped-svg" viewBox="0 0 280 54" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="stepGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#5E8A42" stop-opacity="0.3"/>
-                        <stop offset="100%" stop-color="#5E8A42" stop-opacity="0.02"/>
+                        <stop offset="0%" stop-color="#5E8A42" stop-opacity="0.3" />
+                        <stop offset="100%" stop-color="#5E8A42" stop-opacity="0.02" />
                       </linearGradient>
                     </defs>
-                    <path d="M 0 46 L 40 46 L 40 36 L 80 36 L 80 26 L 120 26 L 120 18 L 160 18 L 160 22 L 200 22 L 200 12 L 240 12 L 240 46 L 280 46 L 280 54 L 0 54 Z" fill="url(#stepGrad)"/>
-                    <path d="M 0 46 L 40 46 L 40 36 L 80 36 L 80 26 L 120 26 L 120 18 L 160 18 L 160 22 L 200 22 L 200 12 L 240 12 L 240 46 L 280 46" fill="none" stroke="#5E8A42" stroke-width="2.2"/>
+                    <path
+                      d="M 0 46 L 40 46 L 40 36 L 80 36 L 80 26 L 120 26 L 120 18 L 160 18 L 160 22 L 200 22 L 200 12 L 240 12 L 240 46 L 280 46 L 280 54 L 0 54 Z"
+                      fill="url(#stepGrad)" />
+                    <path
+                      d="M 0 46 L 40 46 L 40 36 L 80 36 L 80 26 L 120 26 L 120 18 L 160 18 L 160 22 L 200 22 L 200 12 L 240 12 L 240 46 L 280 46"
+                      fill="none" stroke="#5E8A42" stroke-width="2.2" />
                   </svg>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #94A3B8;" id="step-dates-row">
+                <div
+                  style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #94A3B8;"
+                  id="step-dates-row">
                   <span>पहिला आठवडा</span>
                   <span>दुसरा आठवडा</span>
                   <span>तिसरा आठवडा</span>
@@ -786,8 +918,9 @@
                 <div class="panel-header-row">
                   <div class="panel-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
                       </svg>
                     </div>
                     <span id="title-water-flow">पाणी साठा बॅटरी</span>
@@ -810,8 +943,9 @@
                 <div class="panel-header-row">
                   <div class="panel-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                       </svg>
                     </div>
                     <span id="title-power">पावसाचा ताण व खंड दिवस</span>
@@ -824,7 +958,7 @@
                     <span style="font-size: 13px; font-weight: 600; color: #64748B;" id="unit-power">दिवस खंड</span>
                   </div>
                   <div style="font-size: 11px; color: #64748B; margin-top: 2px;" id="sub-power">
-                    <span>पाऊस पडलेले दिवस: <strong style="color: #047857;">२१ दिवस</strong></span> • 
+                    <span>पाऊस पडलेले दिवस: <strong style="color: #047857;">२१ दिवस</strong></span> •
                     <span>ताण: <strong style="color: #047857;">कमी</strong></span>
                   </div>
                 </div>
@@ -833,7 +967,9 @@
                   <!-- Populated dynamically -->
                 </div>
 
-                <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #94A3B8; margin-top: 4px;" id="power-months-row">
+                <div
+                  style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #94A3B8; margin-top: 4px;"
+                  id="power-months-row">
                   <span>जून</span>
                   <span>जुलै</span>
                   <span style="color: #F97316;">ऑगस्ट (ताण)</span>
@@ -847,7 +983,13 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path
+                          d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
                     </div>
                     <span id="title-climate-indices">Climate Driver Indices & SPI Deficit</span>
                   </div>
@@ -855,28 +997,53 @@
                 </div>
                 <div class="ai-climate-tags" style="margin-top: 6px;">
                   <span class="climate-pill" id="pill-nino">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path
+                        d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                    </svg>
                     <span id="txt-pill-nino">Niño 3.4 (ENSO): Neutral (-0.12°C)</span>
                   </span>
                   <span class="climate-pill" id="pill-iod">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                    </svg>
                     <span id="txt-pill-iod">DMI (IOD): Positive (+0.32°C)</span>
                   </span>
                   <span class="climate-pill" id="pill-spi1">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
                     <span id="txt-pill-spi1">SPI-1: -0.22 (Normal)</span>
                   </span>
                   <span class="climate-pill" id="pill-spi3">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
                     <span id="txt-pill-spi3">SPI-3: -0.45 (Mild Deficit)</span>
                   </span>
                   <span class="climate-pill" id="pill-spi6">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
                     <span id="txt-pill-spi6">SPI-6: +0.10 (Adequate)</span>
                   </span>
                 </div>
                 <div class="ai-diagnostic-summary" style="margin-top: 8px;" id="climatology-summary-text">
-                  <strong>McKee et al. (1993) 2-Parameter Gamma Distribution:</strong> Past 3-month SPI index is -0.45, reflecting mild root-zone moisture deficit. Pacific and Indian Ocean teleconnections remain favorable for rainfall.
+                  <strong>McKee et al. (1993) 2-Parameter Gamma Distribution:</strong> Past 3-month SPI index is -0.45,
+                  reflecting mild root-zone moisture deficit. Pacific and Indian Ocean teleconnections remain favorable
+                  for rainfall.
                 </div>
               </div>
 
@@ -885,26 +1052,47 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <rect x="9" y="9" width="6" height="6" />
+                        <line x1="9" y1="1" x2="9" y2="4" />
+                        <line x1="15" y1="1" x2="15" y2="4" />
+                        <line x1="9" y1="20" x2="9" y2="23" />
+                        <line x1="15" y1="20" x2="15" y2="23" />
+                        <line x1="20" y1="9" x2="23" y2="9" />
+                        <line x1="20" y1="14" x2="23" y2="14" />
+                        <line x1="1" y1="9" x2="4" y2="9" />
+                        <line x1="1" y1="14" x2="4" y2="14" />
+                      </svg>
                     </div>
                     <span id="title-ml-models">Machine Learning Model Telemetry</span>
                   </div>
                   <span class="ai-card-chip" id="chip-ml-model">Random Forest + GBDT</span>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap;">
-                  <div style="flex: 1; min-width: 140px; background: rgba(16, 185, 129, 0.08); border-left: 3px solid #10B981; padding: 6px 10px; border-radius: 0 6px 6px 0;">
-                    <div style="font-size: 11px; font-weight: 700; color: #047857;" id="ml-m1-title">Mode 1: 250-Tree RF Diagnostic Model</div>
-                    <div style="font-size: 17px; font-weight: 800; color: #065F46;" id="ml-m1-acc">98.2% Test Accuracy</div>
-                    <div style="font-size: 10.5px; color: #475569;" id="ml-m1-sub">194 Talukas • 36 Districts (2014–2026)</div>
+                  <div
+                    style="flex: 1; min-width: 140px; background: rgba(16, 185, 129, 0.08); border-left: 3px solid #10B981; padding: 6px 10px; border-radius: 0 6px 6px 0;">
+                    <div style="font-size: 11px; font-weight: 700; color: #047857;" id="ml-m1-title">Mode 1: 250-Tree RF
+                      Diagnostic Model</div>
+                    <div style="font-size: 17px; font-weight: 800; color: #065F46;" id="ml-m1-acc">98.2% Test Accuracy
+                    </div>
+                    <div style="font-size: 10.5px; color: #475569;" id="ml-m1-sub">194 Talukas • 36 Districts
+                      (2014–2026)</div>
                   </div>
-                  <div style="flex: 1; min-width: 140px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid #3B82F6; padding: 6px 10px; border-radius: 0 6px 6px 0;">
-                    <div style="font-size: 11px; font-weight: 700; color: #1D4ED8;" id="ml-m2-title">Mode 2: 30-Day Early Warning Forecaster</div>
-                    <div style="font-size: 17px; font-weight: 800; color: #1E40AF;" id="ml-m2-acc">77.4% Deficit Accuracy</div>
-                    <div style="font-size: 10.5px; color: #475569;" id="ml-m2-sub">Calibrated on Kharif 2026 Drought Shock</div>
+                  <div
+                    style="flex: 1; min-width: 140px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid #3B82F6; padding: 6px 10px; border-radius: 0 6px 6px 0;">
+                    <div style="font-size: 11px; font-weight: 700; color: #1D4ED8;" id="ml-m2-title">Mode 2: 30-Day
+                      Early Warning Forecaster</div>
+                    <div style="font-size: 17px; font-weight: 800; color: #1E40AF;" id="ml-m2-acc">77.4% Deficit
+                      Accuracy</div>
+                    <div style="font-size: 10.5px; color: #475569;" id="ml-m2-sub">Calibrated on Kharif 2026 Drought
+                      Shock</div>
                   </div>
                 </div>
                 <div style="font-size: 11px; color: #64748B; margin-top: 8px;" id="ml-features-desc">
-                  Input Features: IMD gridded rainfall, min/max surface temperature, root-zone moisture, reservoir storage & ENSO anomalies.
+                  Input Features: IMD gridded rainfall, min/max surface temperature, root-zone moisture, reservoir
+                  storage & ENSO anomalies.
                 </div>
               </div>
 
@@ -913,8 +1101,9 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                       </svg>
                     </div>
                     <span id="title-treeshap-xai">TreeSHAP Explainable AI (दुष्काळ कारणे व घटक)</span>
@@ -925,7 +1114,8 @@
                 <!-- Farmer Narrative Banner -->
                 <div class="treeshap-narrative-banner" id="treeshap-farmer-narrative">
                   <div class="narrative-headline" id="xai-narrative-headline">घटकांचे विश्लेषण लोड होत आहे...</div>
-                  <div class="narrative-body" id="xai-narrative-body">स्थानिक पातळीवर दुष्काळ वाढवणारे व रोखणारे घटक मोजले जात आहेत.</div>
+                  <div class="narrative-body" id="xai-narrative-body">स्थानिक पातळीवर दुष्काळ वाढवणारे व रोखणारे घटक
+                    मोजले जात आहेत.</div>
                 </div>
 
                 <!-- Top 3 Risk Escalators -->
@@ -950,9 +1140,11 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="m4.93 4.93 4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path
+                          d="m4.93 4.93 4.24 4.24M14.83 14.83l4.24 4.24M14.83 9.17l4.24-4.24M4.93 19.07l4.24-4.24" />
                       </svg>
                     </div>
                     <span id="title-regional-contagion">प्रादेशिक प्रभाव व शेजारील तालुके (Regional Contagion)</span>
@@ -961,13 +1153,15 @@
                 </div>
 
                 <div class="contagion-summary-row" id="contagion-summary-row" style="display: none;">
-                  <span id="contagion-assessment-badge" class="contagion-badge-neutral">शेजारील तालुके तपासत आहे...</span>
+                  <span id="contagion-assessment-badge" class="contagion-badge-neutral">शेजारील तालुके तपासत
+                    आहे...</span>
                 </div>
 
                 <!-- Corridor Assessment Narrative Banner -->
                 <div class="contagion-narrative-banner" id="contagion-status-banner">
                   <div class="contagion-badge-row">
-                    <span id="contagion-assessment-pill" class="contagion-badge-safe">🛡️ प्रादेशिक पट्टा सुरक्षित</span>
+                    <span id="contagion-assessment-pill" class="contagion-badge-safe">🛡️ प्रादेशिक पट्टा
+                      सुरक्षित</span>
                   </div>
                   <div class="contagion-narrative-text" id="contagion-narrative-text">
                     शेजारील तालुक्यांचा स्थानिक दुष्काळ ताण व कॉरिडॉर संसर्ग तपासला जात आहे.
@@ -1005,24 +1199,28 @@
                 <div class="growth-header">
                   <div class="growth-title-group">
                     <div class="mini-icon-circle" style="background: rgba(168, 85, 247, 0.12); color: #9333EA;">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                       </svg>
                     </div>
                     <span id="title-mcp-connector">⚡ AI Agent & Developer Connector (Model Context Protocol)</span>
                   </div>
-                  <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE;">FastMCP 2.x</span>
+                  <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE;">FastMCP
+                    2.x</span>
                 </div>
 
                 <p style="font-size: 11.5px; color: #475569; margin: 6px 0 10px; line-height: 1.5;">
-                  Connect Claude, ChatGPT, Cursor, and Gemini to live Maharashtra drought telemetry via FastMCP over Server-Sent Events (SSE) or OpenAPI.
+                  Connect Claude, ChatGPT, Cursor, and Gemini to live Maharashtra drought telemetry via FastMCP over
+                  Server-Sent Events (SSE) or OpenAPI.
                 </p>
 
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button class="mcp-open-modal-btn" onclick="openMcpModal()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
-                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                      stroke-linejoin="round" width="14" height="14">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                     </svg>
                     <span>Connect Claude, ChatGPT & Gemini (MCP)</span>
                   </button>
@@ -1046,7 +1244,8 @@
           <div class="sidebar-telemetry-header">
             <div style="display: flex; align-items: center; gap: 7px;">
               <span class="live-pulse-dot"></span>
-              <span style="font-size: 13px; font-weight: 800; color: #0F172A;" id="side-telemetry-title">थेट पाणी व उपग्रह स्थिती</span>
+              <span style="font-size: 13px; font-weight: 800; color: #0F172A;" id="side-telemetry-title">थेट पाणी व
+                उपग्रह स्थिती</span>
             </div>
             <span class="telemetry-live-badge">LIVE 2026</span>
           </div>
@@ -1056,7 +1255,10 @@
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                  </svg>
                 </div>
                 <span id="side-card1-title">पाणी साठा स्थिती</span>
               </div>
@@ -1066,7 +1268,8 @@
               जायकवाडी धरण • सिंचनासाठी मुबलक पाणी उपलब्ध
             </div>
             <div class="side-stat-meter-bar">
-              <div class="side-meter-fill" id="side-dam-fill" style="width: 72.5%; background: var(--dock-active);"></div>
+              <div class="side-meter-fill" id="side-dam-fill" style="width: 72.5%; background: var(--dock-active);">
+              </div>
             </div>
           </div>
 
@@ -1075,7 +1278,12 @@
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-9"/><path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5"/><path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 22v-9" />
+                    <path d="M12 13a5 5 0 0 0 5-5V4a5 5 0 0 0-5 5" />
+                    <path d="M12 13a5 5 0 0 1-5-5V4a5 5 0 0 1 5 5" />
+                  </svg>
                 </div>
                 <span id="side-card2-title">जमीन ओलावा मूल्यांकन</span>
               </div>
@@ -1094,7 +1302,14 @@
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 7 9 3 5 7l4 4"/><path d="m17 11 4 4-4 4-4-4"/><path d="m8 12 4 4"/><path d="m16 8-4-4"/><line x1="12" y1="12" x2="20" y2="20"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M13 7 9 3 5 7l4 4" />
+                    <path d="m17 11 4 4-4 4-4-4" />
+                    <path d="m8 12 4 4" />
+                    <path d="m16 8-4-4" />
+                    <line x1="12" y1="12" x2="20" y2="20" />
+                  </svg>
                 </div>
                 <span id="side-card3-title">दुष्काळ जोखीम पडताळणी</span>
               </div>
@@ -1107,9 +1322,15 @@
               भारतीय हवामान विभाग (IMD) व जलसंपदा • कृषी ML प्रणाली
             </div>
             <div style="margin-top: 10px;">
-              <button class="tts-inline-btn" id="tts-audio-btn" onclick="toggleAudioSpeech()" style="width: 100%; justify-content: center;" aria-label="Listen to Audio Advisory">
+              <button class="tts-inline-btn" id="tts-audio-btn" onclick="toggleAudioSpeech()"
+                style="width: 100%; justify-content: center;" aria-label="Listen to Audio Advisory">
                 <span id="tts-audio-label" style="display: inline-flex; align-items: center; gap: 5px;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                  </svg>
                   <span>सल्ला ऐका</span>
                 </span>
               </button>
@@ -1121,20 +1342,34 @@
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 2v2" />
+                    <path d="m4.93 4.93 1.41 1.41" />
+                    <path d="M20 12h2" />
+                    <path d="m19.07 4.93-1.41 1.41" />
+                    <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
+                    <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" />
+                  </svg>
                 </div>
                 <span id="side-card4-title">Weather Context & Rain Outlook</span>
               </div>
-              <span class="telemetry-live-badge" id="side-card4-badge" style="background: rgba(59, 130, 246, 0.1); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">30-DAY OUTLOOK</span>
+              <span class="telemetry-live-badge" id="side-card4-badge"
+                style="background: rgba(59, 130, 246, 0.1); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">30-DAY
+                OUTLOOK</span>
             </div>
 
             <div style="display: flex; gap: 6px; margin: 6px 0;">
-              <div style="flex: 1; background: rgba(59, 130, 246, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #3B82F6;">
-                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat1-lbl">Expected Rain</div>
+              <div
+                style="flex: 1; background: rgba(59, 130, 246, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #3B82F6;">
+                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat1-lbl">Expected Rain
+                </div>
                 <div style="font-size: 13px; font-weight: 800; color: #1D4ED8;" id="side-card4-rain-days">~5 Days</div>
               </div>
-              <div style="flex: 1; background: rgba(16, 185, 129, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #10B981;">
-                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat2-lbl">Season Rain</div>
+              <div
+                style="flex: 1; background: rgba(16, 185, 129, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #10B981;">
+                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat2-lbl">Season Rain
+                </div>
                 <div style="font-size: 13px; font-weight: 800; color: #047857;" id="side-card4-cum-rain">476 mm</div>
               </div>
             </div>
@@ -1159,25 +1394,52 @@
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <path
+              d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+            <path d="M9 18h6" />
+            <path d="M10 22h4" />
+          </svg>
           <span id="modal-tips-title">शेतकरी हंगामी कृषी टिप्स</span>
         </div>
         <button class="modal-close-btn" id="close-modal-tips" onclick="closeTipsModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" width="14" height="14">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
-      <div id="modal-tips-body" style="display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; color: #334155; line-height: 1.5;">
-        <div style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
-          <div><strong>ठिबक सिंचन वापर:</strong> बाष्पीभवन टाळण्यासाठी रात्री किंवा पहाटेच्या वेळी पाणी द्यावे. ५०% पाण्याची बचत होते.</div>
+      <div id="modal-tips-body"
+        style="display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; color: #334155; line-height: 1.5;">
+        <div
+          style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+          <div><strong>ठिबक सिंचन वापर:</strong> बाष्पीभवन टाळण्यासाठी रात्री किंवा पहाटेच्या वेळी पाणी द्यावे. ५०%
+            पाण्याची बचत होते.</div>
         </div>
-        <div style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-          <div><strong>आच्छादन (Mulching):</strong> पिकाच्या दोन ओळींत पाचट किंवा भुसा पसरल्यास जमिनीतील ओलावा १५ दिवस टिकून राहतो.</div>
+        <div
+          style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+          </svg>
+          <div><strong>आच्छादन (Mulching):</strong> पिकाच्या दोन ओळींत पाचट किंवा भुसा पसरल्यास जमिनीतील ओलावा १५ दिवस
+            टिकून राहतो.</div>
         </div>
-        <div style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
-          <div><strong>फवारणी उपाय:</strong> पाऊस लांबल्यास १% पोटॅशियम नायट्रेटची फवारणी केल्याने पाने सुकत नाहीत.</div>
+        <div
+          style="background: rgba(94, 138, 66, 0.08); border-left: 4px solid var(--dock-active); padding: 10px 14px; border-radius: 0 10px 10px 0; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <path d="M10 2v7.31M14 2v7.31M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0" />
+          </svg>
+          <div><strong>फवारणी उपाय:</strong> पाऊस लांबल्यास १% पोटॅशियम नायट्रेटची फवारणी केल्याने पाने सुकत नाहीत.
+          </div>
         </div>
       </div>
     </div>
@@ -1190,25 +1452,51 @@
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
           <span id="modal-alerts-title">हवामान व दुष्काळ सतर्कता इशारे</span>
         </div>
         <button class="modal-close-btn" id="close-modal-alerts" onclick="closeAlertsModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" width="14" height="14">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
       <div id="modal-alerts-body" style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
-        <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <div><strong style="color: #DC2626;">मराठवाडा कोरडा खंड इशारा:</strong> छत्रपती संभाजीनगर, जालना, बीड भागात पुढील ७ दिवस पावसाची शक्यता कमी.</div>
+        <div
+          style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <div><strong style="color: #DC2626;">मराठवाडा कोरडा खंड इशारा:</strong> छत्रपती संभाजीनगर, जालना, बीड भागात
+            पुढील ७ दिवस पावसाची शक्यता कमी.</div>
         </div>
-        <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <div><strong style="color: #D97706;">पश्चिम महाराष्ट्र धरण स्थिती:</strong> उजनी व कोयना धरण पाणीसाठा समाधानकारक (८५%).</div>
+        <div
+          style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+          </svg>
+          <div><strong style="color: #D97706;">पश्चिम महाराष्ट्र धरण स्थिती:</strong> उजनी व कोयना धरण पाणीसाठा
+            समाधानकारक (८५%).</div>
         </div>
-        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          <div><strong style="color: #047857;">विदर्भ पूर्व पाऊस:</strong> नागपूर, वर्धा भागात हलका ते मध्यम पाऊस अपेक्षित.</div>
+        <div
+          style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 10px 12px; border-radius: 10px; display: flex; align-items: flex-start; gap: 8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16" style="flex-shrink:0; margin-top:2px;">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <div><strong style="color: #047857;">विदर्भ पूर्व पाऊस:</strong> नागपूर, वर्धा भागात हलका ते मध्यम पाऊस
+            अपेक्षित.</div>
         </div>
       </div>
     </div>
@@ -1221,14 +1509,27 @@
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <line x1="3" y1="22" x2="21" y2="22" />
+            <line x1="6" y1="18" x2="6" y2="11" />
+            <line x1="10" y1="18" x2="10" y2="11" />
+            <line x1="14" y1="18" x2="14" y2="11" />
+            <line x1="18" y1="18" x2="18" y2="11" />
+            <polygon points="12 2 20 7 4 7" />
+          </svg>
           <span id="modal-sources-title">अधिकृत माहिती व कृषी स्रोत</span>
         </div>
         <button class="modal-close-btn" id="close-modal-sources" onclick="closeSourcesModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" width="14" height="14">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
-      <div id="modal-sources-body" style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #334155;">
+      <div id="modal-sources-body"
+        style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #334155;">
         <div><strong>• महाराष्ट्र शासन कृषी विभाग:</strong> Krishi Bhavan, Pune (Agro-Climatic Advisory)</div>
         <div><strong>• ४ राज्य कृषी विद्यापीठे:</strong> MPKV Rahuri, VNMKV Parbhani, PDKV Akola, BSKKV Dapoli</div>
         <div><strong>• भारतीय हवामान विभाग (IMD Pune):</strong> Gridded High-Resolution Rainfall (2014-2023)</div>
@@ -1246,7 +1547,11 @@
     <div class="modal-card ai-modal">
       <div class="modal-header">
         <div class="modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <path
+              d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+          </svg>
           <span id="modal-ai-title">कृषी AI निर्णय सहाय्यक व ७-दिवसीय नियोजन</span>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -1255,7 +1560,11 @@
             <span id="modal-ai-status-text">सुरक्षित</span>
           </div>
           <button class="modal-close-btn" id="close-modal-ai-advisory" onclick="closeAiModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
       </div>
@@ -1277,22 +1586,25 @@
     <div class="modal-card mcp-modal">
       <div class="modal-header">
         <div class="modal-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
           </svg>
           <span id="modal-mcp-title">⚡ Connect AI Agent (Model Context Protocol)</span>
         </div>
         <button class="modal-close-btn" id="close-modal-mcp" onclick="closeMcpModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" width="14" height="14">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
       </div>
 
       <div class="mcp-modal-scroll">
         <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
-          MahaRainRisk is equipped with a <strong>6-Tool FastMCP 2.x Server</strong> over Server-Sent Events (SSE) and OpenAPI 3.1. Connect Claude, ChatGPT, or Gemini directly to live Maharashtra drought telemetry:
+          MahaRainRisk is equipped with a <strong>6-Tool FastMCP 2.x Server</strong> over Server-Sent Events (SSE) and
+          OpenAPI 3.1. Connect Claude, ChatGPT, or Gemini directly to live Maharashtra drought telemetry:
         </p>
 
         <!-- Platform Connectors Grid -->
@@ -1304,7 +1616,8 @@
               <span class="mcp-box-icon">🟠</span>
               <div>
                 <strong>Claude Web & Claude Desktop</strong>
-                <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector</div>
+                <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector
+                </div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1314,7 +1627,8 @@
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Name: <code>MahaRainRisk</code> &bull; Server accepts HTTPS and discovers 6 agronomic tools automatically.
+              &bull; Name: <code>MahaRainRisk</code> &bull; Server accepts HTTPS and discovers 6 agronomic tools
+              automatically.
             </div>
           </div>
 
@@ -1324,7 +1638,8 @@
               <span class="mcp-box-icon">🟢</span>
               <div>
                 <strong>ChatGPT Web & Custom GPTs</strong>
-                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (or Actions &rarr; Import OpenAPI)</div>
+                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (or Actions &rarr;
+                  Import OpenAPI)</div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1335,12 +1650,14 @@
             </div>
             <div class="mcp-copy-row" style="margin-top: 6px;">
               <code class="mcp-url-code" id="code-openapi-url">https://rainrisk-vcra.onrender.com/openapi.json</code>
-              <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/openapi.json', this)">
+              <button class="mcp-copy-btn"
+                onclick="copyMcpText('https://rainrisk-vcra.onrender.com/openapi.json', this)">
                 <span>📋 OpenAPI</span>
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Connection: <strong>Server URL</strong> &bull; Authentication: <strong>None</strong> (Public read-only).
+              &bull; Connection: <strong>Server URL</strong> &bull; Authentication: <strong>None</strong> (Public
+              read-only).
             </div>
           </div>
 
@@ -1350,7 +1667,8 @@
               <span class="mcp-box-icon">🔵</span>
               <div>
                 <strong>Google Gemini Web</strong>
-                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP server</div>
+                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP
+                  server</div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1360,14 +1678,18 @@
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Click Next to bind all 6 tools.
+              &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Click Next to bind all 6
+              tools.
             </div>
           </div>
 
         </div>
 
-        <div style="margin-top: 14px; padding: 10px; background: rgba(94, 138, 66, 0.08); border-radius: 8px; font-size: 11px; color: #334155;">
-          <strong>💡 Local Development Tunnel:</strong> When testing locally with <code>uvicorn</code> on port 8000, run <code>npx localtunnel --port 8000</code> and paste your tunnel URL + <code>/mcp</code> into any of the web connectors above!
+        <div
+          style="margin-top: 14px; padding: 10px; background: rgba(94, 138, 66, 0.08); border-radius: 8px; font-size: 11px; color: #334155;">
+          <strong>💡 Local Development Tunnel:</strong> When testing locally with <code>uvicorn</code> on port 8000, run
+          <code>npx localtunnel --port 8000</code> and paste your tunnel URL + <code>/mcp</code> into any of the web
+          connectors above!
         </div>
       </div>
     </div>
@@ -1388,4 +1710,5 @@
   <script src="/js/landing.js?v=118"></script>
 
 </body>
+
 </html>
