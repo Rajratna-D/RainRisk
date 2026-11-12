@@ -8,6 +8,7 @@
 // ============================================================================
 let activeAudioPlayer = null;
 let isAudioLoading = false;
+let lastAudioClickTime = 0;
 
 const SVG_AUDIO_PLAY = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" style="vertical-align: -1px; margin-right: 4px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
 const SVG_AUDIO_STOP = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" width="12" height="12" style="vertical-align: -1px; margin-right: 4px;"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>`;
@@ -56,6 +57,13 @@ function setLoadingUI() {
 }
 
 async function toggleAudioSpeech() {
+  // Prevent rapid double-clicks / bounce
+  const now = Date.now();
+  if (now - lastAudioClickTime < 400) {
+    return;
+  }
+  lastAudioClickTime = now;
+
   // If currently loading/generating, cancel immediately
   if (isAudioLoading) {
     stopAudioSpeech();
@@ -83,9 +91,8 @@ async function toggleAudioSpeech() {
 
   try {
     const base = window.API_BASE || "";
-    const audioUrl = `${base}/api/audio/advisory/${encodeURIComponent(taluka)}?lang=${lang}&t=${Date.now()}`;
+    const audioUrl = `${base}/api/audio/advisory/${encodeURIComponent(taluka)}?lang=${lang}`;
     const player = new Audio();
-    player.crossOrigin = "anonymous";
     activeAudioPlayer = player;
 
     player.onplaying = () => {
@@ -113,7 +120,11 @@ async function toggleAudioSpeech() {
     };
 
     player.src = audioUrl;
+    player.load();
     await player.play().catch((playErr) => {
+      if (playErr.name === "AbortError") {
+        return;
+      }
       if (activeAudioPlayer === player) {
         console.warn("Audio play() promise rejected:", playErr);
         stopAudioSpeech();
@@ -132,12 +143,13 @@ async function toggleAudioSpeech() {
 function stopAudioSpeech() {
   isAudioLoading = false;
   if (activeAudioPlayer) {
-    try {
-      activeAudioPlayer.pause();
-      activeAudioPlayer.currentTime = 0;
-    } catch (e) {}
-    activeAudioPlayer.src = "";
+    const player = activeAudioPlayer;
     activeAudioPlayer = null;
+    try {
+      player.pause();
+      player.currentTime = 0;
+    } catch (e) {}
+    player.src = "";
   }
   if (window.speechSynthesis && window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();

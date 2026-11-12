@@ -8,8 +8,8 @@
 // uses local relative paths when running locally.
 // ============================================================================
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? ""
-  : (window.location.hostname.includes("pages.dev") || window.location.hostname.includes("vercel.app")
+  ? (window.location.port === "8000" || !window.location.port ? "" : "http://127.0.0.1:8000")
+  : (window.location.hostname.includes("pages.dev") || window.location.hostname.includes("vercel.app") || !window.location.hostname
       ? "https://rainrisk-vcra.onrender.com"
       : "");
 window.API_BASE = API_BASE;
