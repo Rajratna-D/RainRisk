@@ -92,18 +92,13 @@ async function toggleAudioSpeech() {
   try {
     const base = window.API_BASE || "";
     const audioUrl = `${base}/api/audio/advisory/${encodeURIComponent(taluka)}?lang=${lang}`;
-    const player = new Audio();
+    const player = new Audio(audioUrl);
     activeAudioPlayer = player;
 
     player.onplaying = () => {
       if (activeAudioPlayer !== player) return;
       isAudioLoading = false;
       setSpeakingUI(true);
-    };
-
-    player.oncanplay = () => {
-      if (activeAudioPlayer !== player) return;
-      isAudioLoading = false;
     };
 
     player.onended = () => {
@@ -119,8 +114,6 @@ async function toggleAudioSpeech() {
       fallbackBrowserSpeech();
     };
 
-    player.src = audioUrl;
-    player.load();
     await player.play().catch((playErr) => {
       if (playErr.name === "AbortError") {
         return;

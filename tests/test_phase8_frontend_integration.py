@@ -202,6 +202,8 @@ def test_phase8_i18n_instant_language_switch_no_devanagari_leak():
     with open(index_path, "r", encoding="utf-8") as f:
         html = f.read()
 
-    assert 'state.js?v=118' in html, "Script version must be bumped to ?v=118 for cache-busting"
-    assert 'i18n.js?v=118' in html, "Script version must be bumped to ?v=118 for cache-busting"
+    v_match = re.search(r'state\.js\?v=(\d+)', html)
+    assert v_match and int(v_match.group(1)) >= 118, "Script version must be bumped to >= ?v=118 for cache-busting"
+    v_i18n = re.search(r'i18n\.js\?v=(\d+)', html)
+    assert v_i18n and int(v_i18n.group(1)) >= 118, "Script version must be bumped to >= ?v=118 for cache-busting"
 
