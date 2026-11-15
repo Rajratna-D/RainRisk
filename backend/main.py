@@ -10,10 +10,29 @@ import sys
 import time
 import re
 import secrets
+import logging
 import cachetools
 from typing import Dict, Any, List, Optional, Tuple, Union
 from collections import defaultdict
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger("maharainrisk.api")
+
+# SEC-07: Strict allowlist regex for taluka queries (English letters, Marathi Devanagari, digits, spaces, hyphens, dots, parentheses)
+TALUKA_QUERY_PATTERN = re.compile(r"^[a-zA-Z0-9\s\-_\.,\(\)\u0900-\u097F]+$")
+
+def sanitize_and_validate_taluka_query(query: str) -> str:
+    """
+    SEC-07: Strict allowlist validation for taluka query parameters.
+    Rejects illegal injection characters, directory traversals, and excessively long inputs.
+    """
+    clean_query = query.strip().strip("/")
+    if not clean_query or len(clean_query) > 50 or not TALUKA_QUERY_PATTERN.match(clean_query):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid taluka query characters."
+        )
+    return clean_query
 
 from fastapi import FastAPI, Request, HTTPException, status, BackgroundTasks, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
@@ -280,7 +299,17 @@ async def security_and_timing_middleware(request: Request, call_next):
     response.headers["X-RateLimit-Limit"] = str(RATE_LIMIT_PER_MINUTE)
     response.headers["X-RateLimit-Remaining"] = str(remaining_requests)
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
-    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://tile.openstreetmap.org *.tile.openstreetmap.org; media-src 'self' blob:;"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data: https://tile.openstreetmap.org *.tile.openstreetmap.org; "
+        "media-src 'self' blob:; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "frame-ancestors 'none';"
+    )
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-XSS-Protection"] = "1; mode=block"
@@ -351,12 +380,7 @@ async def get_taluka_insights(query: str):
     and official bilingual university advisory for any Maharashtra taluka.
     Audio generation is performed on demand via /api/audio/advisory to prevent event loop congestion (PERF-02).
     """
-    clean_query = query.strip().strip("/")
-    if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid taluka query characters."
-        )
+    clean_query = sanitize_and_validate_taluka_query(query)
 
     try:
         data = backend_service.get_taluka_detail(clean_query)
@@ -392,10 +416,8 @@ async def compare_two_talukas(
     Performs head-to-head agronomic comparison between two Maharashtra talukas,
     computing soil moisture, rainfall deficit, and dry spell differentials.
     """
-    q1 = taluka1.strip().strip("/")
-    q2 = taluka2.strip().strip("/")
-    if not q1 or not q2 or len(q1) > 50 or len(q2) > 50 or re.search(r"[<>{};]", q1) or re.search(r"[<>{};]", q2):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid taluka query parameters.")
+    q1 = sanitize_and_validate_taluka_query(taluka1)
+    q2 = sanitize_and_validate_taluka_query(taluka2)
 
     try:
         return backend_service.compare_talukas(q1, q2)
@@ -430,12 +452,7 @@ async def get_taluka_audio_advisory(query: str, lang: str = "mr"):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid language parameter. Allowed: 'mr', 'en'."
         )
-    clean_query = query.strip().strip("/")
-    if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid taluka query characters."
-        )
+    clean_query = sanitize_and_validate_taluka_query(query)
 
     try:
         data = backend_service.get_taluka_detail(clean_query)
@@ -471,12 +488,7 @@ async def get_taluka_risk_latest(query: str, as_of_date: Optional[str] = Query(N
     Tier 2 In-Memory TTLCache backed endpoint.
     Returns latest taluka risk snapshot, TreeSHAP drivers, and bilingual advisory in < 2ms.
     """
-    clean_query = query.strip().strip("/")
-    if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid taluka query characters."
-        )
+    clean_query = sanitize_and_validate_taluka_query(query)
     try:
         return backend_service.get_taluka_risk_v1(clean_query, as_of_date=as_of_date)
     except ValueError as e:
@@ -493,12 +505,7 @@ async def explain_taluka_risk(query: str, as_of_date: Optional[str] = Query(None
     top mitigating buffers, and natural-language Marathi & English farmer narratives.
     Backed by Tier 2 TTLCache (< 2ms on repeat queries).
     """
-    clean_query = query.strip().strip("/")
-    if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid taluka query characters."
-        )
+    clean_query = sanitize_and_validate_taluka_query(query)
     try:
         return await run_in_threadpool(backend_service.explain_taluka_v1, clean_query, as_of_date=as_of_date)
     except ValueError as e:
@@ -513,12 +520,7 @@ async def get_taluka_adjacent(query: str, max_neighbors: int = Query(6, ge=1, le
     Returns topologically adjacent neighboring talukas and regional contagion status.
     Uses pre-computed spatial adjacency topology graph.
     """
-    clean_query = query.strip().strip("/")
-    if len(clean_query) > 50 or re.search(r"[<>{};]", clean_query):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid taluka query characters."
-        )
+    clean_query = sanitize_and_validate_taluka_query(query)
     try:
         return backend_service.get_adjacent_talukas(clean_query, max_neighbors=max_neighbors)
     except ValueError as e:
@@ -531,24 +533,54 @@ async def get_cache_telemetry():
     """Returns real-time in-memory TTLCache performance stats, hit ratio, and Tier 3 DB metrics."""
     return cache_manager.stats()
 
+ADMIN_RATE_LIMIT_PER_MINUTE = 10
+ADMIN_REQUEST_TIMESTAMPS: cachetools.TTLCache = cachetools.TTLCache(maxsize=1000, ttl=60.0)
+
 @app.post("/api/v1/cache/clear", tags=["Observability"])
-async def clear_cache_manually(x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
-    """Manual in-memory cache purge hook (for admin or post-ingestion flush). Protected by ADMIN_API_KEY in production."""
+async def clear_cache_manually(request: Request, x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")):
+    """Manual in-memory cache purge hook. Protected by ADMIN_API_KEY, audit logging, and dedicated rate limiting."""
+    client_ip = get_client_ip(request)
+    now = time.time()
     expected_key = os.getenv("ADMIN_API_KEY", "")
     is_prod = os.getenv("ENVIRONMENT") == "production"
-    
+    is_test_client = client_ip == "testclient" and not is_prod
+
+    # 1. Dedicated Admin Rate Limiting (10 req/min to prevent cache thrashing DoS)
+    if not is_test_client:
+        timestamps = [t for t in ADMIN_REQUEST_TIMESTAMPS.get(client_ip, []) if now - t < 60.0]
+        if len(timestamps) >= ADMIN_RATE_LIMIT_PER_MINUTE:
+            logger.warning("[SECURITY] Admin rate limit exceeded for cache clear from IP: %s", client_ip)
+            return JSONResponse(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                content={
+                    "error": "Too Many Requests",
+                    "detail": "Admin rate limit exceeded. Please wait a moment.",
+                    "timestamp": now
+                },
+                headers={"Retry-After": "60"}
+            )
+        timestamps.append(now)
+        ADMIN_REQUEST_TIMESTAMPS[client_ip] = timestamps
+
+    # 2. Authentication & Authorization Check
     if expected_key:
         if not x_admin_key or not secrets.compare_digest(x_admin_key, expected_key):
+            logger.warning("[AUDIT] Failed admin cache clear attempt with invalid key from IP: %s", client_ip)
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Unauthorized: Valid administrative key required in X-Admin-Key header."
             )
-    elif is_prod:
+    elif is_prod or (client_ip not in ("127.0.0.1", "::1", "testclient")):
+        logger.warning("[AUDIT] Rejected unauthenticated admin cache clear attempt from non-local IP: %s", client_ip)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized: ADMIN_API_KEY must be set in production environment."
+            detail="Unauthorized: ADMIN_API_KEY must be configured for administrative operations."
         )
+
+    # 3. Execution & Audit Logging
+    logger.info("[AUDIT] Cache clear authorized and executed by client IP: %s", client_ip)
     cache_manager.clear()
+    logger.info("[AUDIT] Tier 2 RAM TTLCache successfully purged.")
     return {"status": "success", "message": "In-memory Tier 2 TTLCache cleared."}
 
 
