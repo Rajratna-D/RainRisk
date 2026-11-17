@@ -41,7 +41,8 @@ os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
 OPEN_METEO_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/archive"
 OPEN_METEO_FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
-BATCH_SIZE = 6
+BATCH_SIZE = int(os.getenv("INGESTION_BATCH_SIZE", "2"))
+TIMEOUT = int(os.getenv("INGESTION_TIMEOUT", "45"))
 TOTAL_EXPECTED_TALUKAS = 194
 
 def get_db_connection():
@@ -100,10 +101,10 @@ def fetch_weather_batch_resilient(
         "timezone": "Asia/Kolkata"
     }
 
-    max_attempts = 6
+    max_attempts = 5
     for attempt in range(1, max_attempts + 1):
         try:
-            resp = session.get(url, params=params, timeout=25)
+            resp = session.get(url, params=params, timeout=TIMEOUT)
             
             if resp.status_code == 200:
                 data = resp.json()
@@ -128,6 +129,19 @@ def fetch_weather_batch_resilient(
             wait_s = 2 * attempt
             logger.warning(f"Network error ({e}). Sleeping {wait_s}s before attempt {attempt}/{max_attempts}...")
             time.sleep(wait_s)
+
+    # Automatic fallback: if multi-location batch failed after retries, try each location individually
+    if len(lats) > 1:
+        logger.warning(f"[!] Batch of {len(lats)} failed after {max_attempts} retries. Falling back to individual single-location queries...")
+        fallback_results = []
+        for lat, lon in zip(lats, lons):
+            res = fetch_weather_batch_resilient(session, [lat], [lon], target_date)
+            if res:
+                fallback_results.extend(res)
+            else:
+                return []
+        if len(fallback_results) == len(lats):
+            return fallback_results
 
     logger.error(f"[!] Exhausted all {max_attempts} retry attempts for batch.")
     return []
@@ -236,8 +250,8 @@ def _ingest_single_date(target_date: str, force: bool = False, retrain: bool = F
         with open(checkpoint_file, "w", encoding="utf-8") as f:
             json.dump(checkpoint_data, f)
 
-        # Polite rate limiting: 0.5s pause guarantees <60 requests/minute (well under 600/min limit)
-        time.sleep(0.5)
+        # Polite rate limiting: 0.2s pause guarantees ~150 requests/minute (well under 600/min limit)
+        time.sleep(0.2)
 
     # 5. Strict Atomicity Gate: Verify Exactly 194 Talukas Gathered
     if len(weather_records) != TOTAL_EXPECTED_TALUKAS:

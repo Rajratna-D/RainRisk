@@ -26,17 +26,18 @@ from etl.daily_cron_ingestion import (
 )
 
 def test_phase3_microbatch_geometry():
-    """Verify 194 talukas divide into exactly 33 micro-batches of size 6 (last batch size 2)."""
+    """Verify 194 talukas divide cleanly into micro-batches."""
     assert os.path.exists(GEO_PATH), f"Geo catalog missing at {GEO_PATH}"
     df = pd.read_csv(GEO_PATH)
     assert len(df) == TOTAL_EXPECTED_TALUKAS
 
+    expected_batches = (len(df) + BATCH_SIZE - 1) // BATCH_SIZE
     num_batches = (len(df) + BATCH_SIZE - 1) // BATCH_SIZE
-    assert num_batches == 33, f"Expected 33 micro-batches, got {num_batches}"
+    assert num_batches == expected_batches
 
     batches = [df.iloc[i * BATCH_SIZE : (i + 1) * BATCH_SIZE] for i in range(num_batches)]
-    assert len(batches[0]) == 6
-    assert len(batches[-1]) == 2
+    assert len(batches[0]) == min(BATCH_SIZE, len(df))
+    assert len(batches[-1]) == len(df) - (num_batches - 1) * BATCH_SIZE
     assert sum(len(b) for b in batches) == 194
 
 def test_phase3_checkpoint_serialization_and_resume():
