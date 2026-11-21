@@ -71,6 +71,24 @@ jobs:
             python MahaRainRisk/etl/daily_cron_ingestion.py $ARGS
           fi
 
+      - name: Build & Publish Daily 194-Taluka Forecast Snapshots
+        env:
+          PYTHONPATH: .
+        run: |
+          if [ -f "etl/build_daily_forecasts.py" ]; then
+            python etl/build_daily_forecasts.py
+          else
+            python MahaRainRisk/etl/build_daily_forecasts.py
+          fi
+
+      - name: Commit & Push Daily Forecast Snapshots to GitHub
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/assets/data/forecasts_daily.json backend/data/forecasts_daily.json || true
+          git commit -m "chore(cron): refresh 194-taluka daily weather & climate forecasts snapshot [skip ci]" || echo "No changes to commit"
+          git push || echo "Push failed or already up to date"
+
       - name: Telemetry & Failure Alert
         if: failure()
         run: |

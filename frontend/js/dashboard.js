@@ -379,7 +379,13 @@ function updateDashboard(data) {
   const distToFetch = data.meta?.district || "";
   const distMrToFetch = data.meta?.district_mr || distToFetch;
 
-  if (typeof generateInstantForecast === "function") {
+  const matchedForecast = typeof findDailyForecast === "function" 
+    ? (findDailyForecast(talukaToFetch) || findDailyForecast(talukaMrToFetch) || findDailyForecast(data.meta?.lgd_code))
+    : null;
+
+  if (matchedForecast) {
+    state.currentForecast = matchedForecast;
+  } else if (typeof generateInstantForecast === "function") {
     if (!state.currentForecast || (state.currentForecast.taluka_name && state.currentForecast.taluka_name.toLowerCase() !== talukaToFetch.toLowerCase())) {
       state.currentForecast = generateInstantForecast(talukaToFetch, talukaMrToFetch, distToFetch, distMrToFetch);
     }
@@ -387,7 +393,7 @@ function updateDashboard(data) {
   if (typeof updateForecastCardPreview === "function" && state.currentForecast) {
     updateForecastCardPreview(state.currentForecast);
   }
-  if (typeof fetchTalukaForecast === "function") {
+  if (typeof fetchTalukaForecast === "function" && !matchedForecast) {
     fetchTalukaForecast(talukaToFetch);
   }
 
@@ -722,6 +728,21 @@ window.renderAdjacentTalukas = renderAdjacentTalukas;
 // 7-DAY & 30-DAY WEATHER & CLIMATE FORECAST HUB (Modal 6)
 // ============================================================================
 
+function findDailyForecast(nameOrCode) {
+  if (!state.dailyForecasts || !nameOrCode) return null;
+  const q = String(nameOrCode).trim().toLowerCase();
+  if (state.dailyForecasts[q]) return state.dailyForecasts[q];
+  if (state.dailyForecasts[nameOrCode]) return state.dailyForecasts[nameOrCode];
+  const stripped = q.replace(/\s*\(?(rural|urban)\)?/gi, "").trim();
+  if (state.dailyForecasts[stripped]) return state.dailyForecasts[stripped];
+  for (const k of Object.keys(state.dailyForecasts)) {
+    if (k.toLowerCase() === stripped || k.toLowerCase().startsWith(stripped)) {
+      return state.dailyForecasts[k];
+    }
+  }
+  return null;
+}
+
 function generateInstantForecast(talukaName, talukaMr, distName, distMr) {
   const tName = talukaName || state.currentTaluka || "Paithan";
   const tMr = talukaMr || state.currentData?.meta?.taluka_mr || tName;
@@ -948,23 +969,30 @@ function openForecastModal() {
       : `📍 ${talukaName} (${distName})`;
   }
 
-  // Check if we have matching forecast in memory
-  const hasMatching = state.currentForecast && (
-    (state.currentForecast.taluka_name && state.currentForecast.taluka_name.toLowerCase() === talukaName.toLowerCase()) ||
-    (state.currentForecast.taluka_name_mr && state.currentForecast.taluka_name_mr === talukaMr)
-  );
+  const matchedForecast = findDailyForecast(talukaName) || findDailyForecast(talukaMr) || findDailyForecast(state.currentData?.meta?.lgd_code);
+  if (matchedForecast) {
+    state.currentForecast = matchedForecast;
+  } else {
+    // Check if we have matching forecast in memory
+    const hasMatching = state.currentForecast && (
+      (state.currentForecast.taluka_name && state.currentForecast.taluka_name.toLowerCase() === talukaName.toLowerCase()) ||
+      (state.currentForecast.taluka_name_mr && state.currentForecast.taluka_name_mr === talukaMr)
+    );
 
-  if (!hasMatching) {
-    // Generate instant forecast so user NEVER sees an infinite spinner!
-    state.currentForecast = generateInstantForecast(talukaName, talukaMr, distName, distMr);
+    if (!hasMatching) {
+      // Generate instant forecast so user NEVER sees an infinite spinner!
+      state.currentForecast = generateInstantForecast(talukaName, talukaMr, distName, distMr);
+    }
   }
 
   // Render immediately with ZERO latency (0 ms)
   renderForecastModal(state.currentForecast);
   updateForecastCardPreview(state.currentForecast);
 
-  // Background fetch live satellite telemetry from API (updates gracefully when ready)
-  fetchTalukaForecast(talukaName);
+  // Background fetch live satellite telemetry only if not in daily snapshot
+  if (!matchedForecast) {
+    fetchTalukaForecast(talukaName);
+  }
 }
 
 function closeForecastModal() {
@@ -1139,6 +1167,44 @@ function renderForecastModal(forecast) {
   }
 }
 
+async function loadDailyForecasts() {
+  try {
+    const base = window.API_BASE || "";
+    let res = await fetch("/assets/data/forecasts_daily.json");
+    if (!res.ok && base) {
+      res = await fetch(`${base}/api/v1/forecasts/daily`);
+    }
+    if (res.ok) {
+      const doc = await res.json();
+      if (doc && doc.forecasts) {
+        state.dailyForecasts = doc.forecasts;
+        const currentTaluka = state.currentData?.meta?.taluka || state.currentTaluka || "Paithan";
+        const matched = findDailyForecast(currentTaluka) || findDailyForecast(state.currentData?.meta?.taluka_mr);
+        if (matched) {
+          state.currentForecast = matched;
+          updateForecastCardPreview(state.currentForecast);
+          const modal = document.getElementById("modal-forecast");
+          if (modal && modal.classList.contains("open")) {
+            renderForecastModal(state.currentForecast);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("loadDailyForecasts notice:", e);
+  }
+}
+
+if (typeof window !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadDailyForecasts);
+  } else {
+    loadDailyForecasts();
+  }
+}
+
+window.findDailyForecast = findDailyForecast;
+window.loadDailyForecasts = loadDailyForecasts;
 window.generateInstantForecast = generateInstantForecast;
 window.fetchTalukaForecast = fetchTalukaForecast;
 window.renderForecastModal = renderForecastModal;

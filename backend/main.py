@@ -665,6 +665,13 @@ async def get_taluka_adjacent(query: str, max_neighbors: int = Query(6, ge=1, le
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Adjacency error: {str(e)}")
 
+@app.get("/api/v1/forecasts/daily", tags=["Forecasting"])
+async def get_daily_master_forecasts():
+    """Returns the consolidated 194-taluka daily weather and climate forecast master document."""
+    if backend_service._daily_forecasts_doc:
+        return backend_service._daily_forecasts_doc
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Daily forecasts master snapshot not found.")
+
 @app.get("/api/v1/taluka/{query:path}/forecast", response_model=TalukaForecastResponse, tags=["Forecasting"])
 @app.get("/api/forecast/{query:path}", response_model=TalukaForecastResponse, tags=["Forecasting"])
 async def get_taluka_weather_and_climate_forecast(query: str):

@@ -346,6 +346,7 @@ const state = {
   currentXai: null,
   currentAdjacent: null,
   currentForecast: DEFAULT_FORECAST,
+  dailyForecasts: null,
   forecastActiveTab: "7day", // "7day" or "30day"
   currentView: "crop", // "crop" or "map"
   currentMainTab: "farmer", // "farmer" or "analytics"

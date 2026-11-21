@@ -75,6 +75,21 @@ class BackendDataService:
         self._overview_cache = None
         self._forecast_cache: Dict[int, Tuple[float, Dict[str, Any]]] = {}
 
+        # Load pre-computed daily forecasts master snapshot if present
+        self._daily_forecasts_doc = None
+        self._daily_forecasts_map: Dict[str, Any] = {}
+        daily_json_path = os.path.join(BASE_DIR, "backend", "data", "forecasts_daily.json")
+        if not os.path.exists(daily_json_path):
+            daily_json_path = os.path.join(BASE_DIR, "frontend", "assets", "data", "forecasts_daily.json")
+        if os.path.exists(daily_json_path):
+            try:
+                with open(daily_json_path, "r", encoding="utf-8") as f:
+                    self._daily_forecasts_doc = json.load(f)
+                    self._daily_forecasts_map = self._daily_forecasts_doc.get("forecasts", {})
+                print(f"[OK] Loaded pre-computed daily forecast master document ({len(self._daily_forecasts_map)} keys).")
+            except Exception as e:
+                print(f"[!] Daily forecast snapshot load error: {e}")
+
         # Load master panel
         panel_path = os.path.join(PROCESSED_DIR, "master_panel.parquet")
         self.master_df = pd.read_parquet(panel_path)
@@ -760,6 +775,13 @@ class BackendDataService:
         coupled with Mode 2 AI GBDT 30-day drought & soil moisture outlook for any Maharashtra taluka.
         Caches in RAM for 1 hour per taluka for sub-millisecond response on repeat calls.
         """
+        # 0. Check pre-computed daily snapshot map first (sub-millisecond instant lookup)
+        q_norm = str(query).strip().lower()
+        if q_norm in self._daily_forecasts_map:
+            return self._daily_forecasts_map[q_norm]
+        if str(query).strip() in self._daily_forecasts_map:
+            return self._daily_forecasts_map[str(query).strip()]
+
         row = self.resolve_taluka_row(query)
         code = int(row["taluka_lgd_code"])
         now_ts = time.time()
