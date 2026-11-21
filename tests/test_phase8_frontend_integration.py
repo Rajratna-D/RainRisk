@@ -166,7 +166,8 @@ def test_phase8_mcp_modal_and_clipboard_targets():
         html = f.read()
 
     assert 'id="code-universal-url"' in html
-    assert 'id="code-banner-url"' in html
+    assert 'id="code-analytics-url"' in html
+    assert 'id="banner-mcp-farmer"' not in html
     assert 'https://rainrisk-vcra.onrender.com/mcp' in html
 
 

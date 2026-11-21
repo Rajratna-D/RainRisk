@@ -346,13 +346,6 @@
       </div>
 
       <div class="dock-cluster">
-        <!-- FastMCP AI Agent Connector -->
-        <button class="dock-icon-btn" id="dock-btn-mcp" title="Connect AI Agent (Universal MCP Gateway)" onclick="openMcpModal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-          </svg>
-        </button>
-
         <!-- Settings & Data Sources -->
         <button class="dock-icon-btn" id="dock-btn-settings" title="Verified Data Sources (माहिती व स्रोत)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -750,35 +743,6 @@
                 </div>
               </div>
 
-            </div>
-
-            <!-- Prominent FastMCP Universal AI Agent Gateway Strip in Farmer Dashboard -->
-            <div class="mcp-farmer-banner" id="banner-mcp-farmer">
-              <div class="mcp-farmer-banner-left">
-                <div class="mini-icon-circle" style="background: rgba(168, 85, 247, 0.15); color: #9333EA; flex-shrink: 0;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                </div>
-                <div>
-                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <strong style="font-size: 13px; color: #1E293B;" id="title-mcp-banner">⚡ FastMCP AI Agent Link</strong>
-                    <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE; font-size: 10px; padding: 2px 7px;">Single Gateway URL</span>
-                  </div>
-                  <div style="font-size: 11px; color: #64748B; margin-top: 2px;" id="desc-mcp-banner">
-                    Connect Claude, ChatGPT, Gemini, and Cursor to live drought telemetry via one universal link:
-                  </div>
-                </div>
-              </div>
-              <div class="mcp-farmer-banner-actions">
-                <code class="mcp-banner-url" id="code-banner-url">https://rainrisk-vcra.onrender.com/mcp</code>
-                <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)" title="Copy Universal MCP URL">
-                  <span>📋 Copy Link</span>
-                </button>
-                <button class="mcp-setup-guide-btn" onclick="openMcpModal()" title="View Setup Instructions">
-                  <span>Setup Guide &rarr;</span>
-                </button>
-              </div>
             </div>
 
             <!-- Prominent Direct Farmer Agronomic Advisory Banner -->
@@ -1250,14 +1214,21 @@
                     </div>
                     <span id="title-mcp-connector">⚡ AI Agent & Developer Connector (Model Context Protocol)</span>
                   </div>
-                  <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE;">FastMCP
-                    2.x</span>
+                  <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE;">FastMCP 2.x</span>
                 </div>
 
                 <p style="font-size: 11.5px; color: #475569; margin: 6px 0 10px; line-height: 1.5;">
                   Connect Claude, ChatGPT, Cursor, and Gemini to live Maharashtra drought telemetry via FastMCP over
                   Server-Sent Events (SSE) or OpenAPI.
                 </p>
+
+                <!-- Universal Single Link Copy Row in Detailed Analytics -->
+                <div class="mcp-copy-row" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <code class="mcp-url-code" id="code-analytics-url" style="font-weight: 600; font-size: 12px; padding: 6px 12px; background: #F8FAFC; border: 1.5px solid rgba(147,51,234,0.3); border-radius: 6px; color: #581C87;">https://rainrisk-vcra.onrender.com/mcp</code>
+                  <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)" style="padding: 6px 14px; font-size: 11.5px;" title="Copy Universal MCP URL">
+                    <span>📋 Copy Link</span>
+                  </button>
+                </div>
 
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                   <button class="mcp-open-modal-btn" onclick="openMcpModal()">
@@ -1679,14 +1650,14 @@
   <script src="/assets/leaflet/leaflet.js"></script>
 
   <!-- Application Logic (Modular Architecture) -->
-  <script src="/js/state.js?v=123"></script>
-  <script src="/js/map.js?v=123"></script>
-  <script src="/js/dashboard.js?v=123"></script>
-  <script src="/js/advisory.js?v=123"></script>
-  <script src="/js/audio.js?v=123"></script>
-  <script src="/js/i18n.js?v=123"></script>
-  <script src="/js/app.js?v=123"></script>
-  <script src="/js/landing.js?v=123"></script>
+  <script src="/js/state.js?v=124"></script>
+  <script src="/js/map.js?v=124"></script>
+  <script src="/js/dashboard.js?v=124"></script>
+  <script src="/js/advisory.js?v=124"></script>
+  <script src="/js/audio.js?v=124"></script>
+  <script src="/js/i18n.js?v=124"></script>
+  <script src="/js/app.js?v=124"></script>
+  <script src="/js/landing.js?v=124"></script>
 
 </body>
 
