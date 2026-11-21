@@ -18,13 +18,13 @@
   <link rel="stylesheet" href="/assets/leaflet/leaflet.css">
 
   <!-- Modular Stylesheets (Light Mode) -->
-  <link rel="stylesheet" href="/css/variables.css?v=115">
-  <link rel="stylesheet" href="/css/layout.css?v=115">
-  <link rel="stylesheet" href="/css/header.css?v=115">
-  <link rel="stylesheet" href="/css/cards.css?v=115">
-  <link rel="stylesheet" href="/css/panels.css?v=115">
-  <link rel="stylesheet" href="/css/modals.css?v=115">
-  <link rel="stylesheet" href="/css/landing.css?v=115">
+  <link rel="stylesheet" href="/css/variables.css?v=122">
+  <link rel="stylesheet" href="/css/layout.css?v=122">
+  <link rel="stylesheet" href="/css/header.css?v=122">
+  <link rel="stylesheet" href="/css/cards.css?v=122">
+  <link rel="stylesheet" href="/css/panels.css?v=122">
+  <link rel="stylesheet" href="/css/modals.css?v=122">
+  <link rel="stylesheet" href="/css/landing.css?v=122">
   <style id="liquid-glass-card-critical">
     /* High-Priority Inlined Liquid Glass Card Styling (Guaranteed Immediate Render) */
     .lp-card {
@@ -346,6 +346,13 @@
       </div>
 
       <div class="dock-cluster">
+        <!-- FastMCP AI Agent Connector -->
+        <button class="dock-icon-btn" id="dock-btn-mcp" title="Connect AI Agent (Universal MCP Gateway)" onclick="openMcpModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </button>
+
         <!-- Settings & Data Sources -->
         <button class="dock-icon-btn" id="dock-btn-settings" title="Verified Data Sources (माहिती व स्रोत)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -491,10 +498,11 @@
           </button>
 
           <!-- 6. Fast-MCP AI Agent Connector Modal Trigger -->
-          <button class="top-round-icon-btn" id="btn-mcp" title="Connect AI Agent (MCP Connector)" onclick="openMcpModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+          <button class="top-mcp-pill-btn" id="btn-mcp" title="Connect AI Agent (Universal FastMCP Gateway)" onclick="openMcpModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
+            <span id="label-top-mcp">⚡ MCP Link</span>
           </button>
         </div>
       </header>
@@ -744,6 +752,35 @@
 
             </div>
 
+            <!-- Prominent FastMCP Universal AI Agent Gateway Strip in Farmer Dashboard -->
+            <div class="mcp-farmer-banner" id="banner-mcp-farmer">
+              <div class="mcp-farmer-banner-left">
+                <div class="mini-icon-circle" style="background: rgba(168, 85, 247, 0.15); color: #9333EA; flex-shrink: 0;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                </div>
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <strong style="font-size: 13px; color: #1E293B;" id="title-mcp-banner">⚡ FastMCP AI Agent Link</strong>
+                    <span class="ai-card-chip" style="background: rgba(147, 51, 234, 0.1); color: #7E22CE; font-size: 10px; padding: 2px 7px;">Single Gateway URL</span>
+                  </div>
+                  <div style="font-size: 11px; color: #64748B; margin-top: 2px;" id="desc-mcp-banner">
+                    Connect Claude, ChatGPT, Gemini, and Cursor to live drought telemetry via one universal link:
+                  </div>
+                </div>
+              </div>
+              <div class="mcp-farmer-banner-actions">
+                <code class="mcp-banner-url" id="code-banner-url">https://rainrisk-vcra.onrender.com/mcp</code>
+                <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)" title="Copy Universal MCP URL">
+                  <span>📋 Copy Link</span>
+                </button>
+                <button class="mcp-setup-guide-btn" onclick="openMcpModal()" title="View Setup Instructions">
+                  <span>Setup Guide &rarr;</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Prominent Direct Farmer Agronomic Advisory Banner -->
             <div class="farmer-direct-advisory-card" id="farmer-direct-advisory">
               <div class="advisory-card-header">
@@ -868,7 +905,7 @@
               </div>
 
               <!-- Chart 2: 30-Day Early Warning Outlook -->
-              <div class="right-panel-card" id="card-co2">
+              <div class="right-panel-card clickable-outlook-card" id="card-co2" onclick="openAiModal()" style="cursor: pointer;" title="सविस्तर ३०-दिवसीय अंदाज व सल्ला पहा (Click to view full 30-Day Outlook Advisory)">
                 <div class="panel-header-row">
                   <div class="panel-title-group">
                     <div class="mini-icon-circle">
@@ -1345,7 +1382,7 @@
           </div>
 
           <!-- Card 4: Weather & Rainfall Outlook -->
-          <div class="right-panel-card" id="side-card-weather">
+          <div class="right-panel-card clickable-outlook-card" id="side-card-weather" onclick="openAiModal()" style="cursor: pointer;" title="सविस्तर ३०-दिवसीय अंदाज व सल्ला पहा (Click to view full 30-Day Outlook & Advisory)">
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
@@ -1362,8 +1399,10 @@
                 <span id="side-card4-title">Weather Context & Rain Outlook</span>
               </div>
               <span class="telemetry-live-badge" id="side-card4-badge"
-                style="background: rgba(59, 130, 246, 0.1); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">30-DAY
-                OUTLOOK</span>
+                style="background: rgba(59, 130, 246, 0.12); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;">
+                <span>३०-दिवसीय अंदाज</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </span>
             </div>
 
             <div style="display: flex; gap: 6px; margin: 6px 0;">
@@ -1609,27 +1648,33 @@
       </div>
 
       <div class="mcp-modal-scroll">
-        <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
-          MahaRainRisk exposes a <strong>Universal Model Context Protocol (MCP) Gateway</strong> across Claude, ChatGPT, and Gemini. One endpoint connects all AI models to live Maharashtra drought telemetry:
+        <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
+          MahaRainRisk exposes a <strong>Universal Model Context Protocol (MCP) Gateway</strong>. Use this <strong>single URL</strong> to connect Claude, ChatGPT, Gemini, and Cursor to live Maharashtra drought telemetry:
         </p>
 
         <!-- Universal Single Link Hero Box -->
-        <div style="background: linear-gradient(135deg, rgba(147,51,234,0.08), rgba(59,130,246,0.06)); border: 1px solid rgba(147,51,234,0.25); border-radius: 10px; padding: 14px; margin-bottom: 14px; text-align: center;">
-          <div style="font-size: 11px; color: #7E22CE; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
-            ⚡ One Universal Link for All AI Models
+        <div class="mcp-universal-hero-box">
+          <div class="mcp-universal-badge">
+            ⚡ One Single Link for All AI Agents
           </div>
-          <div class="mcp-copy-row" style="justify-content: center;">
-            <code class="mcp-url-code" id="code-universal-url" style="font-weight: 600; font-size: 13px;">https://rainrisk-vcra.onrender.com/mcp</code>
-            <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
+          <p style="font-size: 11.5px; color: #475569; margin: 4px 0 10px; text-align: center;">
+            Claude Desktop & Web, ChatGPT, Google Gemini, and Cursor IDE all connect to this same URL:
+          </p>
+          <div class="mcp-copy-row" style="justify-content: center; gap: 8px;">
+            <code class="mcp-url-code" id="code-universal-url" style="font-weight: 700; font-size: 13.5px; padding: 8px 14px; background: #FFFFFF; border: 1.5px solid rgba(147,51,234,0.3); border-radius: 8px; color: #581C87;">https://rainrisk-vcra.onrender.com/mcp</code>
+            <button class="mcp-copy-btn" style="padding: 8px 16px; font-size: 12px;" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
               <span>📋 Copy Universal URL</span>
             </button>
           </div>
-          <div style="font-size: 10.5px; color: #64748B; margin-top: 6px;">
+          <div style="font-size: 11px; color: #64748B; margin-top: 8px; text-align: center;">
             Authentication: <strong>None</strong> (Public early-warning system) &bull; Auto-negotiates SSE & Streamable HTTP
           </div>
         </div>
 
         <!-- Platform Connectors Grid -->
+        <div style="font-size: 12px; font-weight: 700; color: #1E293B; margin: 16px 0 8px;">
+          Connect any AI Agent using the URL above:
+        </div>
         <div class="mcp-platforms-stack">
 
           <!-- 1. Claude Web & Desktop -->
@@ -1641,14 +1686,8 @@
                 <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector</div>
               </div>
             </div>
-            <div class="mcp-copy-row">
-              <code class="mcp-url-code" id="code-claude-url">https://rainrisk-vcra.onrender.com/mcp</code>
-              <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
-                <span>📋 Copy URL</span>
-              </button>
-            </div>
             <div class="mcp-helper-notes">
-              &bull; Name: <code>MahaRainRisk</code> &bull; Authentication: <strong>None</strong> &bull; Native 200 OK SSE / Streamable HTTP.
+              &bull; Name: <code>MahaRainRisk</code> &bull; Server URL: <code id="code-claude-url">https://rainrisk-vcra.onrender.com/mcp</code> &bull; Native 200 OK SSE / Streamable HTTP.
             </div>
           </div>
 
@@ -1658,24 +1697,16 @@
               <span class="mcp-box-icon">🟢</span>
               <div>
                 <strong>ChatGPT Web & Custom GPTs</strong>
-                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (or Actions &rarr; Import OpenAPI)</div>
+                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (Server URL: <code id="code-chatgpt-url">https://rainrisk-vcra.onrender.com/mcp</code>)</div>
               </div>
             </div>
-            <div class="mcp-copy-row">
-              <code class="mcp-url-code" id="code-chatgpt-url">https://rainrisk-vcra.onrender.com/mcp</code>
-              <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
-                <span>📋 Copy URL</span>
-              </button>
-            </div>
             <div class="mcp-copy-row" style="margin-top: 6px;">
-              <code class="mcp-url-code" id="code-openapi-url">https://rainrisk-vcra.onrender.com/openapi.json</code>
+              <span style="font-size: 11px; color: #64748B; margin-right: 4px;">For GPT Actions:</span>
+              <code class="mcp-url-code" id="code-openapi-url" style="font-size: 11px;">https://rainrisk-vcra.onrender.com/openapi.json</code>
               <button class="mcp-copy-btn"
                 onclick="copyMcpText('https://rainrisk-vcra.onrender.com/openapi.json', this)">
-                <span>📋 OpenAPI</span>
+                <span>📋 Copy OpenAPI</span>
               </button>
-            </div>
-            <div class="mcp-helper-notes">
-              &bull; Connection: <strong>Server URL</strong> &bull; Authentication: <strong>None</strong>.
             </div>
           </div>
 
@@ -1685,17 +1716,25 @@
               <span class="mcp-box-icon">🔵</span>
               <div>
                 <strong>Google Gemini Web</strong>
-                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP server</div>
+                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP server &rarr; paste: <code id="code-gemini-url">https://rainrisk-vcra.onrender.com/mcp</code></div>
               </div>
-            </div>
-            <div class="mcp-copy-row">
-              <code class="mcp-url-code" id="code-gemini-url">https://rainrisk-vcra.onrender.com/mcp</code>
-              <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
-                <span>📋 Copy URL</span>
-              </button>
             </div>
             <div class="mcp-helper-notes">
               &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Direct JSON-RPC execution.
+            </div>
+          </div>
+
+          <!-- 4. Cursor IDE & Windsurf -->
+          <div class="mcp-platform-box">
+            <div class="mcp-box-header">
+              <span class="mcp-box-icon">⚡</span>
+              <div>
+                <strong>Cursor IDE & Windsurf</strong>
+                <div style="font-size: 11px; color: #64748B;">Cursor Settings &rarr; Features &rarr; MCP &rarr; Add New MCP Server</div>
+              </div>
+            </div>
+            <div class="mcp-helper-notes">
+              &bull; Name: <code>MahaRainRisk</code> &bull; Type: <code>sse</code> &bull; URL: <code>https://rainrisk-vcra.onrender.com/mcp</code>
             </div>
           </div>
 
@@ -1715,14 +1754,14 @@
   <script src="/assets/leaflet/leaflet.js"></script>
 
   <!-- Application Logic (Modular Architecture) -->
-  <script src="/js/state.js?v=120"></script>
-  <script src="/js/map.js?v=120"></script>
-  <script src="/js/dashboard.js?v=120"></script>
-  <script src="/js/advisory.js?v=120"></script>
-  <script src="/js/audio.js?v=120"></script>
-  <script src="/js/i18n.js?v=120"></script>
-  <script src="/js/app.js?v=120"></script>
-  <script src="/js/landing.js?v=120"></script>
+  <script src="/js/state.js?v=122"></script>
+  <script src="/js/map.js?v=122"></script>
+  <script src="/js/dashboard.js?v=122"></script>
+  <script src="/js/advisory.js?v=122"></script>
+  <script src="/js/audio.js?v=122"></script>
+  <script src="/js/i18n.js?v=122"></script>
+  <script src="/js/app.js?v=122"></script>
+  <script src="/js/landing.js?v=122"></script>
 
 </body>
 

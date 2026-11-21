@@ -88,17 +88,18 @@ function getSeasonalRainOutlook(data, isMr) {
   }
   // 4. Kharif Active Monsoon (Jun, Jul, Aug, Sep)
   else {
-    if (catCode === 0 && dryDays <= 10) {
-      rainDaysText = isMr ? "~५–७ दिवस" : "~5–7 Days";
-      climatePillText = isMr ? "मान्सून वारे: सक्रिय" : "Monsoon Winds: Active";
+    // Check severe/alert conditions FIRST so mild checks never override them
+    if (catCode >= 2 || dryDays >= 21) {
+      rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
+      climatePillText = isMr ? "मान्सून: मोठा कोरडा खंड" : "Monsoon: Severe Dry Spell";
       description = isMr
-        ? `मान्सून सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. ${isOptimal ? `जमिनीत <strong>${formatNumber(moistPct, true)}%</strong> ओलावा उपलब्ध आहे.` : `ओलावा स्थिर राहील.`}`
-        : `Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. ${isOptimal ? `Root-zone moisture (<strong>${moistPct}%</strong>) is healthy.` : `Adequate moisture expected.`}`;
+        ? `पावसात मोठा कोरडा खंड पडला असून पुढील ३० दिवसांत पाऊस नगण्य (०–१ दिवस) राहील. पिकांना तातडीने संरक्षित पाणी द्यावे.`
+        : `Prolonged dry break with 0–1 rain days expected in next 30 days. High drought stress; immediate supplementary irrigation advised.`;
 
       advisoryStatusHtml = isMr
-        ? `<strong>समाधानकारक पाऊस:</strong> मान्सून वारे सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. शेतात वाफसा चांगला राहील व पिकावर दुष्काळाचा धोका नाही.`
-        : `<strong>Favorable Rainfall:</strong> Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. No drought threat to standing crops.`;
-    } else if (catCode === 1 || dryDays <= 17) {
+        ? `<strong>गंभीर कोरडा खंड:</strong> पावसाचा मोठा खंड पडल्यामुळे जमिनीतील ओल कमी झाली आहे. पिकाला संरक्षित पाणी देण्याची तातडीची गरज आहे.`
+        : `<strong>Severe Dry Spell:</strong> Prolonged rainfall deficit. Immediate supplementary irrigation required to sustain crops.`;
+    } else if (catCode === 1 || dryDays >= 12) {
       rainDaysText = isMr ? "~२–३ दिवस" : "~2–3 Days";
       climatePillText = isMr ? "मान्सून: हलका ताण" : "Monsoon: Light Break";
       description = isMr
@@ -109,15 +110,15 @@ function getSeasonalRainOutlook(data, isMr) {
         ? `<strong>पावसाचा हलका ताण:</strong> मागील १५ दिवसांत पाऊस कमी झाल्यामुळे जमिनीतील ओलावा घटला आहे. पुढील आठवड्यात स्थानिक सरींची शक्यता आहे.`
         : `<strong>Mild Dry Spell:</strong> A 15-day rainfall deficit has reduced topsoil moisture. Localized showers expected in the coming week.`;
     } else {
-      rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
-      climatePillText = isMr ? "मान्सून: मोठा कोरडा खंड" : "Monsoon: Severe Dry Spell";
+      rainDaysText = isMr ? "~५–७ दिवस" : "~5–7 Days";
+      climatePillText = isMr ? "मान्सून वारे: सक्रिय" : "Monsoon Winds: Active";
       description = isMr
-        ? `पावसात मोठा कोरडा खंड पडला असून पुढील ३० दिवसांत पाऊस नगण्य (०–१ दिवस) राहील. पिकांना तातडीने संरक्षित पाणी द्यावे.`
-        : `Prolonged dry break with 0–1 rain days expected in next 30 days. High drought stress; immediate supplementary irrigation advised.`;
+        ? `मान्सून सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. ${isOptimal ? `जमिनीत <strong>${formatNumber(moistPct, true)}%</strong> ओलावा उपलब्ध आहे.` : `ओलावा स्थिर राहील.`}`
+        : `Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. ${isOptimal ? `Root-zone moisture (<strong>${moistPct}%</strong>) is healthy.` : `Adequate moisture expected.`}`;
 
       advisoryStatusHtml = isMr
-        ? `<strong>गंभीर कोरडा खंड:</strong> पावसाचा मोठा खंड पडल्यामुळे जमिनीतील ओल कमी झाली आहे. पिकाला संरक्षित पाणी देण्याची तातडीची गरज आहे.`
-        : `<strong>Severe Dry Spell:</strong> Prolonged rainfall deficit. Immediate supplementary irrigation required to sustain crops.`;
+        ? `<strong>समाधानकारक पाऊस:</strong> मान्सून वारे सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. शेतात वाफसा चांगला राहील व पिकावर दुष्काळाचा धोका नाही.`
+        : `<strong>Favorable Rainfall:</strong> Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. No drought threat to standing crops.`;
     }
   }
 
@@ -284,15 +285,29 @@ function updateDashboard(data) {
   }
 
   const foreLabel = document.getElementById("val-co2");
+  let foreColor = "#047857";
   if (fore.category_code === 0) {
     foreLabel.textContent = isMr ? "सुरक्षित अंदाज" : "Safe Outlook";
     foreLabel.style.color = "#047857";
+    foreColor = "#047857";
   } else if (fore.category_code === 1) {
     foreLabel.textContent = isMr ? "सतर्कतेचा इशारा" : "Watch Outlook";
     foreLabel.style.color = "#D97706";
+    foreColor = "#D97706";
   } else {
     foreLabel.textContent = isMr ? "दुष्काळ धोका" : "Severe Alert";
     foreLabel.style.color = "#DC2626";
+    foreColor = "#DC2626";
+  }
+
+  // Dynamically colorize the 30-Day Outlook Stepped Area Chart SVG
+  const stepGradStop0 = document.querySelector("#stepGrad stop:first-child");
+  const stepGradStop1 = document.querySelector("#stepGrad stop:last-child");
+  const stepPaths = document.querySelectorAll(".stepped-svg path");
+  if (stepGradStop0) stepGradStop0.setAttribute("stop-color", foreColor);
+  if (stepGradStop1) stepGradStop1.setAttribute("stop-color", foreColor);
+  if (stepPaths && stepPaths.length > 1) {
+    stepPaths[1].setAttribute("stroke", foreColor);
   }
 
   // 6. Right Column Side Panel (Permanent Dedicated Live Telemetry)

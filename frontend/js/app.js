@@ -499,6 +499,10 @@ function bindEventHandlers() {
     document.getElementById("modal-ai-advisory")?.classList.add("open");
     switchRightPanel("advisory");
   });
+  document.getElementById("dock-btn-mcp")?.addEventListener("click", () => {
+    setActiveDockBtn("dock-btn-mcp");
+    openMcpModal();
+  });
 }
 
 function bindModalHandlers() {
@@ -530,6 +534,7 @@ function bindModalHandlers() {
   // Modal 5: Fast-MCP Agent Connector
   const modalMcp = document.getElementById("modal-mcp-connector");
   document.getElementById("btn-mcp")?.addEventListener("click", () => modalMcp?.classList.add("open"));
+  document.getElementById("dock-btn-mcp")?.addEventListener("click", () => modalMcp?.classList.add("open"));
   document.getElementById("close-modal-mcp")?.addEventListener("click", () => modalMcp?.classList.remove("open"));
 
   // Close modals on clicking overlay background or pressing Escape

@@ -99,7 +99,17 @@ function populateAiModal(data, isMr) {
     ? window.getSeasonalRainOutlook(data, isMr)
     : null;
 
-  if (seasonalOutlook && seasonalOutlook.advisoryStatusHtml) {
+  const diagCode = data?.live_diagnosis?.category_code ?? 0;
+  const isCurrentDistressed = diagCode >= 2;
+  const dryDays = data?.farmer_cards?.dry_gap?.value_days ?? 0;
+  const isSevereBreak = dryDays >= 15 || catCode >= 2;
+
+  // Preserve current drought distress warning if currently in distress, even if 30-day forecast is improving
+  if (isCurrentDistressed) {
+    rainStatusHtml = isMr
+      ? `<strong>${svgAlert}सध्या पिकावर ताण:</strong> उभ्या पिकाला सध्या पाण्याचा तीव्र ताण जाणवत असून तातडीने संरक्षित पाणी देण्याची गरज आहे. ${seasonalOutlook ? seasonalOutlook.description : "हवामानावर लक्ष ठेवावे."}`
+      : `<strong>${svgAlert}Current Moisture Stress:</strong> Standing crops are currently experiencing drought stress and require immediate supplementary irrigation. ${seasonalOutlook ? seasonalOutlook.description : "Monitor telemetry closely."}`;
+  } else if (seasonalOutlook && seasonalOutlook.advisoryStatusHtml) {
     rainStatusHtml = seasonalOutlook.advisoryStatusHtml;
   } else if (catCode === 0) {
     rainStatusHtml = isMr
@@ -134,7 +144,7 @@ function populateAiModal(data, isMr) {
       <div class="ai-climate-tags">
         <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>${seasonalOutlook ? seasonalOutlook.climatePillText : (isMr ? "मान्सून वारे: सक्रिय" : "Monsoon Winds: Active")}</span>
         <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>${isMr ? "ढगांची स्थिती: समाधानकारक" : "Cloud Moisture: Adequate"}</span>
-        <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${isMr ? "मोठा खंड: नाही" : "Severe Break: None"}</span>
+        <span class="climate-pill" style="${isSevereBreak ? 'border-color: rgba(220, 38, 38, 0.3); color: #DC2626;' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="${isSevereBreak ? '#DC2626' : '#10B981'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="${isSevereBreak ? 'M18 6L6 18M6 6l12 12' : 'M22 11.08V12a10 10 0 1 1-5.93-9.14'}"/><polyline points="${isSevereBreak ? '' : '22 4 12 14.01 9 11.01'}"/></svg>${isSevereBreak ? (isMr ? `पावसात खंड: ${dryDays} दिवस` : `Dry Break: ${dryDays} Days`) : (isMr ? "मोठा खंड: नाही" : "Severe Break: None")}</span>
       </div>
       <div class="ai-diagnostic-summary">
         ${rainStatusHtml}

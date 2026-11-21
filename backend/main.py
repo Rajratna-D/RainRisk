@@ -116,6 +116,12 @@ def get_mcp_streamable_app():
             _mcp_streamable_app = mcp.streamable_http_app(streamable_http_path="/", transport_security=sec_settings)
         else:
             _mcp_streamable_app = mcp.streamable_http_app(streamable_http_path="/")
+    except TypeError:
+        try:
+            from backend.mcp_server import mcp
+            _mcp_streamable_app = mcp.streamable_http_app()
+        except Exception as e:
+            logger.warning(f"Could not initialize Streamable HTTP app: {e}")
     except Exception as e:
         logger.warning(f"Could not initialize Streamable HTTP app: {e}")
     return _mcp_streamable_app
@@ -131,8 +137,14 @@ def get_mcp_sse_app():
             _mcp_sse_app = mcp.sse_app(transport_security=sec_settings)
         else:
             _mcp_sse_app = mcp.sse_app()
+    except TypeError:
+        try:
+            from backend.mcp_server import mcp
+            _mcp_sse_app = mcp.sse_app()
+        except Exception as e:
+            logger.warning(f"Could not initialize SSE app: {e}")
     except Exception as e:
-        print(f"[!] Warning: Could not initialize SSE app: {e}")
+        logger.warning(f"Could not initialize SSE app: {e}")
     return _mcp_sse_app
 
 # Backward compatibility references
@@ -247,6 +259,26 @@ class ASGIAppResponse(Response):
         s["path"] = self.path_override
         s["raw_path"] = self.path_override.encode("ascii")
         s["root_path"] = self.root_path
+
+        # SEC-FIX: FastMCP internal _validate_host only matches exact strings and port wildcards (e.g. 'localhost:*'),
+        # not subdomain wildcards (*.loca.lt, *.trycloudflare.com, *.ngrok-free.app).
+        # We rewrite the host header in scope to 'localhost' for verified allowed tunnel hosts:
+        headers = list(scope.get("headers", []))
+        new_headers = []
+        for k, v in headers:
+            if k.lower() == b"host":
+                host_str = v.decode("latin-1").split(":")[0].lower()
+                if (
+                    host_str.endswith(".loca.lt")
+                    or host_str.endswith(".trycloudflare.com")
+                    or host_str.endswith(".ngrok-free.app")
+                ):
+                    new_headers.append((b"host", b"localhost"))
+                else:
+                    new_headers.append((k, v))
+            else:
+                new_headers.append((k, v))
+        s["headers"] = new_headers
 
         async def send_wrapper(message):
             if message["type"] == "http.response.start":

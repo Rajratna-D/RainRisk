@@ -398,6 +398,18 @@ function applyLanguage(lang) {
   setAttr("dock-btn-sliders", "title", isMr ? "हंगामी कृषी टिप्स" : "Seasonal Agronomic Tips");
   setAttr("dock-btn-notes", "title", isMr ? "कृषी सल्लागार" : "University Advisory");
   setAttr("dock-btn-settings", "title", isMr ? "अधिकृत माहिती व स्रोत" : "Verified Data Sources");
+  setAttr("dock-btn-mcp", "title", isMr ? "AI एजंट कनेक्टर (MCP लिंक)" : "Connect AI Agent (Universal MCP Gateway)");
+  setAttr("btn-mcp", "title", isMr ? "AI एजंट कनेक्टर (MCP लिंक)" : "Connect AI Agent (Universal FastMCP Gateway)");
+  const topMcpLabel = document.getElementById("label-top-mcp");
+  if (topMcpLabel) topMcpLabel.textContent = isMr ? "⚡ MCP लिंक" : "⚡ MCP Link";
+  const titleMcpBanner = document.getElementById("title-mcp-banner");
+  if (titleMcpBanner) titleMcpBanner.textContent = isMr ? "⚡ FastMCP AI एजंट लिंक" : "⚡ FastMCP AI Agent Link";
+  const descMcpBanner = document.getElementById("desc-mcp-banner");
+  if (descMcpBanner) {
+    descMcpBanner.textContent = isMr
+      ? "क्लाऊड (Claude), ChatGPT, Gemini व Cursor ला या एकाच लिंकने थेट जोडा:"
+      : "Connect Claude, ChatGPT, Gemini, and Cursor to live drought telemetry via one universal link:";
+  }
   setAttr("btn-agri-dept", "title", isMr ? "महाराष्ट्र शासन कृषी विभाग" : "Department of Agriculture, GoM");
   setAttr("open-advisory-btn", "title", isMr ? "कृषी विद्यापीठ सल्ला उघडा" : "Open University Advisory");
   setAttr("btn-tips", "title", isMr ? "शेतकरी हंगामी टिप्स" : "Farmer Seasonal Tips");
