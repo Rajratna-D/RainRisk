@@ -95,7 +95,13 @@ function populateAiModal(data, isMr) {
   const svgAlert = `<svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="vertical-align:-2px; margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 
   let rainStatusHtml = "";
-  if (catCode === 0) {
+  const seasonalOutlook = typeof window.getSeasonalRainOutlook === "function"
+    ? window.getSeasonalRainOutlook(data, isMr)
+    : null;
+
+  if (seasonalOutlook && seasonalOutlook.advisoryStatusHtml) {
+    rainStatusHtml = seasonalOutlook.advisoryStatusHtml;
+  } else if (catCode === 0) {
     rainStatusHtml = isMr
       ? `<strong>${svgRain}समाधानकारक पाऊस:</strong> मान्सून वारे सक्रिय असून पुढील ३० दिवसांत अंदाजे ५ पावसाळी दिवस अपेक्षित आहेत. शेतात वाफसा चांगला राहील व पिकावर दुष्काळाचा धोका नाही.`
       : `<strong>${svgRain}Favorable Rainfall:</strong> Monsoon winds are active with approximately 5 rain days expected over the next 30 days. No drought threat to standing crops.`;
@@ -126,7 +132,7 @@ function populateAiModal(data, isMr) {
         <span class="ai-card-chip">${isMr ? "९८% खात्रीशीर अंदाज" : "98% Reliable Forecast"}</span>
       </div>
       <div class="ai-climate-tags">
-        <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>${isMr ? "मान्सून वारे: सक्रिय व अनुकूल" : "Monsoon Winds: Active & Normal"}</span>
+        <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="16" y1="13" x2="16" y2="21"/><line x1="8" y1="13" x2="8" y2="21"/><line x1="12" y1="15" x2="12" y2="23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>${seasonalOutlook ? seasonalOutlook.climatePillText : (isMr ? "मान्सून वारे: सक्रिय" : "Monsoon Winds: Active")}</span>
         <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>${isMr ? "ढगांची स्थिती: समाधानकारक" : "Cloud Moisture: Adequate"}</span>
         <span class="climate-pill"><svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>${isMr ? "मोठा खंड: नाही" : "Severe Break: None"}</span>
       </div>

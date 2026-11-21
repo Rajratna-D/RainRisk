@@ -64,36 +64,81 @@ from backend.schemas import (
 )
 
 # -------------------------------------------------------------------------
-# FAST MCP / MODEL CONTEXT PROTOCOL APP INITIALIZATION
+# FAST MCP / MODEL CONTEXT PROTOCOL APP INITIALIZATION (UNIVERSAL GATEWAY)
 # -------------------------------------------------------------------------
-mcp_sse_app = None
-current_streamable_app = None
+_mcp_streamable_app = None
+_mcp_sse_app = None
 
-def get_mcp_streamable_app():
-    try:
-        from backend.mcp_server import mcp
-        try:
-            from mcp.server.transport_security import TransportSecuritySettings
-            sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
-            return mcp.streamable_http_app(streamable_http_path="/", transport_security=sec_settings)
-        except Exception:
-            return mcp.streamable_http_app(streamable_http_path="/")
-    except Exception as e:
-        print(f"[!] Warning: Could not initialize Streamable HTTP app: {e}")
-        return None
-
-try:
-    from backend.mcp_server import mcp
+def get_mcp_security_settings():
     try:
         from mcp.server.transport_security import TransportSecuritySettings
-        sec_settings = TransportSecuritySettings(enable_dns_rebinding_protection=False)
-        mcp_sse_app = mcp.sse_app(transport_security=sec_settings)
-    except Exception:
-        mcp_sse_app = mcp.sse_app()
-    current_streamable_app = get_mcp_streamable_app()
-    print("[OK] Remote MCP Server initialized (Streamable HTTP + SSE transport, DNS rebinding disabled for cloud).")
-except Exception as e:
-    print(f"[!] Warning: Could not initialize FastMCP sub-apps: {e}")
+        return TransportSecuritySettings(
+            enable_dns_rebinding_protection=True,
+            allowed_hosts=[
+                "rainrisk-vcra.onrender.com",
+                "rainrisk-vcra.onrender.com:*",
+                "localhost",
+                "localhost:*",
+                "127.0.0.1",
+                "127.0.0.1:*",
+                "testserver",
+                "testserver:*",
+                "test",
+                "test:*",
+                "*.loca.lt",
+                "*.loca.lt:*",
+                "*.ngrok-free.app",
+                "*.ngrok-free.app:*",
+                "*.trycloudflare.com",
+                "*.trycloudflare.com:*"
+            ],
+            allowed_origins=[
+                "https://claude.ai",
+                "https://chatgpt.com",
+                "https://gemini.google.com",
+                "https://rainrisk-vcra.onrender.com",
+                "http://localhost:*",
+                "http://127.0.0.1:*"
+            ]
+        )
+    except Exception as e:
+        logger.warning("Could not initialize MCP TransportSecuritySettings: %s", e)
+        return None
+
+def get_mcp_streamable_app():
+    global _mcp_streamable_app
+    if _mcp_streamable_app is not None:
+        return _mcp_streamable_app
+    try:
+        from backend.mcp_server import mcp
+        sec_settings = get_mcp_security_settings()
+        if sec_settings:
+            _mcp_streamable_app = mcp.streamable_http_app(streamable_http_path="/", transport_security=sec_settings)
+        else:
+            _mcp_streamable_app = mcp.streamable_http_app(streamable_http_path="/")
+    except Exception as e:
+        logger.warning(f"Could not initialize Streamable HTTP app: {e}")
+    return _mcp_streamable_app
+
+def get_mcp_sse_app():
+    global _mcp_sse_app
+    if _mcp_sse_app is not None:
+        return _mcp_sse_app
+    try:
+        from backend.mcp_server import mcp
+        sec_settings = get_mcp_security_settings()
+        if sec_settings:
+            _mcp_sse_app = mcp.sse_app(transport_security=sec_settings)
+        else:
+            _mcp_sse_app = mcp.sse_app()
+    except Exception as e:
+        print(f"[!] Warning: Could not initialize SSE app: {e}")
+    return _mcp_sse_app
+
+# Backward compatibility references
+current_streamable_app = get_mcp_streamable_app()
+mcp_sse_app = get_mcp_sse_app()
+print("[OK] Remote MCP Server initialized (Universal Gateway: Streamable HTTP + SSE transport, DNS rebinding secured).")
 
 # -------------------------------------------------------------------------
 # LIFESPAN CONTEXT MANAGER: STARTUP PRE-WARMING & CLEAN SHUTDOWN
@@ -118,7 +163,8 @@ async def lifespan(app: FastAPI):
         print(f"[!] Warning: TreeSHAP engine pre-initialization encountered: {e}")
 
     # Startup: Initialize MCP Streamable HTTP session manager task group
-    global current_streamable_app
+    global _mcp_streamable_app, current_streamable_app
+    _mcp_streamable_app = None
     current_streamable_app = get_mcp_streamable_app()
     if current_streamable_app and hasattr(current_streamable_app, "router") and hasattr(current_streamable_app.router, "lifespan_context"):
         async with current_streamable_app.router.lifespan_context(current_streamable_app):
@@ -159,94 +205,17 @@ else:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_origin_regex=r"^https:\/\/.*\.pages\.dev$|^https:\/\/.*\.vercel\.app$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$",
+    allow_origin_regex=r"^https:\/\/.*\.pages\.dev$|^https:\/\/.*\.vercel\.app$|^https:\/\/claude\.ai$|^https:\/\/.*\.anthropic\.com$|^https:\/\/chatgpt\.com$|^https:\/\/.*\.openai\.com$|^https:\/\/gemini\.google\.com$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["mcp-session-id", "Mcp-Session-Id"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # -------------------------------------------------------------------------
-# PHASE 7: ENTERPRISE MODEL CONTEXT PROTOCOL (STREAMABLE HTTP + SSE + BROWSER)
+# SECURITY & PROXY UTILITIES
 # -------------------------------------------------------------------------
-@app.api_route("/mcp", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
-@app.api_route("/mcp/", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
-async def handle_mcp_unified_gateway(request: Request):
-    accept_header = request.headers.get("accept", "")
-    content_type = request.headers.get("content-type", "")
-
-    # 1. Human browser / developer GET diagnostics
-    if request.method == "GET" and "text/event-stream" not in accept_header and "json" not in accept_header:
-        return {
-            "status": "operational",
-            "protocol": "Model Context Protocol (FastMCP 2.x)",
-            "transports": ["Streamable HTTP", "Server-Sent Events (SSE)"],
-            "endpoints": {
-                "streamable_http": "https://rainrisk-vcra.onrender.com/mcp",
-                "sse": "https://rainrisk-vcra.onrender.com/mcp/sse"
-            },
-            "tools_count": 6,
-            "tools": [
-                "get_taluka_risk",
-                "explain_drought_prediction",
-                "get_bilingual_advisory",
-                "get_state_drought_summary",
-                "get_adjacent_talukas",
-                "get_district_summary"
-            ],
-            "connectors": {
-                "gemini_web": "Settings -> Add MCP Server -> https://rainrisk-vcra.onrender.com/mcp",
-                "claude_web": "Settings -> Connectors -> Add custom connector: https://rainrisk-vcra.onrender.com/mcp",
-                "chatgpt_web": "Plugins -> Add custom MCP server: https://rainrisk-vcra.onrender.com/mcp",
-                "cursor_sse": "Cursor Settings -> MCP -> Add SSE: https://rainrisk-vcra.onrender.com/mcp/sse"
-            }
-        }
-
-    # 2. Redirect legacy SSE requests querying root /mcp to /mcp/sse
-    if request.method == "GET" and "text/event-stream" in accept_header and "json" not in content_type:
-        return RedirectResponse(url="/mcp/sse", status_code=307)
-
-    # 3. Forward to Streamable HTTP ASGI app (Gemini, Claude Web, modern clients)
-    app_target = current_streamable_app or get_mcp_streamable_app()
-    if app_target:
-        scope = dict(request.scope)
-        scope["path"] = "/"
-        scope["raw_path"] = b"/"
-
-        status_code = 200
-        headers = []
-        body_chunks = []
-
-        async def receive():
-            return await request.receive()
-
-        async def send(message):
-            nonlocal status_code, headers
-            if message["type"] == "http.response.start":
-                status_code = message["status"]
-                headers = message.get("headers", [])
-            elif message["type"] == "http.response.body":
-                body_chunks.append(message.get("body", b""))
-
-        await app_target(scope, receive, send)
-
-        res = Response(content=b"".join(body_chunks), status_code=status_code)
-        for k, v in headers:
-            res.headers[k.decode("latin-1")] = v.decode("latin-1")
-        return res
-
-    return JSONResponse(status_code=503, content={"error": "MCP Streamable HTTP not initialized"})
-
-# Mount SSE sub-app for legacy SSE clients (Cursor, Claude Desktop at /mcp/sse and /mcp/messages)
-if mcp_sse_app:
-    app.mount("/mcp", mcp_sse_app)
-
-# -------------------------------------------------------------------------
-# SECURITY & OBSERVABILITY: BOUNDED RATE LIMITER & LATENCY TIMING MIDDLEWARE
-# -------------------------------------------------------------------------
-# PERF-04: Bounded in-memory TTLCache prevents memory leaks and OOM under DDoS
-IP_REQUEST_TIMESTAMPS: cachetools.TTLCache = cachetools.TTLCache(maxsize=10000, ttl=60.0)
-RATE_LIMIT_PER_MINUTE = 240 # Generous 240 req/min for real-time map tile and audio streaming
 TRUSTED_PROXIES = set([p.strip() for p in os.getenv("TRUSTED_PROXY_IPS", "127.0.0.1,::1,testclient").split(",") if p.strip()])
 
 def get_client_ip(request: Request) -> str:
@@ -258,6 +227,141 @@ def get_client_ip(request: Request) -> str:
         if ips:
             return ips[0]
     return peer_ip
+
+# -------------------------------------------------------------------------
+# PHASE 7: ENTERPRISE MODEL CONTEXT PROTOCOL (UNIVERSAL SINGLE GATEWAY)
+# -------------------------------------------------------------------------
+MCP_RATE_LIMIT_CACHE: cachetools.TTLCache = cachetools.TTLCache(maxsize=5000, ttl=60.0)
+MCP_RATE_LIMIT_PER_MIN = 60
+
+class ASGIAppResponse(Response):
+    """Direct ASGI proxy response for streaming SSE and Streamable HTTP without memory buffering."""
+    def __init__(self, asgi_app, path_override: str = "/sse", root_path: str = "/mcp"):
+        self.asgi_app = asgi_app
+        self.path_override = path_override
+        self.root_path = root_path
+        super().__init__()
+
+    async def __call__(self, scope, receive, send):
+        s = dict(scope)
+        s["path"] = self.path_override
+        s["raw_path"] = self.path_override.encode("ascii")
+        s["root_path"] = self.root_path
+
+        async def send_wrapper(message):
+            if message["type"] == "http.response.start":
+                headers = list(message.get("headers", []))
+                if not any(k.lower() == b"access-control-allow-origin" for k, _ in headers):
+                    headers.append((b"access-control-allow-origin", b"*"))
+                if not any(k.lower() == b"access-control-expose-headers" for k, _ in headers):
+                    headers.append((b"access-control-expose-headers", b"mcp-session-id, Mcp-Session-Id"))
+                message = dict(message)
+                message["headers"] = headers
+            await send(message)
+
+        await self.asgi_app(s, receive, send_wrapper)
+
+@app.api_route("/mcp", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
+@app.api_route("/mcp/{rest:path}", methods=["GET", "POST", "DELETE", "OPTIONS"], include_in_schema=False)
+async def handle_mcp_unified_gateway(request: Request, rest: str = ""):
+    # 1. CORS Preflight: Immediate 204 reply for Claude Web, Gemini Web, and browser connectors
+    if request.method == "OPTIONS":
+        return Response(
+            status_code=204,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Expose-Headers": "mcp-session-id, Mcp-Session-Id",
+                "Access-Control-Max-Age": "86400",
+            }
+        )
+
+    # 2. Per-IP Rate Limiting: 60 req/min protects TreeSHAP from bot exhaustion (uses trusted proxy IP resolution)
+    client_ip = get_client_ip(request)
+    now = time.time()
+    ts_list = MCP_RATE_LIMIT_CACHE.get(client_ip, [])
+    ts_list = [t for t in ts_list if now - t < 60]
+    if len(ts_list) >= MCP_RATE_LIMIT_PER_MIN:
+        return JSONResponse(
+            status_code=429,
+            content={"error": "MCP rate limit exceeded. Max 60 requests/minute per IP."},
+            headers={"Retry-After": "60", "Access-Control-Allow-Origin": "*"}
+        )
+    ts_list.append(now)
+    MCP_RATE_LIMIT_CACHE[client_ip] = ts_list
+
+    accept_header = request.headers.get("accept", "").lower()
+    full_path = request.url.path
+    has_session_id = bool(request.headers.get("mcp-session-id"))
+
+    # 3. SSE Messages sub-path (for active Claude Desktop / Cursor SSE sessions)
+    # Uses trailing slash /messages/ to preserve mounted route and avoid Starlette 307 redirect
+    if "messages" in rest or "messages" in full_path:
+        sse_app = get_mcp_sse_app()
+        if not sse_app:
+            return JSONResponse(status_code=503, content={"error": "MCP SSE app not initialized"})
+        return ASGIAppResponse(sse_app, path_override="/messages/", root_path="/mcp")
+
+    # 4. Streamable HTTP with active session ID (GET /mcp with Mcp-Session-Id and text/event-stream, or DELETE)
+    # Spec: If Mcp-Session-Id is present, GET opens the standalone SSE stream for that existing session
+    if has_session_id:
+        if current_streamable_app:
+            return ASGIAppResponse(current_streamable_app, path_override="/", root_path="/mcp")
+        return JSONResponse(status_code=503, content={"error": "MCP Streamable HTTP not initialized"})
+
+    # 5. Legacy SSE Stream initiation (Claude Desktop / Cursor GET /mcp with text/event-stream without session ID)
+    # Direct 200 OK stream — NO 307 redirect!
+    if request.method == "GET" and "text/event-stream" in accept_header:
+        sse_app = get_mcp_sse_app()
+        if not sse_app:
+            return JSONResponse(status_code=503, content={"error": "MCP SSE app not initialized"})
+        return ASGIAppResponse(sse_app, path_override="/sse", root_path="/mcp")
+
+    # 6. Backward compatibility for legacy /mcp/sse URL
+    if rest.rstrip("/") == "sse":
+        sse_app = get_mcp_sse_app()
+        if not sse_app:
+            return JSONResponse(status_code=503, content={"error": "MCP SSE app not initialized"})
+        return ASGIAppResponse(sse_app, path_override="/sse", root_path="/mcp")
+
+    # 7. Human browser / developer GET diagnostics
+    if request.method == "GET":
+        return JSONResponse({
+            "status": "operational",
+            "protocol": "Model Context Protocol (MCP) — Universal Gateway",
+            "transports": ["Streamable HTTP", "Server-Sent Events (SSE)"],
+            "universal_link": "https://rainrisk-vcra.onrender.com/mcp",
+            "authentication": "None (Public agrometeorological system)",
+            "tools_count": 6,
+            "tools": [
+                "get_taluka_risk",
+                "explain_drought_prediction",
+                "get_bilingual_advisory",
+                "get_state_drought_summary",
+                "get_adjacent_talukas",
+                "get_district_summary"
+            ],
+            "connect_instructions": {
+                "claude": "Settings -> Connectors -> Add custom connector -> https://rainrisk-vcra.onrender.com/mcp (Auth: None)",
+                "gemini": "Customize -> Connectors -> Connect to MCP server -> https://rainrisk-vcra.onrender.com/mcp (Auth: None)",
+                "chatgpt": "Plugins -> Add custom MCP server -> https://rainrisk-vcra.onrender.com/mcp (Auth: None)",
+                "cursor": "Settings -> MCP -> Add HTTP/SSE -> https://rainrisk-vcra.onrender.com/mcp"
+            }
+        }, headers={"Access-Control-Allow-Origin": "*"})
+
+    # 8. Streamable HTTP POST: Gemini, Claude Web, modern MCP JSON-RPC clients (direct non-buffering streaming)
+    if current_streamable_app:
+        return ASGIAppResponse(current_streamable_app, path_override="/", root_path="/mcp")
+
+    return JSONResponse(status_code=503, content={"error": "MCP Streamable HTTP not initialized"})
+
+# -------------------------------------------------------------------------
+# SECURITY & OBSERVABILITY: BOUNDED RATE LIMITER & LATENCY TIMING MIDDLEWARE
+# -------------------------------------------------------------------------
+# PERF-04: Bounded in-memory TTLCache prevents memory leaks and OOM under DDoS
+IP_REQUEST_TIMESTAMPS: cachetools.TTLCache = cachetools.TTLCache(maxsize=10000, ttl=60.0)
+RATE_LIMIT_PER_MINUTE = 240 # Generous 240 req/min for real-time map tile and audio streaming
 
 @app.middleware("http")
 async def security_and_timing_middleware(request: Request, call_next):

@@ -45,11 +45,21 @@ except (ImportError, ModuleNotFoundError):
     from mcp.server.mcpserver import MCPServer as FastMCP
 
 mcp = FastMCP(
-    "MahaRainRisk Climatology & Spatial Intelligence Engine",
+    "MahaRainRisk Drought Intelligence Engine",
     instructions=(
-        "MahaRainRisk provides real-time drought assessments, dual-mode machine learning predictions, "
-        "TreeSHAP explainability attributions, topological adjacency analyses, and bilingual (Marathi/English) "
-        "agricultural advisories across all 194 rainfed talukas in Maharashtra, India."
+        "You are connected to MahaRainRisk — an operational real-time drought early-warning system "
+        "covering 194 rainfed talukas across Maharashtra, India.\n\n"
+        "Decision rules:\n"
+        "1. If you need drought risk for a specific taluka -> call get_taluka_risk.\n"
+        "2. If you need to explain WHY a taluka is at risk -> call explain_drought_prediction.\n"
+        "3. If you need farming advice -> call get_bilingual_advisory (supports Marathi).\n"
+        "4. If you need a statewide overview -> call get_state_drought_summary.\n"
+        "5. If you need neighboring talukas -> call get_adjacent_talukas.\n"
+        "6. If you need district-level rollup -> call get_district_summary.\n\n"
+        "NEVER guess taluka coordinates. NEVER invent taluka names. "
+        "All tools are read-only and public — no authentication required. "
+        "Historic names are accepted: 'Aurangabad' resolves to 'Chhatrapati Sambhajinagar', "
+        "'Osmanabad' resolves to 'Dharashiv'. Marathi Devanagari names are supported."
     )
 )
 

@@ -224,18 +224,26 @@ function applyLanguage(lang) {
   }
 
   const elRainDays = document.getElementById("side-card4-rain-days");
-  if (elRainDays && (!state.currentData || !state.currentData.farmer_cards)) {
-    elRainDays.textContent = isMr ? "~५ दिवस" : "~5 Days";
-  }
   const elCumRain = document.getElementById("side-card4-cum-rain");
-  if (elCumRain && (!state.currentData || !state.currentData.farmer_cards)) {
-    elCumRain.textContent = isMr ? "१८६.८ mm" : "186.8 mm";
-  }
   const elSideCard4 = document.getElementById("side-card4-text");
-  if (elSideCard4 && (!state.currentData || !state.currentData.farmer_cards)) {
-    elSideCard4.textContent = isMr
-      ? "पुढील ३० दिवसांत ५ पावसाळी दिवस अपेक्षित आहेत. जमिनीत ओलावा समाधानकारक आहे."
-      : "Around 5 rain days expected in next 30 days. Root-zone moisture is sufficient.";
+
+  if (state.currentData && typeof window.getSeasonalRainOutlook === "function") {
+    const outlook = window.getSeasonalRainOutlook(state.currentData, isMr);
+    if (elRainDays) elRainDays.textContent = outlook.rainDaysText;
+    if (elSideCard4) elSideCard4.innerHTML = outlook.description;
+    if (elCumRain && state.currentData.farmer_cards?.rainfall_deficit) {
+      elCumRain.textContent = `${formatNumber(Math.round(state.currentData.farmer_cards.rainfall_deficit.value_mm), isMr)} mm`;
+    }
+  } else {
+    const dMonth = new Date().getMonth() + 1;
+    const isRabiMonth = (dMonth >= 10 || dMonth <= 2);
+    if (elRainDays) elRainDays.textContent = isRabiMonth ? (isMr ? "०–१ दिवस" : "0–1 Days") : (isMr ? "~५ दिवस" : "~5 Days");
+    if (elCumRain) elCumRain.textContent = isMr ? "१८६.८ mm" : "186.8 mm";
+    if (elSideCard4) {
+      elSideCard4.innerHTML = isRabiMonth
+        ? (isMr ? "परतीचा मान्सून संपल्याने कोरडे हवामान राहील. पुढील ३० दिवसांत ०–१ दिवस पावसाची शक्यता. जमिनीत ओलावा समाधानकारक आहे." : "Post-monsoon dry weather prevailing. 0–1 rain days expected in next 30 days. Root-zone moisture is sufficient.")
+        : (isMr ? "पुढील ३० दिवसांत ५ पावसाळी दिवस अपेक्षित आहेत. जमिनीत ओलावा समाधानकारक आहे." : "Around 5 rain days expected in next 30 days. Root-zone moisture is sufficient.");
+    }
   }
 
   // Tab 2 Climatological & ML Titles and Telemetry

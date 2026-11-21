@@ -28,13 +28,13 @@ This architecture enables **100% of major AI clients** (Claude, Cursor, ChatGPT,
 
 ---
 
-### 2. Remote Cloud Connection over HTTPS / SSE (Any MCP Client)
+### 2. Remote Cloud Connection over HTTPS (Universal Single Link)
 
-Our production FastAPI backend hosts the MCP SSE app directly on Render:
+Our production FastAPI backend hosts the Universal MCP Gateway directly on Render:
 ```
 https://rainrisk-vcra.onrender.com/mcp
 ```
-*(Automatically resolves to `/mcp/sse` via HTTP 307 redirect)*
+*(Native Universal Gateway: Direct 200 OK SSE / Streamable HTTP negotiation, zero redirect hops, compatible with Claude, Gemini, ChatGPT, and Cursor)*
 
 ---
 
@@ -89,8 +89,15 @@ Because Claude Web, ChatGPT Web, and Gemini Web run in cloud data centers, they 
    ```powershell
    python d:\PBL_selfmade\MahaRainRisk\backend\main.py
    ```
-2. In a second PowerShell window, launch a free HTTPS tunnel using `localtunnel` (zero account required):
+2. In a second PowerShell window, launch a free, byte-safe HTTPS tunnel (preserves multi-byte UTF-8 Marathi Devanagari characters without framing corruption):
    ```powershell
+   # Option A: Cloudflare Quick Tunnel (Recommended — pure binary streaming, 100% byte-safe, zero accounts)
+   cloudflared tunnel --url http://localhost:8000
+
+   # Option B: ngrok (Industry-standard byte-safe tunnel)
+   ngrok http 8000
+
+   # Option C: localtunnel (Native host-allowlisted; avoid --local-host to prevent UTF-8 chunk re-encoding)
    npx localtunnel --port 8000
    ```
    *Example Output:* `https://quick-farm-42.loca.lt`

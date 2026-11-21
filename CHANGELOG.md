@@ -1,9 +1,38 @@
-# MahaRainRisk: Master Engineering Upgrades Log (Phases 1–6)
+# MahaRainRisk: Master Engineering Upgrades Log (Phases 1–10)
 **Platform:** Operational Taluka-Level Agritech Drought Early Warning & Climate Resilience System  
 **Coverage:** 194 Monitored Rainfed Talukas across all 36 Districts of Maharashtra  
 **Runtime Environment:** Python 3.13 | PostgreSQL 18 | FastAPI | cachetools | Docker | SHAP  
 **Document Status:** Production Certified & Formally Verified  
-**Date:** November 4, 2026  
+**Date:** November 20, 2026  
+
+---
+
+## 🚀 Phase 10: Universal Model Context Protocol (MCP) Single Gateway
+
+### Summary & Architectural Problem Solved
+Previously, connecting external AI models required fragmented links (`/mcp/sse` for Claude Desktop, `/mcp` with HTTP 307 redirect, and `/openapi.json` for ChatGPT). Claude connections failed due to:
+1. **HTTP 307 Redirect Failure:** Claude's streaming EventSource client drops handshakes on 307 redirects.
+2. **Mount Path /messages 404:** Sub-mounted FastMCP announced `/messages` relative to root instead of `/mcp/messages`.
+3. **Route Collision:** `@app.api_route("/mcp")` shadowed `app.mount("/mcp")`.
+4. **CORS & DNS Security:** Missing CORS preflight for browser connectors and disabled DNS rebinding protection.
+5. **Session Routing & Framing:** Streamable HTTP GETs misdirected to legacy SSE, missing `Mcp-Session-Id` CORS exposure, and UTF-8 chunk re-encoding corruption under `--local-host`.
+
+### Upgrades Implemented
+- **MCP-01 (Direct SSE Handshake):** Eliminated 307 redirect. `GET /mcp` with `Accept: text/event-stream` directly initiates an SSE stream via `ASGIAppResponse`.
+- **MCP-02 (Path Routing Correction):** Messages sub-path mapped dynamically to `/mcp/messages/` so Claude JSON-RPC handshakes never 404 or 307.
+- **MCP-03 (Universal Content Negotiation):** Single `/mcp` URL negotiates SSE, Streamable HTTP JSON-RPC 2.0, diagnostic JSON status, and CORS `OPTIONS` preflight on one endpoint.
+- **MCP-04 (DNS Rebinding & Host Hardening):** Enabled `enable_dns_rebinding_protection=True` with explicit allowlist for `rainrisk-vcra.onrender.com`, `localhost`, `127.0.0.1`, `*.trycloudflare.com`, `*.loca.lt`, and `*.ngrok-free.app`.
+- **MCP-05 (CORS Wildcard & AI Origins):** Added preflight `OPTIONS` returning 204 with `Access-Control-Max-Age: 86400` and scoped wildcard headers for `/mcp`.
+- **MCP-06 (Per-IP Rate Limiting with Proxy Resolution):** Implemented 60 req/min TTLCache rate limiting using `get_client_ip(request)` with `TRUSTED_PROXIES` validation so Render reverse proxies do not trigger global lockouts.
+- **MCP-07 (Dashboard Pre-Warm):** Added silent background `fetch('/health')` in `dashboard.js` and `app.js` to eliminate cold-start timeouts for real users.
+- **MCP-08 (Dashboard Modal Redesign):** Streamlined Modal 5 in `index.html` with a prominent "One Universal Link for All AI Models" copy card and integrated top-action-bar `#btn-mcp` quick connector trigger.
+- **MCP-09 (Test Suite Expansion):** Added 20 new automated tests in `test_phase10_mcp_gateway.py` and 5 in `test_phase7_mcp_server.py`. Total test suite passes at **86 passed, 1 skipped**.
+- **MCP-10 (Trailing Slash Mount Preservation):** Fixed Starlette mount redirect by routing `/mcp/messages` to `/messages/` with trailing slash, avoiding HTTP 307 on POST messages.
+- **MCP-11 (Streamable HTTP Session Routing):** Ensured `GET /mcp` with `Mcp-Session-Id` and `Accept: text/event-stream` routes directly to the active Streamable HTTP session manager rather than falling back to legacy SSE.
+- **MCP-12 (CORS Mcp-Session-Id Header Exposure):** Added `Access-Control-Expose-Headers: mcp-session-id, Mcp-Session-Id` across CORS middleware, preflights, and ASGI streaming responses.
+- **MCP-13 (Byte-Safe Tunneling & Devanagari UTF-8 Framing):** Documented byte-safe tunnels (Cloudflare quick tunnels and ngrok) and removed `--local-host` requirement for localtunnel, preventing 3-byte Marathi UTF-8 string chunk splitting and JSON framing corruption.
+- **MCP-14 (Managed Lifespan Safeguard):** Enforced that only the running `current_streamable_app` managed by FastAPI lifespan is invoked, safely returning 503 if uninitialized rather than crashing with unhandled task group runtime errors.
+- **MCP-15 (Direct Zero-Copy Response Streaming):** Refactored `ASGIAppResponse` to stream response body chunks directly via `send_wrapper` with CORS injection, eliminating in-memory buffering.
 
 ---
 

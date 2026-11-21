@@ -3,6 +3,129 @@
  * Depends on: state.js (state, formatNumber, ARC_LENGTH), advisory.js
  */
 
+// Pre-warm Render backend the moment the dashboard loads.
+// By the time a user reads the page and pastes the MCP link into Claude,
+// Render has already fully woken up. Zero cold-start for real users.
+(function prewarmBackend() {
+  const base = window.API_BASE || "";
+  fetch(`${base}/health`, { method: "GET", cache: "no-store" }).catch(() => {});
+})();
+
+// ============================================================================
+// METEOROLOGICAL & SEASONAL OUTLOOK ENGINE
+// ============================================================================
+/**
+ * Computes seasonally accurate 30-day rain outlook based on agro-climatic calendar,
+ * active dry spells, and ML forecast category (eliminating static monsoonal placeholders).
+ */
+function getSeasonalRainOutlook(data, isMr) {
+  let month = new Date().getMonth() + 1; // 1 to 12
+  if (data?.meta?.period) {
+    const parts = data.meta.period.split("-");
+    if (parts.length >= 2) {
+      const parsed = parseInt(parts[1], 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 12) month = parsed;
+    }
+  }
+
+  const catCode = data?.["30_day_forecast"]?.category_code ?? 0;
+  const dryDays = data?.farmer_cards?.dry_gap?.value_days ?? 0;
+  const moistPct = data?.farmer_cards?.soil_moisture ? Math.round(data.farmer_cards.soil_moisture.value_pct) : 60;
+  const isOptimal = moistPct >= 60;
+
+  let rainDaysText = "";
+  let description = "";
+  let climatePillText = "";
+  let advisoryStatusHtml = "";
+
+  // 1. Rabi Winter Season (Nov, Dec, Jan, Feb) — Post-monsoon, dry continental winds
+  if (month === 11 || month === 12 || month === 1 || month === 2) {
+    rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
+    climatePillText = isMr ? "हवामान: कोरडे हिवाळी" : "Weather: Dry Post-Monsoon";
+    description = isMr
+      ? `परतीचा मान्सून संपल्याने कोरडे हवामान राहील. पुढील ३० दिवसांत ०–१ दिवस पावसाची शक्यता. ${isOptimal ? `जमिनीत <strong>${formatNumber(moistPct, true)}%</strong> ओलावा उपलब्ध असून रब्बी पिकांना अनुकूल आहे.` : `जमिनीतील ओलावा कमी होत असल्याने रब्बी पिकांसाठी संरक्षित सिंचनाचे नियोजन ठेवावे.`}`
+      : `Post-monsoon dry weather prevailing across Maharashtra. 0–1 rain days expected in next 30 days. ${isOptimal ? `Root-zone moisture (<strong>${moistPct}%</strong>) supports early Rabi growth; maintain intercultivation.` : `Soil moisture is declining; supplementary well or canal irrigation advised for standing Rabi crops.`}`;
+
+    advisoryStatusHtml = isMr
+      ? `<strong>समाधानकारक रब्बी हवामान:</strong> परतीचा मान्सून संपला असून कोरडे व आल्हाददायक हवामान राहील. पुढील ३० दिवसांत पाऊस नगण्य (०–१ दिवस) अपेक्षित आहे. ${isOptimal ? "जमिनीत पुरेसा ओलावा असल्याने रब्बी पिकांची वाढ चांगली होईल." : "जमिनीत ओलावा कमी असल्याने संरक्षित सिंचनाने पाणी द्यावे."}`
+      : `<strong>Favorable Rabi Conditions:</strong> Monsoon has withdrawn and dry post-monsoon weather prevails. Negligible rainfall (0–1 rain days) expected over next 30 days. ${isOptimal ? "Residual root-zone moisture supports standing Rabi crops." : "Moisture is declining; supplementary irrigation advised."}`;
+  }
+  // 2. Summer / Pre-Monsoon (Mar, Apr, May) — High evaporative heat
+  else if (month === 3 || month === 4 || month === 5) {
+    rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
+    climatePillText = isMr ? "हवामान: उष्ण व कोरडे" : "Weather: Hot & Dry Summer";
+    description = isMr
+      ? `उन्हाळी कोरडे हवामान राहील. अवकाळी मेघगर्जनेची तुरळक शक्यता वगळता पुढील ३० दिवसांत पाऊस नगण्य (०–१ दिवस) राहील.`
+      : `Hot, dry summer weather prevailing. Negligible rain (0–1 days) expected in next 30 days with only isolated pre-monsoon heat thundershowers possible.`;
+
+    advisoryStatusHtml = isMr
+      ? `<strong>उन्हाळी कोरडे हवामान:</strong> तीव्र ऊन व कोरडे हवामान राहील. पुढील ३० दिवसांत पाऊस नगण्य अपेक्षित असून उन्हाळी पिकांना ठिबक किंवा तुषार सिंचनाने पाणी द्यावे.`
+      : `<strong>Hot Summer Conditions:</strong> High evaporative demand and dry weather. Negligible rain expected; prioritize micro-irrigation for standing crops.`;
+  }
+  // 3. Post-Monsoon Transition (October) — Monsoon withdrawal phase
+  else if (month === 10) {
+    if (dryDays > 15 || catCode >= 2) {
+      rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
+      climatePillText = isMr ? "मान्सून: पूर्ण परतीचा टप्पा" : "Monsoon: Fully Withdrawn";
+      description = isMr
+        ? `मान्सून पूर्णपणे परतल्यामुळे कोरडे हवामान राहील. पुढील ३० दिवसांत पावसाची शक्यता नगण्य (०–१ दिवस) आहे. ${isOptimal ? `जमिनीतील उर्वरित ओलाव्याचा रब्बी पेरणीसाठी लाभ घ्यावा.` : `जमिनीत ओलावा कमी असल्याने संरक्षित सिंचनाचे नियोजन करा.`}`
+        : `Monsoon has withdrawn. 0–1 rain days expected in next 30 days. ${isOptimal ? `Residual moisture (<strong>${moistPct}%</strong>) is suitable for Rabi sowing.` : `Moisture reserves are low; supplementary irrigation required for crop establishment.`}`;
+
+      advisoryStatusHtml = isMr
+        ? `<strong>मान्सून परतीचा टप्पा:</strong> मान्सून वारे माघारी फिरले असून हवामान कोरडे होत आहे. पुढील ३० दिवसांत ०–१ दिवस पावसाची शक्यता. रब्बी पिकांसाठी ओलावा टिकवून ठेवा.`
+        : `<strong>Post-Monsoon Transition:</strong> Monsoon winds have withdrawn and clear weather prevails. 0–1 rain days expected over next 30 days. Conserve residual moisture for Rabi crops.`;
+    } else {
+      rainDaysText = isMr ? "~१–२ दिवस" : "~1–2 Days";
+      climatePillText = isMr ? "मान्सून: परतीचा पाऊस" : "Monsoon: Retreating Showers";
+      description = isMr
+        ? `मान्सून परतीच्या टप्प्यात असून पुढील ३० दिवसांत १–२ दिवस हलक्या पावसाची शक्यता आहे.`
+        : `Retreating monsoon phase with 1–2 isolated rain days possible over the next 30 days.`;
+
+      advisoryStatusHtml = isMr
+        ? `<strong>परतीचा पाऊस:</strong> स्थानिक ढगांमुळे तुरळक सरींची शक्यता. शेतात पाण्याचा निचरा ठेवा.`
+        : `<strong>Retreating Monsoon:</strong> Isolated light showers expected. Ensure good field drainage.`;
+    }
+  }
+  // 4. Kharif Active Monsoon (Jun, Jul, Aug, Sep)
+  else {
+    if (catCode === 0 && dryDays <= 10) {
+      rainDaysText = isMr ? "~५–७ दिवस" : "~5–7 Days";
+      climatePillText = isMr ? "मान्सून वारे: सक्रिय" : "Monsoon Winds: Active";
+      description = isMr
+        ? `मान्सून सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. ${isOptimal ? `जमिनीत <strong>${formatNumber(moistPct, true)}%</strong> ओलावा उपलब्ध आहे.` : `ओलावा स्थिर राहील.`}`
+        : `Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. ${isOptimal ? `Root-zone moisture (<strong>${moistPct}%</strong>) is healthy.` : `Adequate moisture expected.`}`;
+
+      advisoryStatusHtml = isMr
+        ? `<strong>समाधानकारक पाऊस:</strong> मान्सून वारे सक्रिय असून पुढील ३० दिवसांत अंदाजे ५–७ पावसाळी दिवस अपेक्षित आहेत. शेतात वाफसा चांगला राहील व पिकावर दुष्काळाचा धोका नाही.`
+        : `<strong>Favorable Rainfall:</strong> Monsoon winds are active with approximately 5–7 rain days expected over next 30 days. No drought threat to standing crops.`;
+    } else if (catCode === 1 || dryDays <= 17) {
+      rainDaysText = isMr ? "~२–३ दिवस" : "~2–3 Days";
+      climatePillText = isMr ? "मान्सून: हलका ताण" : "Monsoon: Light Break";
+      description = isMr
+        ? `पावसात हलका खंड असून पुढील ३० दिवसांत २–३ पावसाळी दिवस अपेक्षित आहेत. ओलावा कमी होत असल्याने काळजी घ्यावी.`
+        : `Light monsoon break with ~2–3 rain days expected in next 30 days. Moisture is declining; supplementary irrigation planning advised.`;
+
+      advisoryStatusHtml = isMr
+        ? `<strong>पावसाचा हलका ताण:</strong> मागील १५ दिवसांत पाऊस कमी झाल्यामुळे जमिनीतील ओलावा घटला आहे. पुढील आठवड्यात स्थानिक सरींची शक्यता आहे.`
+        : `<strong>Mild Dry Spell:</strong> A 15-day rainfall deficit has reduced topsoil moisture. Localized showers expected in the coming week.`;
+    } else {
+      rainDaysText = isMr ? "०–१ दिवस" : "0–1 Days";
+      climatePillText = isMr ? "मान्सून: मोठा कोरडा खंड" : "Monsoon: Severe Dry Spell";
+      description = isMr
+        ? `पावसात मोठा कोरडा खंड पडला असून पुढील ३० दिवसांत पाऊस नगण्य (०–१ दिवस) राहील. पिकांना तातडीने संरक्षित पाणी द्यावे.`
+        : `Prolonged dry break with 0–1 rain days expected in next 30 days. High drought stress; immediate supplementary irrigation advised.`;
+
+      advisoryStatusHtml = isMr
+        ? `<strong>गंभीर कोरडा खंड:</strong> पावसाचा मोठा खंड पडल्यामुळे जमिनीतील ओल कमी झाली आहे. पिकाला संरक्षित पाणी देण्याची तातडीची गरज आहे.`
+        : `<strong>Severe Dry Spell:</strong> Prolonged rainfall deficit. Immediate supplementary irrigation required to sustain crops.`;
+    }
+  }
+
+  return { rainDaysText, description, climatePillText, advisoryStatusHtml };
+}
+
+window.getSeasonalRainOutlook = getSeasonalRainOutlook;
+
 // ============================================================================
 // MAIN DASHBOARD UPDATE (Called on data fetch & language switch)
 // ============================================================================
@@ -216,9 +339,10 @@ function updateDashboard(data) {
   const moistPct = cards.soil_moisture ? Math.round(cards.soil_moisture.value_pct) : 70;
   const isOptimal = moistPct >= 60;
 
+  const outlook = getSeasonalRainOutlook(data, isMr);
   const elRainDays = document.getElementById("side-card4-rain-days");
   if (elRainDays) {
-    elRainDays.textContent = isMr ? `~५ दिवस` : `~5 Days`;
+    elRainDays.textContent = outlook.rainDaysText;
   }
   const elCumRain = document.getElementById("side-card4-cum-rain");
   if (elCumRain && cards.rainfall_deficit) {
@@ -226,9 +350,7 @@ function updateDashboard(data) {
   }
 
   if (elSideCard4) {
-    elSideCard4.innerHTML = isMr
-      ? `पुढील ३० दिवसांत ५ पावसाळी दिवस अपेक्षित आहेत. ${isOptimal ? `जमिनीत <strong>${formatNumber(moistPct, true)}%</strong> ओलावा उपलब्ध असल्याने पिकावर ताण नाही.` : `जमिनीतील ओलावा कमी होत असल्याने संरक्षित पाण्याचे नियोजन ठेवावे.`}`
-      : `Around 5 rain days expected in next 30 days. ${isOptimal ? `With <strong>${moistPct}%</strong> root-zone moisture, crops face minimal water stress.` : `Moisture is declining; supplementary irrigation planning advised.`}`;
+    elSideCard4.innerHTML = outlook.description;
   }
 
   // Populate the dedicated AI Agricultural Advisor Modal

@@ -527,6 +527,11 @@ function bindModalHandlers() {
     switchRightPanel("advisory");
   };
 
+  // Modal 5: Fast-MCP Agent Connector
+  const modalMcp = document.getElementById("modal-mcp-connector");
+  document.getElementById("btn-mcp")?.addEventListener("click", () => modalMcp?.classList.add("open"));
+  document.getElementById("close-modal-mcp")?.addEventListener("click", () => modalMcp?.classList.remove("open"));
+
   // Close modals on clicking overlay background or pressing Escape
   document.querySelectorAll(".modal-overlay").forEach(overlay => {
     overlay.addEventListener("click", (e) => {

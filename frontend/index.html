@@ -489,6 +489,13 @@
             style="font-size: 11px; font-weight: 800;">
             <span id="lang-tag">🌐 English</span>
           </button>
+
+          <!-- 6. Fast-MCP AI Agent Connector Modal Trigger -->
+          <button class="top-round-icon-btn" id="btn-mcp" title="Connect AI Agent (MCP Connector)" onclick="openMcpModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -1602,10 +1609,25 @@
       </div>
 
       <div class="mcp-modal-scroll">
-        <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
-          MahaRainRisk is equipped with a <strong>6-Tool FastMCP 2.x Server</strong> over Server-Sent Events (SSE) and
-          OpenAPI 3.1. Connect Claude, ChatGPT, or Gemini directly to live Maharashtra drought telemetry:
+        <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
+          MahaRainRisk exposes a <strong>Universal Model Context Protocol (MCP) Gateway</strong> across Claude, ChatGPT, and Gemini. One endpoint connects all AI models to live Maharashtra drought telemetry:
         </p>
+
+        <!-- Universal Single Link Hero Box -->
+        <div style="background: linear-gradient(135deg, rgba(147,51,234,0.08), rgba(59,130,246,0.06)); border: 1px solid rgba(147,51,234,0.25); border-radius: 10px; padding: 14px; margin-bottom: 14px; text-align: center;">
+          <div style="font-size: 11px; color: #7E22CE; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+            ⚡ One Universal Link for All AI Models
+          </div>
+          <div class="mcp-copy-row" style="justify-content: center;">
+            <code class="mcp-url-code" id="code-universal-url" style="font-weight: 600; font-size: 13px;">https://rainrisk-vcra.onrender.com/mcp</code>
+            <button class="mcp-copy-btn" onclick="copyMcpText('https://rainrisk-vcra.onrender.com/mcp', this)">
+              <span>📋 Copy Universal URL</span>
+            </button>
+          </div>
+          <div style="font-size: 10.5px; color: #64748B; margin-top: 6px;">
+            Authentication: <strong>None</strong> (Public early-warning system) &bull; Auto-negotiates SSE & Streamable HTTP
+          </div>
+        </div>
 
         <!-- Platform Connectors Grid -->
         <div class="mcp-platforms-stack">
@@ -1616,8 +1638,7 @@
               <span class="mcp-box-icon">🟠</span>
               <div>
                 <strong>Claude Web & Claude Desktop</strong>
-                <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector
-                </div>
+                <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector</div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1627,8 +1648,7 @@
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Name: <code>MahaRainRisk</code> &bull; Server accepts HTTPS and discovers 6 agronomic tools
-              automatically.
+              &bull; Name: <code>MahaRainRisk</code> &bull; Authentication: <strong>None</strong> &bull; Native 200 OK SSE / Streamable HTTP.
             </div>
           </div>
 
@@ -1638,8 +1658,7 @@
               <span class="mcp-box-icon">🟢</span>
               <div>
                 <strong>ChatGPT Web & Custom GPTs</strong>
-                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (or Actions &rarr;
-                  Import OpenAPI)</div>
+                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (or Actions &rarr; Import OpenAPI)</div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1656,8 +1675,7 @@
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Connection: <strong>Server URL</strong> &bull; Authentication: <strong>None</strong> (Public
-              read-only).
+              &bull; Connection: <strong>Server URL</strong> &bull; Authentication: <strong>None</strong>.
             </div>
           </div>
 
@@ -1667,8 +1685,7 @@
               <span class="mcp-box-icon">🔵</span>
               <div>
                 <strong>Google Gemini Web</strong>
-                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP
-                  server</div>
+                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP server</div>
               </div>
             </div>
             <div class="mcp-copy-row">
@@ -1678,8 +1695,7 @@
               </button>
             </div>
             <div class="mcp-helper-notes">
-              &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Click Next to bind all 6
-              tools.
+              &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Direct JSON-RPC execution.
             </div>
           </div>
 
@@ -1687,9 +1703,8 @@
 
         <div
           style="margin-top: 14px; padding: 10px; background: rgba(94, 138, 66, 0.08); border-radius: 8px; font-size: 11px; color: #334155;">
-          <strong>💡 Local Development Tunnel:</strong> When testing locally with <code>uvicorn</code> on port 8000, run
-          <code>npx localtunnel --port 8000</code> and paste your tunnel URL + <code>/mcp</code> into any of the web
-          connectors above!
+          <strong>💡 Local Development Tunnel (Byte-Safe):</strong> When testing locally with <code>uvicorn</code> on port 8000, run
+          <code>cloudflared tunnel --url http://localhost:8000</code> or <code>ngrok http 8000</code> (or <code>npx localtunnel --port 8000</code>) and paste your tunnel URL + <code>/mcp</code> into any web connector!
         </div>
       </div>
     </div>

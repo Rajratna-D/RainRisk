@@ -26,6 +26,14 @@ if sys.platform.startswith("win"):
 from backend.mcp_server import mcp, normalize_taluka_query, CANONICAL_TALUKA_ALIASES
 
 
+@pytest.fixture(autouse=True)
+def clean_rate_limit():
+    from backend.main import MCP_RATE_LIMIT_CACHE
+    MCP_RATE_LIMIT_CACHE.clear()
+    yield
+    MCP_RATE_LIMIT_CACHE.clear()
+
+
 def extract_tool_result(call_res) -> dict:
     """Helper to extract dictionary payload from MCP CallToolResult across MCP 1.x & 2.x."""
     if hasattr(call_res, "structured_content") and call_res.structured_content:
@@ -225,3 +233,87 @@ def test_mcp_alias_normalizer_and_error_handling():
         assert "Atlantis_Imaginary_Taluka" in data_err["message"]
 
     asyncio.run(_run())
+
+
+def test_mcp_gateway_options_preflight():
+    """T-01: OPTIONS /mcp returns 204 with CORS wildcard for Claude Web and Gemini Web."""
+    from starlette.testclient import TestClient
+    from backend.main import app
+
+    with TestClient(app) as client:
+        res = client.options("/mcp")
+        assert res.status_code == 204
+        assert res.headers.get("access-control-allow-origin") == "*"
+        assert "OPTIONS" in res.headers.get("access-control-allow-methods", "")
+
+
+def test_mcp_gateway_browser_get_returns_json():
+    """T-02: GET /mcp with browser headers returns 200 JSON with universal_link."""
+    from starlette.testclient import TestClient
+    from backend.main import app
+
+    with TestClient(app) as client:
+        res = client.get("/mcp", headers={"Accept": "text/html,application/xhtml+xml"})
+        assert res.status_code == 200
+        data = res.json()
+        assert data["status"] == "operational"
+        assert "universal_link" in data
+        assert "https://rainrisk-vcra.onrender.com/mcp" in data["universal_link"]
+        assert data["tools_count"] == 6
+
+
+def test_mcp_gateway_rate_limit_60rps():
+    """T-03: Exceeding 60 requests/minute from same IP triggers 429 Retry-After."""
+    from starlette.testclient import TestClient
+    from backend.main import app, MCP_RATE_LIMIT_CACHE
+
+    MCP_RATE_LIMIT_CACHE.clear()
+    with TestClient(app) as client:
+        # Send 60 allowed requests
+        for _ in range(60):
+            res = client.get("/mcp")
+            assert res.status_code == 200
+        # 61st request must trigger 429
+        blocked = client.get("/mcp")
+        assert blocked.status_code == 429
+        assert "Retry-After" in blocked.headers
+    MCP_RATE_LIMIT_CACHE.clear()
+
+
+def test_mcp_gateway_cors_header_on_post():
+    """T-04: POST /mcp JSON-RPC response always carries Access-Control-Allow-Origin: *."""
+    from starlette.testclient import TestClient
+    from backend.main import app, MCP_RATE_LIMIT_CACHE
+
+    MCP_RATE_LIMIT_CACHE.clear()
+    with TestClient(app) as client:
+        res = client.post(
+            "/mcp",
+            json={
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {"name": "test-agent", "version": "1.0"}
+                }
+            }
+        )
+        assert res.status_code == 200
+        assert res.headers.get("access-control-allow-origin") == "*"
+    MCP_RATE_LIMIT_CACHE.clear()
+
+
+def test_mcp_gateway_503_when_uninitialized(monkeypatch):
+    """T-05: Gateway returns 503 if MCP Streamable app fails to initialize."""
+    from starlette.testclient import TestClient
+    import backend.main as main_mod
+
+    monkeypatch.setattr(main_mod, "current_streamable_app", None)
+    monkeypatch.setattr(main_mod, "get_mcp_streamable_app", lambda: None)
+    with TestClient(main_mod.app) as client:
+        res = client.post("/mcp", json={"jsonrpc": "2.0", "id": 1, "method": "initialize"})
+        assert res.status_code == 503
+        assert "error" in res.json()
+
