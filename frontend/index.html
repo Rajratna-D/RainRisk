@@ -18,13 +18,13 @@
   <link rel="stylesheet" href="/assets/leaflet/leaflet.css">
 
   <!-- Modular Stylesheets (Light Mode) -->
-  <link rel="stylesheet" href="/css/variables.css?v=122">
-  <link rel="stylesheet" href="/css/layout.css?v=122">
-  <link rel="stylesheet" href="/css/header.css?v=122">
-  <link rel="stylesheet" href="/css/cards.css?v=122">
-  <link rel="stylesheet" href="/css/panels.css?v=122">
-  <link rel="stylesheet" href="/css/modals.css?v=122">
-  <link rel="stylesheet" href="/css/landing.css?v=122">
+  <link rel="stylesheet" href="/css/variables.css?v=123">
+  <link rel="stylesheet" href="/css/layout.css?v=123">
+  <link rel="stylesheet" href="/css/header.css?v=123">
+  <link rel="stylesheet" href="/css/cards.css?v=123">
+  <link rel="stylesheet" href="/css/panels.css?v=123">
+  <link rel="stylesheet" href="/css/modals.css?v=123">
+  <link rel="stylesheet" href="/css/landing.css?v=123">
   <style id="liquid-glass-card-critical">
     /* High-Priority Inlined Liquid Glass Card Styling (Guaranteed Immediate Render) */
     .lp-card {
@@ -1670,81 +1670,6 @@
             Authentication: <strong>None</strong> (Public early-warning system) &bull; Auto-negotiates SSE & Streamable HTTP
           </div>
         </div>
-
-        <!-- Platform Connectors Grid -->
-        <div style="font-size: 12px; font-weight: 700; color: #1E293B; margin: 16px 0 8px;">
-          Connect any AI Agent using the URL above:
-        </div>
-        <div class="mcp-platforms-stack">
-
-          <!-- 1. Claude Web & Desktop -->
-          <div class="mcp-platform-box">
-            <div class="mcp-box-header">
-              <span class="mcp-box-icon">🟠</span>
-              <div>
-                <strong>Claude Web & Claude Desktop</strong>
-                <div style="font-size: 11px; color: #64748B;">Settings &rarr; Connectors &rarr; Add custom connector</div>
-              </div>
-            </div>
-            <div class="mcp-helper-notes">
-              &bull; Name: <code>MahaRainRisk</code> &bull; Server URL: <code id="code-claude-url">https://rainrisk-vcra.onrender.com/mcp</code> &bull; Native 200 OK SSE / Streamable HTTP.
-            </div>
-          </div>
-
-          <!-- 2. ChatGPT Web & Custom GPTs -->
-          <div class="mcp-platform-box">
-            <div class="mcp-box-header">
-              <span class="mcp-box-icon">🟢</span>
-              <div>
-                <strong>ChatGPT Web & Custom GPTs</strong>
-                <div style="font-size: 11px; color: #64748B;">Plugins &rarr; Add custom MCP server (Server URL: <code id="code-chatgpt-url">https://rainrisk-vcra.onrender.com/mcp</code>)</div>
-              </div>
-            </div>
-            <div class="mcp-copy-row" style="margin-top: 6px;">
-              <span style="font-size: 11px; color: #64748B; margin-right: 4px;">For GPT Actions:</span>
-              <code class="mcp-url-code" id="code-openapi-url" style="font-size: 11px;">https://rainrisk-vcra.onrender.com/openapi.json</code>
-              <button class="mcp-copy-btn"
-                onclick="copyMcpText('https://rainrisk-vcra.onrender.com/openapi.json', this)">
-                <span>📋 Copy OpenAPI</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 3. Google Gemini Web -->
-          <div class="mcp-platform-box">
-            <div class="mcp-box-header">
-              <span class="mcp-box-icon">🔵</span>
-              <div>
-                <strong>Google Gemini Web</strong>
-                <div style="font-size: 11px; color: #64748B;">Customize &rarr; Connectors &rarr; Connect to an MCP server &rarr; paste: <code id="code-gemini-url">https://rainrisk-vcra.onrender.com/mcp</code></div>
-              </div>
-            </div>
-            <div class="mcp-helper-notes">
-              &bull; Additional settings &rarr; Authentication: <strong>None</strong> &bull; Direct JSON-RPC execution.
-            </div>
-          </div>
-
-          <!-- 4. Cursor IDE & Windsurf -->
-          <div class="mcp-platform-box">
-            <div class="mcp-box-header">
-              <span class="mcp-box-icon">⚡</span>
-              <div>
-                <strong>Cursor IDE & Windsurf</strong>
-                <div style="font-size: 11px; color: #64748B;">Cursor Settings &rarr; Features &rarr; MCP &rarr; Add New MCP Server</div>
-              </div>
-            </div>
-            <div class="mcp-helper-notes">
-              &bull; Name: <code>MahaRainRisk</code> &bull; Type: <code>sse</code> &bull; URL: <code>https://rainrisk-vcra.onrender.com/mcp</code>
-            </div>
-          </div>
-
-        </div>
-
-        <div
-          style="margin-top: 14px; padding: 10px; background: rgba(94, 138, 66, 0.08); border-radius: 8px; font-size: 11px; color: #334155;">
-          <strong>💡 Local Development Tunnel (Byte-Safe):</strong> When testing locally with <code>uvicorn</code> on port 8000, run
-          <code>cloudflared tunnel --url http://localhost:8000</code> or <code>ngrok http 8000</code> (or <code>npx localtunnel --port 8000</code>) and paste your tunnel URL + <code>/mcp</code> into any web connector!
-        </div>
       </div>
     </div>
   </div>
@@ -1754,14 +1679,14 @@
   <script src="/assets/leaflet/leaflet.js"></script>
 
   <!-- Application Logic (Modular Architecture) -->
-  <script src="/js/state.js?v=122"></script>
-  <script src="/js/map.js?v=122"></script>
-  <script src="/js/dashboard.js?v=122"></script>
-  <script src="/js/advisory.js?v=122"></script>
-  <script src="/js/audio.js?v=122"></script>
-  <script src="/js/i18n.js?v=122"></script>
-  <script src="/js/app.js?v=122"></script>
-  <script src="/js/landing.js?v=122"></script>
+  <script src="/js/state.js?v=123"></script>
+  <script src="/js/map.js?v=123"></script>
+  <script src="/js/dashboard.js?v=123"></script>
+  <script src="/js/advisory.js?v=123"></script>
+  <script src="/js/audio.js?v=123"></script>
+  <script src="/js/i18n.js?v=123"></script>
+  <script src="/js/app.js?v=123"></script>
+  <script src="/js/landing.js?v=123"></script>
 
 </body>
 

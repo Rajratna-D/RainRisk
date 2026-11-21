@@ -160,17 +160,14 @@ def test_phase8_backend_adjacent_endpoint_resolution():
 
 
 def test_phase8_mcp_modal_and_clipboard_targets():
-    """Verifies MCP modal code targets and clipboard values match deployment specs."""
+    """Verifies MCP modal single universal link targets and clipboard values match deployment specs."""
     index_path = os.path.join(FRONTEND_DIR, "index.html")
     with open(index_path, "r", encoding="utf-8") as f:
         html = f.read()
 
-    assert 'id="code-claude-url"' in html
-    assert 'id="code-chatgpt-url"' in html
-    assert 'id="code-openapi-url"' in html
-    assert 'id="code-gemini-url"' in html
+    assert 'id="code-universal-url"' in html
+    assert 'id="code-banner-url"' in html
     assert 'https://rainrisk-vcra.onrender.com/mcp' in html
-    assert 'https://rainrisk-vcra.onrender.com/openapi.json' in html
 
 
 def test_phase8_i18n_instant_language_switch_no_devanagari_leak():
