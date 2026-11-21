@@ -1,38 +1,50 @@
-# MahaRainRisk: Master Engineering Upgrades Log (Phases 1–10)
+# MahaRainRisk: Master Engineering Upgrades Log (Phases 1–13)
 **Platform:** Operational Taluka-Level Agritech Drought Early Warning & Climate Resilience System  
 **Coverage:** 194 Monitored Rainfed Talukas across all 36 Districts of Maharashtra  
 **Runtime Environment:** Python 3.13 | PostgreSQL 18 | FastAPI | cachetools | Docker | SHAP  
 **Document Status:** Production Certified & Formally Verified  
-**Date:** November 20, 2026  
+**Date:** November 21, 2026  
 
 ---
 
-## 🚀 Phase 10: Universal Model Context Protocol (MCP) Single Gateway
+## 🚀 Phase 13: 7-Day Live Numerical Weather & 30-Day AI ML Drought Forecast Hub for Farmers
 
-### Summary & Architectural Problem Solved
-Previously, connecting external AI models required fragmented links (`/mcp/sse` for Claude Desktop, `/mcp` with HTTP 307 redirect, and `/openapi.json` for ChatGPT). Claude connections failed due to:
-1. **HTTP 307 Redirect Failure:** Claude's streaming EventSource client drops handshakes on 307 redirects.
-2. **Mount Path /messages 404:** Sub-mounted FastMCP announced `/messages` relative to root instead of `/mcp/messages`.
-3. **Route Collision:** `@app.api_route("/mcp")` shadowed `app.mount("/mcp")`.
-4. **CORS & DNS Security:** Missing CORS preflight for browser connectors and disabled DNS rebinding protection.
-5. **Session Routing & Framing:** Streamable HTTP GETs misdirected to legacy SSE, missing `Mcp-Session-Id` CORS exposure, and UTF-8 chunk re-encoding corruption under `--local-host`.
+### Summary & Purpose
+Designed, validated, and deployed a dedicated, 100% genuine meteorological and machine learning forecast hub built specifically for farmers. Solves the limitation of static rain context by providing real-time daily weather for tactical fieldwork decisions (spraying, weeding, harvesting) coupled with monthly Machine Learning drought projections for water budgeting across all 194 Maharashtra talukas.
 
 ### Upgrades Implemented
-- **MCP-01 (Direct SSE Handshake):** Eliminated 307 redirect. `GET /mcp` with `Accept: text/event-stream` directly initiates an SSE stream via `ASGIAppResponse`.
-- **MCP-02 (Path Routing Correction):** Messages sub-path mapped dynamically to `/mcp/messages/` so Claude JSON-RPC handshakes never 404 or 307.
-- **MCP-03 (Universal Content Negotiation):** Single `/mcp` URL negotiates SSE, Streamable HTTP JSON-RPC 2.0, diagnostic JSON status, and CORS `OPTIONS` preflight on one endpoint.
-- **MCP-04 (DNS Rebinding & Host Hardening):** Enabled `enable_dns_rebinding_protection=True` with explicit allowlist for `rainrisk-vcra.onrender.com`, `localhost`, `127.0.0.1`, `*.trycloudflare.com`, `*.loca.lt`, and `*.ngrok-free.app`.
-- **MCP-05 (CORS Wildcard & AI Origins):** Added preflight `OPTIONS` returning 204 with `Access-Control-Max-Age: 86400` and scoped wildcard headers for `/mcp`.
-- **MCP-06 (Per-IP Rate Limiting with Proxy Resolution):** Implemented 60 req/min TTLCache rate limiting using `get_client_ip(request)` with `TRUSTED_PROXIES` validation so Render reverse proxies do not trigger global lockouts.
-- **MCP-07 (Dashboard Pre-Warm):** Added silent background `fetch('/health')` in `dashboard.js` and `app.js` to eliminate cold-start timeouts for real users.
-- **MCP-08 (Dashboard Modal Redesign):** Streamlined Modal 5 in `index.html` with a prominent "One Universal Link for All AI Models" copy card and integrated top-action-bar `#btn-mcp` quick connector trigger.
-- **MCP-09 (Test Suite Expansion):** Added 20 new automated tests in `test_phase10_mcp_gateway.py` and 5 in `test_phase7_mcp_server.py`. Total test suite passes at **86 passed, 1 skipped**.
-- **MCP-10 (Trailing Slash Mount Preservation):** Fixed Starlette mount redirect by routing `/mcp/messages` to `/messages/` with trailing slash, avoiding HTTP 307 on POST messages.
-- **MCP-11 (Streamable HTTP Session Routing):** Ensured `GET /mcp` with `Mcp-Session-Id` and `Accept: text/event-stream` routes directly to the active Streamable HTTP session manager rather than falling back to legacy SSE.
-- **MCP-12 (CORS Mcp-Session-Id Header Exposure):** Added `Access-Control-Expose-Headers: mcp-session-id, Mcp-Session-Id` across CORS middleware, preflights, and ASGI streaming responses.
-- **MCP-13 (Byte-Safe Tunneling & Devanagari UTF-8 Framing):** Documented byte-safe tunnels (Cloudflare quick tunnels and ngrok) and removed `--local-host` requirement for localtunnel, preventing 3-byte Marathi UTF-8 string chunk splitting and JSON framing corruption.
-- **MCP-14 (Managed Lifespan Safeguard):** Enforced that only the running `current_streamable_app` managed by FastAPI lifespan is invoked, safely returning 503 if uninitialized rather than crashing with unhandled task group runtime errors.
-- **MCP-15 (Direct Zero-Copy Response Streaming):** Refactored `ASGIAppResponse` to stream response body chunks directly via `send_wrapper` with CORS injection, eliminating in-memory buffering.
+- **FORECAST-01 (Backend REST API & Schemas):** Added `@app.get("/api/v1/taluka/{query}/forecast")` and `@app.get("/api/forecast/{query}")` in `backend/main.py`. Defined strict Pydantic schemas in `backend/schemas.py`: `DailyForecastItem`, `WeeklyOutlookItem`, `Forecast30DayModel`, and `TalukaForecastResponse`.
+- **FORECAST-02 (Live ECMWF / Open-Meteo Integration):** Connected real-time numerical weather prediction using each taluka’s exact latitude and longitude centroid. Resolves daily max/min temperatures, precipitation sum (mm), rain probability (%), wind speed, and WMO weather codes.
+- **FORECAST-03 (WMO Agro-Meteorological Code Mapping):** Created a comprehensive bilingual translation matrix mapping all international WMO weather codes (0, 1–3, 45/48, 51–65, 80–82, 95/96) into natural agricultural Marathi and English with foliar spray safety flags (`✅ फवारणीसाठी उत्तम वेळ` / `⚠️ फवारणी टाळा - धुवून जाण्याचा धोका`) and practical field actions.
+- **FORECAST-04 (Mode 2 AI GBDT 30-Day Crop & Soil Trajectory):** Evaluates real 30-day drought deficit risk using the trained 250-tree Mode 2 ML model (77.4% test deficit accuracy). Generates a 4-week structured progression (Week 1: Sowing & weeding vafsa baseline; Week 2: Moisture depletion & mulching; Week 3: Irrigation alert threshold; Week 4: Month-end recovery & 1% potassium nitrate spray).
+- **FORECAST-05 (1-Hour In-Memory Cache & Resilient Offline Fallback):** Implemented thread-safe in-memory caching (`_forecast_cache`) with 3600s TTL for sub-millisecond repeat queries. Added automatic seasonal climatology fallbacks based on IMD 30-year monthly averages in case of external network timeouts.
+- **FORECAST-06 (Dashboard Sidebar Card Transformation):** Redesigned Right Column Card 4 (`#side-card-weather`) from static text into the dedicated **7-Day & 30-Day Forecast Hub** preview card featuring dual live metric pills (`#side-card4-7d-prev` & `#side-card4-30d-prev`), helper text, and a prominent 1-tap button `[ 📅 ७ व ३० दिवसांचा अंदाज पहा → ]` (`#btn-open-forecast`).
+- **FORECAST-07 (Dedicated Farmer Window - Modal 6):** Created `#modal-forecast` with dual tab navigation:
+  - **Tab 1 (`tab-btn-7day`):** 7-card horizontal grid with daily weather icons, high/low temperatures, precipitation mm and probability, wind speed, spray condition banner, and field recommendations.
+  - **Tab 2 (`tab-btn-30day`):** Comprehensive 30-day overview banner with category badge, model confidence %, expected rain days, and 4-week structured roadmap cards.
+- **FORECAST-08 (Zero Audio Clutter):** Explicitly excluded audio/voice narration from the forecast window per user specification to keep the interface fast, visual, clean, and icon-driven.
+- **FORECAST-09 (Full Bilingual & Devanagari Numeral Engine):** Fully synchronized with `i18n.js` and `state.js`, dynamically formatting all dates, numbers, and temperatures into Devanagari numerals (`०-९`, e.g. `२८° / १७°C`) when in Marathi mode.
+- **FORECAST-10 (Automated Test Suite Expansion):** Added `test_phase8_taluka_7day_and_30day_forecast_endpoint` and verified all DOM hooks in `test_phase8_frontend_integration.py`. Total test suite passes at **100 passed, 1 skipped**.
+- **FORECAST-11 (Cloudflare Production Deployment):** Bumped cache-busting asset query parameter to `?v=125` and deployed to Cloudflare Pages production (`https://maharainrisk.pages.dev`).
+
+---
+
+## 🚀 Phase 12: Streamlined MCP Placement & Single Gateway Modal Clarification
+
+### Summary & Issues Resolved
+1. **Strict 2-Location MCP Placement Enforced:**
+   - Per user directive, removed FastMCP from the Farmer's Essentials view (deleted `#banner-mcp-farmer`) and removed the floating dock icon (`#dock-btn-mcp`).
+   - Restricted MCP link exclusively to **exactly 2 locations**:
+     1. **Top Bar Header:** Glowing pill button `[⚡ MCP Link]` (`#btn-mcp`).
+     2. **Detailed Analytics Tab:** Card 9 (`#card-mcp-connector`) with direct 1-click URL copy box (`#code-analytics-url`).
+2. **Simplified Universal MCP Modal (Modal 5):**
+   - Stripped away all per-agent platform instruction bullet points (Claude, ChatGPT, Gemini, Cursor setup lists) and local development tunnel notes.
+   - Retained strictly the clean hero card showcasing the single universal URL (`https://rainrisk-vcra.onrender.com/mcp`) with a 1-click **📋 Copy Universal URL** button.
+3. **ASGI Tunnel Host Validation Resilience:**
+   - Patched Starlette ASGI tunnel header rewrite logic in `backend/main.py` for `*.trycloudflare.com`, `*.loca.lt`, and `*.ngrok-free.app` to prevent HTTP 421 host validation rejections.
+4. **Automated Verification & Deployment:**
+   - Updated `test_phase8_frontend_integration.py` to assert `#code-analytics-url` and enforce the complete absence of `#banner-mcp-farmer`. Verified 100% test pass.
+   - Deployed bundle with `?v=124` to Cloudflare Pages production (`https://maharainrisk.pages.dev`).
 
 ---
 
