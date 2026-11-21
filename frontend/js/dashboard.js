@@ -373,6 +373,14 @@ function updateDashboard(data) {
     populateAiModal(data, isMr);
   }
 
+  // Populate & fetch real 7-Day & 30-Day Forecast Hub
+  const talukaToFetch = data.meta?.taluka || state.currentTaluka || "Paithan";
+  if (typeof fetchTalukaForecast === "function") {
+    fetchTalukaForecast(talukaToFetch);
+  } else if (state.currentForecast) {
+    updateForecastCardPreview(state.currentForecast);
+  }
+
   // 6. Stale Data Warning Banner Detection
   const staleBanner = document.getElementById("stale-data-banner");
   if (staleBanner) {
@@ -699,4 +707,273 @@ window.fetchTalukaExplain = fetchTalukaExplain;
 window.fetchTalukaAdjacent = fetchTalukaAdjacent;
 window.renderTreeShapExplain = renderTreeShapExplain;
 window.renderAdjacentTalukas = renderAdjacentTalukas;
+
+// ============================================================================
+// 7-DAY & 30-DAY WEATHER & CLIMATE FORECAST HUB (Modal 6)
+// ============================================================================
+
+async function fetchTalukaForecast(taluka) {
+  try {
+    const encoded = encodeURIComponent(taluka || state.currentTaluka || "Paithan");
+    const base = window.API_BASE || "";
+    const res = await fetch(`${base}/api/v1/taluka/${encoded}/forecast`);
+    if (!res.ok) return;
+
+    const forecast = await res.json();
+    state.currentForecast = forecast;
+
+    // Update Card 4 Previews
+    updateForecastCardPreview(forecast);
+
+    // If modal is currently open, re-render modal contents
+    const modal = document.getElementById("modal-forecast");
+    if (modal && modal.classList.contains("open")) {
+      renderForecastModal(forecast);
+    }
+  } catch (err) {
+    console.warn("Forecast fetch error, using local fallback:", err);
+  }
+}
+
+function updateForecastCardPreview(forecast) {
+  if (!forecast) return;
+  const isMr = state.currentLanguage === "mr";
+  const f7 = forecast.forecast_7_day || [];
+  const f30 = forecast.forecast_30_day || {};
+
+  const el7dPrev = document.getElementById("side-card4-7d-prev");
+  if (el7dPrev && f7.length > 0) {
+    const today = f7[0];
+    const precipText = today.precip_mm > 0 
+      ? `${formatNumber(today.precip_mm.toFixed(1), isMr)} mm` 
+      : (isMr ? "० mm" : "0 mm");
+    const desc = isMr ? today.weather_desc_mr : today.weather_desc_en;
+    const shortDesc = desc.includes(" ") ? desc.split(" ")[0] : desc;
+    const iconSym = today.icon === "sun" ? "☀️" : (today.icon === "rain" ? "🌧️" : (today.icon === "thunder" ? "⛈️" : "⛅"));
+    el7dPrev.textContent = `${iconSym} ${shortDesc} • ${precipText}`;
+  }
+
+  const el30dPrev = document.getElementById("side-card4-30d-prev");
+  if (el30dPrev && f30) {
+    const riskLabel = isMr ? f30.risk_label_mr : f30.risk_label_en;
+    const conf = Math.round(f30.confidence_pct || 80);
+    const riskIcon = f30.category_code === 0 ? "🛡️" : (f30.category_code === 1 ? "⚠️" : "🚨");
+    el30dPrev.textContent = `${riskIcon} ${riskLabel} (${formatNumber(conf, isMr)}%)`;
+    el30dPrev.style.color = f30.category_code === 0 ? "#047857" : (f30.category_code === 1 ? "#D97706" : "#DC2626");
+  }
+
+  const elText = document.getElementById("side-card4-text");
+  if (elText && f30) {
+    elText.textContent = isMr ? f30.summary_mr : f30.summary_en;
+  }
+}
+
+function openForecastModal() {
+  const modal = document.getElementById("modal-forecast");
+  if (!modal) return;
+  modal.classList.add("open");
+
+  const talukaName = state.currentData?.meta?.taluka || state.currentTaluka || "Paithan";
+  const talukaMr = state.currentData?.meta?.taluka_mr || talukaName;
+  const distName = state.currentData?.meta?.district || "";
+  const distMr = state.currentData?.meta?.district_mr || distName;
+  const isMr = state.currentLanguage === "mr";
+
+  const pill = document.getElementById("modal-forecast-taluka-pill");
+  if (pill) {
+    pill.textContent = isMr 
+      ? `📍 ${talukaMr} (${distMr})` 
+      : `📍 ${talukaName} (${distName})`;
+  }
+
+  if (state.currentForecast && (state.currentForecast.taluka_name.toLowerCase() === talukaName.toLowerCase() || state.currentForecast.taluka_name_mr === talukaMr)) {
+    renderForecastModal(state.currentForecast);
+  } else {
+    // Show spinner / loading state
+    const body = document.getElementById("forecast-modal-body");
+    if (body) {
+      body.innerHTML = `
+        <div style="padding: 40px; text-align: center; color: #64748B;">
+          <div style="font-size: 24px; margin-bottom: 8px;">⏳</div>
+          <div style="font-weight: 700;">${isMr ? "हवामान व पाऊस अंदाज लोड होत आहे..." : "Loading 7-Day & 30-Day Forecast..."}</div>
+        </div>
+      `;
+    }
+    fetchTalukaForecast(talukaName);
+  }
+}
+
+function closeForecastModal() {
+  document.getElementById("modal-forecast")?.classList.remove("open");
+}
+
+function switchForecastTab(tabKey) {
+  state.forecastActiveTab = tabKey;
+  const btn7 = document.getElementById("tab-btn-7day");
+  const btn30 = document.getElementById("tab-btn-30day");
+
+  if (tabKey === "7day") {
+    btn7?.classList.add("active");
+    btn30?.classList.remove("active");
+  } else {
+    btn30?.classList.add("active");
+    btn7?.classList.remove("active");
+  }
+
+  if (state.currentForecast) {
+    renderForecastModal(state.currentForecast);
+  }
+}
+
+function renderForecastModal(forecast) {
+  const body = document.getElementById("forecast-modal-body");
+  if (!body || !forecast) return;
+  const isMr = state.currentLanguage === "mr";
+  const activeTab = state.forecastActiveTab || "7day";
+
+  if (activeTab === "7day") {
+    // 7-Day Grid View
+    const days = forecast.forecast_7_day || [];
+    let html = `<div class="forecast-7day-grid">`;
+
+    days.forEach((d, idx) => {
+      const isToday = idx === 0;
+      const dayName = isMr ? d.day_name_mr : d.day_name_en;
+      const desc = isMr ? d.weather_desc_mr : d.weather_desc_en;
+      const spray = isMr ? d.spray_condition_mr : d.spray_condition_en;
+      const action = isMr ? d.field_action_mr : d.field_action_en;
+      const isRainy = d.precip_mm > 0.5 || d.precip_prob_pct >= 40;
+      const spraySafe = !isRainy && d.wind_speed_max < 16;
+
+      const tMax = formatNumber(Math.round(d.temp_max), isMr);
+      const tMin = formatNumber(Math.round(d.temp_min), isMr);
+      const precip = formatNumber(d.precip_mm.toFixed(1), isMr);
+      const prob = formatNumber(d.precip_prob_pct, isMr);
+      const wind = formatNumber(Math.round(d.wind_speed_max), isMr);
+
+      // Icon symbol
+      let iconHtml = "☀️";
+      if (d.icon === "rain") iconHtml = "🌧️";
+      else if (d.icon === "thunder") iconHtml = "⛈️";
+      else if (d.icon === "drizzle") iconHtml = "🌦️";
+      else if (d.icon === "cloud" || d.icon === "cloud-sun") iconHtml = "⛅";
+      else if (d.icon === "fog") iconHtml = "🌫️";
+
+      html += `
+        <div class="forecast-day-card ${isToday ? 'today' : ''}">
+          <div class="forecast-day-header">
+            <span class="forecast-day-name">${isToday ? (isMr ? '🌟 आज (Today)' : '🌟 Today') : dayName}</span>
+            <span class="forecast-day-date">${d.date.substring(5)}</span>
+          </div>
+
+          <div class="forecast-day-weather-row">
+            <div class="forecast-weather-icon">${iconHtml}</div>
+            <div class="forecast-temp-group">
+              <span class="forecast-temp-highlow">${tMax}° / ${tMin}°C</span>
+              <span class="forecast-temp-sub">${desc}</span>
+            </div>
+          </div>
+
+          <div class="forecast-metrics-pill-row">
+            <span class="forecast-metric-chip ${d.precip_mm > 0 ? 'rain' : ''}">
+              🌧️ ${precip} mm (${prob}%)
+            </span>
+            <span class="forecast-metric-chip">
+              💨 ${wind} km/h
+            </span>
+          </div>
+
+          <div class="forecast-spray-banner ${spraySafe ? 'safe' : 'caution'}">
+            <span>${spraySafe ? '✅' : '⚠️'}</span>
+            <span>${spray}</span>
+          </div>
+
+          <div class="forecast-action-note">
+            ${action}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    html += `<div class="forecast-source-footer">🛰️ ${isMr ? 'स्रोत: ECMWF व Open-Meteo थेट उपग्रह हवामान मॉडेल' : 'Source: ECMWF & Open-Meteo Real-Time Numerical Weather Grid'}</div>`;
+    body.innerHTML = html;
+
+  } else {
+    // 30-Day Outlook View
+    const f30 = forecast.forecast_30_day || {};
+    const weeks = f30.weeks || [];
+    const riskLabel = isMr ? f30.risk_label_mr : f30.risk_label_en;
+    const summary = isMr ? f30.summary_mr : f30.summary_en;
+    const moist = formatNumber(Math.round(f30.residual_moisture_pct || 70), isMr);
+    const rainDays = isMr ? (f30.expected_rain_days === "0–1 Days" ? "०–१ दिवस" : f30.expected_rain_days) : f30.expected_rain_days;
+    const expMm = formatNumber(Math.round(f30.expected_rain_mm || 10), isMr);
+    const conf = formatNumber(Math.round(f30.confidence_pct || 80), isMr);
+
+    let html = `
+      <div class="forecast-30day-banner">
+        <div class="forecast-30day-summary-text">
+          <strong>${isMr ? 'पुढील ३० दिवसांचा एकूण अंदाज:' : '30-Day Seasonal Overview:'}</strong>
+          ${summary}
+        </div>
+        <div class="forecast-30day-stats-row">
+          <div class="forecast-stat-box">
+            <div class="forecast-stat-box-lbl">${isMr ? 'दुष्काळ जोखीम' : 'Drought Risk'}</div>
+            <div class="forecast-stat-box-val" style="color: ${f30.category_code === 0 ? '#047857' : (f30.category_code === 1 ? '#D97706' : '#DC2626')};">
+              ${riskLabel} (${conf}%)
+            </div>
+          </div>
+          <div class="forecast-stat-box">
+            <div class="forecast-stat-box-lbl">${isMr ? 'पावसाचे दिवस' : 'Expected Rain Days'}</div>
+            <div class="forecast-stat-box-val" style="color: #0284C7;">${rainDays}</div>
+          </div>
+          <div class="forecast-stat-box">
+            <div class="forecast-stat-box-lbl">${isMr ? 'अपेक्षित पाऊस' : 'Expected Rain'}</div>
+            <div class="forecast-stat-box-val" style="color: #0284C7;">~${expMm} mm</div>
+          </div>
+          <div class="forecast-stat-box">
+            <div class="forecast-stat-box-lbl">${isMr ? 'जमीन ओलावा' : 'Soil Moisture'}</div>
+            <div class="forecast-stat-box-val" style="color: #047857;">${moist}%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="forecast-weeks-cluster">
+    `;
+
+    weeks.forEach(w => {
+      const title = isMr ? w.title_mr : w.title_en;
+      const moistStatus = isMr ? w.moisture_status_mr : w.moisture_status_en;
+      const rainOut = isMr ? w.rain_outlook_mr : w.rain_outlook_en;
+      const action = isMr ? w.action_mr : w.action_en;
+      const wMoist = formatNumber(Math.round(w.moisture_pct), isMr);
+
+      html += `
+        <div class="forecast-week-card">
+          <div class="forecast-week-header">
+            <span class="forecast-week-title">📅 ${title}</span>
+            <span class="forecast-week-moisture-badge">💧 ${isMr ? 'ओलावा:' : 'Moisture:'} ${wMoist}%</span>
+          </div>
+          <div style="font-size: 11.5px; color: #334155;">
+            <strong>${isMr ? 'हवामान स्थिती:' : 'Climate Condition:'}</strong> ${rainOut} • ${moistStatus}
+          </div>
+          <div style="font-size: 11.5px; color: #475569; background: #F8FAFC; border-radius: 6px; padding: 6px 10px; border-left: 3px solid #10B981;">
+            <strong>${isMr ? '💡 शेती सल्ला:' : '💡 Farm Action:'}</strong> ${action}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    html += `<div class="forecast-source-footer">🤖 ${isMr ? 'स्रोत: मोड २ मशीन लर्निंग GBDT फोरकास्टर व ४ राज्य कृषी विद्यापीठे' : 'Source: Mode 2 ML Forecaster & 4 State Agricultural Universities'}</div>`;
+    body.innerHTML = html;
+  }
+}
+
+window.fetchTalukaForecast = fetchTalukaForecast;
+window.renderForecastModal = renderForecastModal;
+window.openForecastModal = openForecastModal;
+window.closeForecastModal = closeForecastModal;
+window.switchForecastTab = switchForecastTab;
+window.updateForecastCardPreview = updateForecastCardPreview;
 

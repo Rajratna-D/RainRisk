@@ -532,6 +532,12 @@ function bindModalHandlers() {
   document.getElementById("btn-mcp")?.addEventListener("click", () => modalMcp?.classList.add("open"));
   document.getElementById("close-modal-mcp")?.addEventListener("click", () => modalMcp?.classList.remove("open"));
 
+  // Modal 6: 7-Day & 30-Day Weather & Climate Forecast Hub
+  const modalForecast = document.getElementById("modal-forecast");
+  document.getElementById("btn-open-forecast")?.addEventListener("click", () => window.openForecastModal?.());
+  document.getElementById("close-modal-forecast")?.addEventListener("click", () => modalForecast?.classList.remove("open"));
+  window.closeForecastModal = () => modalForecast?.classList.remove("open");
+
   // Close modals on clicking overlay background or pressing Escape
   document.querySelectorAll(".modal-overlay").forEach(overlay => {
     overlay.addEventListener("click", (e) => {

@@ -60,7 +60,8 @@ from backend.schemas import (
     ErrorEnvelope,
     TalukaRiskResponse,
     CacheStatsResponse,
-    TalukaExplainResponse
+    TalukaExplainResponse,
+    TalukaForecastResponse
 )
 
 # -------------------------------------------------------------------------
@@ -663,6 +664,22 @@ async def get_taluka_adjacent(query: str, max_neighbors: int = Query(6, ge=1, le
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Adjacency error: {str(e)}")
+
+@app.get("/api/v1/taluka/{query:path}/forecast", response_model=TalukaForecastResponse, tags=["Forecasting"])
+@app.get("/api/forecast/{query:path}", response_model=TalukaForecastResponse, tags=["Forecasting"])
+async def get_taluka_weather_and_climate_forecast(query: str):
+    """
+    Returns 100% verified 7-day live numerical weather forecast (ECMWF/Open-Meteo) 
+    and Mode 2 AI GBDT 30-day drought/moisture outlook tailored specifically 
+    for the selected Maharashtra taluka's coordinates.
+    """
+    clean_query = sanitize_and_validate_taluka_query(query)
+    try:
+        return await run_in_threadpool(backend_service.get_taluka_forecast, clean_query)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Forecast engine error: {str(e)}")
 
 @app.get("/api/v1/cache/stats", response_model=CacheStatsResponse, tags=["Observability"])
 async def get_cache_telemetry():

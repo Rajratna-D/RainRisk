@@ -191,16 +191,37 @@ function applyLanguage(lang) {
   if (sc3) sc3.textContent = isMr ? "दुष्काळ जोखीम पडताळणी" : "Drought Risk Verification";
 
   const sc4 = document.getElementById("side-card4-title");
-  if (sc4) sc4.textContent = isMr ? "हवामान संदर्भ व पर्जन्यमान" : "Weather Context & Rain Outlook";
+  if (sc4) sc4.textContent = isMr ? "हवामान व पाऊस अंदाज" : "Weather & Rain Forecast";
 
-  const sc4Badge = document.getElementById("side-card4-badge");
-  if (sc4Badge) sc4Badge.textContent = isMr ? "३०-दिवसीय अंदाज" : "30-DAY OUTLOOK";
+  const sc4Badge = document.getElementById("side-card4-badge-text") || document.getElementById("side-card4-badge");
+  if (sc4Badge) sc4Badge.textContent = isMr ? "७ व ३० दिवस" : "7 & 30-DAY";
 
   const sc4Stat1 = document.getElementById("side-card4-stat1-lbl");
-  if (sc4Stat1) sc4Stat1.textContent = isMr ? "अपेक्षित पाऊस" : "Expected Rain";
+  if (sc4Stat1) sc4Stat1.textContent = isMr ? "७ दिवस अंदाज" : "7-Day Forecast";
 
   const sc4Stat2 = document.getElementById("side-card4-stat2-lbl");
-  if (sc4Stat2) sc4Stat2.textContent = isMr ? "हंगामी पाऊस" : "Season Rain";
+  if (sc4Stat2) sc4Stat2.textContent = isMr ? "३० दिवस अंदाज" : "30-Day Outlook";
+
+  const sc4Btn = document.getElementById("btn-open-forecast-text");
+  if (sc4Btn) sc4Btn.textContent = isMr ? "📅 ७ व ३० दिवसांचा अंदाज पहा →" : "📅 View 7 & 30-Day Forecast →";
+
+  // Modal 6: Forecast Hub Labels
+  const modForeTitle = document.getElementById("modal-forecast-title");
+  if (modForeTitle) modForeTitle.textContent = isMr ? "हवामान व पाऊस अंदाज (Weather & Rain Forecast)" : "Weather & Climate Forecast (7 & 30-Day)";
+
+  const tab7 = document.getElementById("tab-title-7day");
+  if (tab7) tab7.textContent = isMr ? "☀️ पुढील ७ दिवस (Live Daily)" : "☀️ Next 7 Days (Live Daily)";
+
+  const tab30 = document.getElementById("tab-title-30day");
+  if (tab30) tab30.textContent = isMr ? "🗓️ पुढील ३० दिवस (AI Outlook)" : "🗓️ Next 30 Days (AI Outlook)";
+
+  if (typeof updateForecastCardPreview === "function" && state.currentForecast) {
+    updateForecastCardPreview(state.currentForecast);
+  }
+  const modFore = document.getElementById("modal-forecast");
+  if (modFore && modFore.classList.contains("open") && typeof renderForecastModal === "function" && state.currentForecast) {
+    renderForecastModal(state.currentForecast);
+  }
 
   const elSideDamSub = document.getElementById("side-dam-sub");
   if (elSideDamSub && (!state.currentData || !state.currentData.farmer_cards)) {

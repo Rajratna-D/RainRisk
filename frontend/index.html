@@ -1352,8 +1352,8 @@
             </div>
           </div>
 
-          <!-- Card 4: Weather & Rainfall Outlook -->
-          <div class="right-panel-card clickable-outlook-card" id="side-card-weather" onclick="openAiModal()" style="cursor: pointer;" title="सविस्तर ३०-दिवसीय अंदाज व सल्ला पहा (Click to view full 30-Day Outlook & Advisory)">
+          <!-- Card 4: Weather & Rainfall Outlook (7-Day & 30-Day Hub) -->
+          <div class="right-panel-card clickable-outlook-card" id="side-card-weather" onclick="openForecastModal()" style="cursor: pointer;" title="सविस्तर ७ व ३० दिवसांचा अंदाज पहा (Click to view 7 & 30-Day Forecast)">
             <div class="panel-header-row">
               <div class="panel-title-group">
                 <div class="mini-icon-circle">
@@ -1367,11 +1367,11 @@
                     <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" />
                   </svg>
                 </div>
-                <span id="side-card4-title">Weather Context & Rain Outlook</span>
+                <span id="side-card4-title">हवामान व पाऊस अंदाज</span>
               </div>
               <span class="telemetry-live-badge" id="side-card4-badge"
-                style="background: rgba(59, 130, 246, 0.12); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;">
-                <span>३०-दिवसीय अंदाज</span>
+                style="background: rgba(37, 99, 235, 0.12); color: #1D4ED8; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px;">
+                <span id="side-card4-badge-text">७ व ३० दिवस</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="10" height="10"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
               </span>
             </div>
@@ -1379,21 +1379,30 @@
             <div style="display: flex; gap: 6px; margin: 6px 0;">
               <div
                 style="flex: 1; background: rgba(59, 130, 246, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #3B82F6;">
-                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat1-lbl">Expected Rain
-                </div>
-                <div style="font-size: 13px; font-weight: 800; color: #1D4ED8;" id="side-card4-rain-days">~5 Days</div>
+                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat1-lbl">७ दिवस अंदाज</div>
+                <div style="font-size: 12px; font-weight: 800; color: #1D4ED8;" id="side-card4-7d-prev">☀️ निरभ्र • ० mm</div>
               </div>
               <div
                 style="flex: 1; background: rgba(16, 185, 129, 0.07); border-radius: 6px; padding: 5px 8px; border-left: 2.5px solid #10B981;">
-                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat2-lbl">Season Rain
-                </div>
-                <div style="font-size: 13px; font-weight: 800; color: #047857;" id="side-card4-cum-rain">476 mm</div>
+                <div style="font-size: 9.5px; color: #64748B; font-weight: 600;" id="side-card4-stat2-lbl">३० दिवस अंदाज</div>
+                <div style="font-size: 12px; font-weight: 800; color: #047857;" id="side-card4-30d-prev">🛡️ सुरक्षित (८४%)</div>
               </div>
             </div>
 
-            <div style="font-size: 11.5px; color: #334155; line-height: 1.45;" id="side-card4-text">
-              Around 5 rain days expected in next 30 days. Root-zone moisture is sufficient.
+            <div style="font-size: 11px; color: #475569; line-height: 1.4; margin-bottom: 4px;" id="side-card4-text">
+              तालुक्यानुसार अचूक दैनंदिन हवामान व ३०-दिवसीय दुष्काळ अंदाज.
             </div>
+
+            <!-- Dedicated Action Button for Farmers -->
+            <button class="forecast-card-cta-btn" id="btn-open-forecast" onclick="event.stopPropagation(); openForecastModal();" title="Click to open 7 & 30-Day Forecast">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span id="btn-open-forecast-text">📅 ७ व ३० दिवसांचा अंदाज पहा →</span>
+            </button>
           </div>
 
         </div>
@@ -1646,18 +1655,67 @@
   </div>
 
 
+  <!-- ====================================================================
+       MODAL 6: 7-DAY & 30-DAY WEATHER & CLIMATE FORECAST (Farmer Window)
+       ==================================================================== -->
+  <div class="modal-overlay" id="modal-forecast">
+    <div class="modal-card forecast-modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="18" height="18">
+            <path d="M12 2v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="M20 12h2" />
+            <path d="m19.07 4.93-1.41 1.41" />
+            <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
+            <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z" />
+          </svg>
+          <span id="modal-forecast-title">हवामान व पाऊस अंदाज (Weather & Rain Forecast)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="forecast-taluka-badge" id="modal-forecast-taluka-pill">📍 पैठण</span>
+          <button class="modal-close-btn" id="close-modal-forecast" onclick="closeForecastModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Switcher inside Modal -->
+      <div class="forecast-modal-tabs">
+        <button class="forecast-tab-btn active" id="tab-btn-7day" onclick="switchForecastTab('7day')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span id="tab-title-7day">☀️ पुढील ७ दिवस (Live Daily)</span>
+        </button>
+        <button class="forecast-tab-btn" id="tab-btn-30day" onclick="switchForecastTab('30day')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="tab-title-30day">🗓️ पुढील ३० दिवस (AI Outlook)</span>
+        </button>
+      </div>
+
+      <div class="forecast-modal-scroll" id="forecast-modal-body">
+        <!-- Content populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+
   <!-- Leaflet JS -->
   <script src="/assets/leaflet/leaflet.js"></script>
 
   <!-- Application Logic (Modular Architecture) -->
-  <script src="/js/state.js?v=124"></script>
-  <script src="/js/map.js?v=124"></script>
-  <script src="/js/dashboard.js?v=124"></script>
-  <script src="/js/advisory.js?v=124"></script>
-  <script src="/js/audio.js?v=124"></script>
-  <script src="/js/i18n.js?v=124"></script>
-  <script src="/js/app.js?v=124"></script>
-  <script src="/js/landing.js?v=124"></script>
+  <script src="/js/state.js?v=125"></script>
+  <script src="/js/map.js?v=125"></script>
+  <script src="/js/dashboard.js?v=125"></script>
+  <script src="/js/advisory.js?v=125"></script>
+  <script src="/js/audio.js?v=125"></script>
+  <script src="/js/i18n.js?v=125"></script>
+  <script src="/js/app.js?v=125"></script>
+  <script src="/js/landing.js?v=125"></script>
 
 </body>
 

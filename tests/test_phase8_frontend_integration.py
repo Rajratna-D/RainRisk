@@ -91,6 +91,14 @@ def test_phase8_dom_hooks_presence():
     assert 'onclick="openMcpModal()"' in html, "Missing openMcpModal handler"
     assert 'https://rainrisk-vcra.onrender.com/mcp' in html, "Missing production MCP URL in modal"
 
+    # 7. 7-Day & 30-Day Weather & Climate Forecast Hub
+    assert 'id="side-card-weather"' in html, "Missing weather outlook sidebar card"
+    assert 'id="btn-open-forecast"' in html, "Missing forecast open button"
+    assert 'id="modal-forecast"' in html, "Missing forecast modal"
+    assert 'id="tab-btn-7day"' in html, "Missing 7-day tab button"
+    assert 'id="tab-btn-30day"' in html, "Missing 30-day tab button"
+    assert 'id="forecast-modal-body"' in html, "Missing forecast modal body"
+
 
 def test_phase8_option_a_zero_simulation_enforced():
     """Enforces Option A: Confirms absolute absence of simulation sliders and simulate endpoints."""
@@ -204,4 +212,41 @@ def test_phase8_i18n_instant_language_switch_no_devanagari_leak():
     assert v_match and int(v_match.group(1)) >= 118, "Script version must be bumped to >= ?v=118 for cache-busting"
     v_i18n = re.search(r'i18n\.js\?v=(\d+)', html)
     assert v_i18n and int(v_i18n.group(1)) >= 118, "Script version must be bumped to >= ?v=118 for cache-busting"
+
+
+def test_phase8_taluka_7day_and_30day_forecast_endpoint():
+    """Validates GET /api/v1/taluka/{query}/forecast live numerical weather and Mode 2 ML contract."""
+    res = client.get("/api/v1/taluka/paithan/forecast")
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["taluka_name"] == "Paithan"
+    assert data["taluka_name_mr"] == "पैठण"
+    assert "forecast_7_day" in data
+    assert len(data["forecast_7_day"]) == 7
+    for d in data["forecast_7_day"]:
+        assert "date" in d
+        assert "day_name_en" in d
+        assert "day_name_mr" in d
+        assert "temp_max" in d
+        assert "temp_min" in d
+        assert "spray_condition_en" in d
+        assert "spray_condition_mr" in d
+        assert "field_action_en" in d
+        assert "field_action_mr" in d
+
+    assert "forecast_30_day" in data
+    f30 = data["forecast_30_day"]
+    assert "category_code" in f30
+    assert "confidence_pct" in f30
+    assert "weeks" in f30
+    assert len(f30["weeks"]) == 4
+    for w in f30["weeks"]:
+        assert "week_num" in w
+        assert "title_en" in w
+        assert "title_mr" in w
+        assert "moisture_pct" in w
+        assert "action_en" in w
+        assert "action_mr" in w
+
 

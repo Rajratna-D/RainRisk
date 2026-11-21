@@ -1190,3 +1190,29 @@
   border-color: rgba(59, 130, 246, 0.45);
 }
 
+/* Dedicated 7 & 30-Day Forecast Card Button */
+.forecast-card-cta-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.forecast-card-cta-btn:hover {
+  background: linear-gradient(135deg, #1E40AF 0%, #1D4ED8 100%);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38);
+  transform: translateY(-1px);
+}
+

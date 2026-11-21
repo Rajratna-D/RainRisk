@@ -333,3 +333,75 @@ class TalukaExplainResponse(BaseModel):
     source: Optional[str] = "xai_engine"
 
 
+# -----------------------------------------------------------------------------
+# 7-DAY & 30-DAY WEATHER & CLIMATE FORECAST SCHEMAS
+# -----------------------------------------------------------------------------
+
+class DailyForecastItem(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    date: str
+    day_name_en: str
+    day_name_mr: str
+    weather_code: int
+    weather_desc_en: str
+    weather_desc_mr: str
+    icon: str
+    temp_max: float
+    temp_min: float
+    precip_mm: float
+    precip_prob_pct: int
+    wind_speed_max: float
+    spray_condition_en: str
+    spray_condition_mr: str
+    field_action_en: str
+    field_action_mr: str
+
+
+class WeeklyOutlookItem(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    week_num: int
+    title_en: str
+    title_mr: str
+    moisture_pct: float
+    moisture_status_en: str
+    moisture_status_mr: str
+    rain_outlook_en: str
+    rain_outlook_mr: str
+    action_en: str
+    action_mr: str
+
+
+class Forecast30DayModel(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    category_code: int
+    risk_label_en: str
+    risk_label_mr: str
+    confidence_pct: float
+    expected_rain_days: str
+    expected_rain_mm: float
+    residual_moisture_pct: float
+    summary_en: str
+    summary_mr: str
+    weeks: List[WeeklyOutlookItem]
+
+
+class TalukaForecastResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    taluka_code: int
+    taluka_name: str
+    taluka_name_mr: str
+    district_name: str
+    district_name_mr: str
+    latitude: float
+    longitude: float
+    as_of_date: str
+    forecast_7_day: List[DailyForecastItem]
+    forecast_30_day: Forecast30DayModel
+    source_attribution: str = "ECMWF / Open-Meteo & Mode 2 AI GBDT"
+
+
+
